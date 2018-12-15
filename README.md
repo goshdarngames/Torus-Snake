@@ -1,18 +1,9 @@
-HTML Canvas Game
-================
+Torus Snake
+===========
 
-This project provides a template that can be cloned when creating a new
-game targeting the HTML canvas.
+A game of snake that uses a torus as the grid for VR display.
 
-The project includes the Babylon 3D Javascript library for rendering.
-
-The game's canvas is created in the index.html file.
-
-The HTML file includes the local javascript file 'game-logic/main.js'.
-
-Tests are provided using the Jest testing framework.
-
-The Jest packages were installed using the Yarn dependency manager.
+Load the index.html with a WebGL capable browsers to play.
 
 To run the tests and build the game use 'grunt' with the provided 
 Gruntfile.js
