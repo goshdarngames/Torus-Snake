@@ -23,15 +23,15 @@
     {
         if ( engine == undefined )
         {
-            throw new Error ( "Engine is undefined.");
+            throw new Error ( "Engine is undefined." );
         }
 
         if ( babylon == undefined )
         {
-            throw new Error ( "Babylon is undefined.");
+            throw new Error ( "Babylon is undefined." );
         }
 
-        let scene = babylonProject.createVRScene ( babylon, engine);
+        let scene = babylonProject.createVRScene ( babylon, engine );
 
         this.update = function ()
         {
