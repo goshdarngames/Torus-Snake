@@ -32,10 +32,17 @@
         }
 
         let scene = babylonProject.createVRScene ( babylon, engine );
+        
+        let light = new  babylon.DirectionalLight (
+                    "light", new babylon.Vector3 ( 0, 0.5, 1.0 ), scene  );
+
+        light.position = new babylon.Vector3 ( 0, 5, -2 );
 
         this.update = function ()
         {
             scene.render ();
+            
+            
 
             return this;
         };

@@ -34,9 +34,11 @@ let MockBox = jest.fn (
 MockBabylon = jest.fn (
     function ()
     {
-  
-        this.MeshBuilder = new MockMeshBuilder ();      
+        this.MeshBuilder = new MockMeshBuilder (); 
 
+        this.DirectionalLight = jest.fn ();
+
+        this.Vector3 = jest.fn ();
     });
 
 beforeEach ( () =>
@@ -120,6 +122,21 @@ describe ( "window.babylonProject.startState", () =>
         expect ( startState.update () )
             .toBeInstanceOf (
                  window.babylonProject.StartState  );
+
+    });
+
+
+    test ( "creates instance of Directional Light", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_engine = new MockEngine ();
+
+        let startState = 
+            new window.babylonProject.StartState ( 
+                    mock_babylon, mock_engine );
+
+        expect ( mock_babylon.DirectionalLight )
+          .toHaveBeenCalledTimes ( 1 ); 
 
     });
 
