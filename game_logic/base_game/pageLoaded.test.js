@@ -27,9 +27,20 @@ MockBabylon = jest.fn (
 
 beforeEach ( ()=>
 {
-    window.babylonProject.StartState = jest.fn ();
+    window.babylonProject.startState =
+        jest.fn ( function ()
+                {
+                    return jest.fn ();
+                });
 
-    window.babylonProject.gameLoop = jest.fn ();
+    window.babylonProject.GameLoop = 
+        jest.fn ( function ( startState ) 
+                {
+                    this.update = function ()
+                    {
+                        return 1;
+                    } 
+                });
 });
  
 /****************************************************************************
@@ -120,61 +131,6 @@ describe ( "window.babylonProject.pageLoaded" , () =>
     });
 
 
-    test ( "creates an instance of StartScene", () =>
-    {
-        let mock_doc = new MockDoc ();
-
-        let mock_babylon = new MockBabylon ();
-
-        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
-
-        expect ( window.babylonProject.StartState )
-            .toHaveBeenCalledTimes ( 1 );
-    });
-
-    test ( "passes babylon and engine reference " +
-           "to babylonProject.StartScene constructor", ()=>
-    {
-        let mock_doc = new MockDoc ();
-
-        let mock_babylon = new MockBabylon ();
-        
-        let engineCreationFunc = window.babylonProject.createBabylonEngine;
-
-        //capture reference to compare later
-        engine = window.babylonProject.createBabylonEngine 
-            ( mock_babylon, jest.fn () );
-
-        //replace function with mock
-        window.babylonProject.createBabylonEngine = jest.fn ();
-
-        window.babylonProject.createBabylonEngine
-            .mockReturnValueOnce ( engine );
-
-        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
-
-        expect ( window.babylonProject.StartState )
-            .toHaveBeenCalledWith (mock_babylon , engine );
-
-        //restore old func
-        window.babylonProject.createBabylonEngine = engineCreationFunc;
-
-    });
-
-    test ( "assigns window.babylonProject.gameState", () =>
-    {
-        let mock_doc = new MockDoc ();
-
-        let mock_babylon = new MockBabylon ();
-
-
-        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
-
-        expect ( window.babylonProject.currentGameState )
-            .toBeInstanceOf ( window.babylonProject.StartState );
-    });
-
-
     test ( "calls runRenderLoop on the engine instance created.",
             () =>
     {
@@ -207,12 +163,37 @@ describe ( "window.babylonProject.pageLoaded" , () =>
         expect ( engineInstance.runRenderLoop )
             .toHaveBeenCalledTimes ( 1 );
 
-        expect ( engineInstance.runRenderLoop )
-            .toHaveBeenCalledWith ( window.babylonProject.gameLoop );
+        //check that the render loop was called with a function
+        expect ( engineInstance.runRenderLoop.mock.calls [0][0] )
+            .toBeInstanceOf ( Function );
+
+        //try and call the function inside ( expecting state function )
+        expect ( engineInstance.runRenderLoop.mock.calls [0][0] () )
+            .toBeDefined ();
 
         //restore the old version of the engine creation function
         window.babylonProject.createBabylonEngine = createBabylonEngineFunc;
  
+    });
+
+    test ( "creates an instance of babylonProject.GameLoop", () =>
+    {
+        let mock_doc = new MockDoc ();
+
+        let mock_babylon = new MockBabylon ();
+
+        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
+
+        expect ( window.babylonProject.GameLoop )
+            .toHaveBeenCalledTimes ( 1 );
+
+        //check that gameloop was called with a function
+        expect ( window.babylonProject.GameLoop.mock.calls [0][0] )
+            .toBeInstanceOf ( Function );
+
+        //try and call the function inside ( expecting state function )
+        expect ( window.babylonProject.GameLoop.mock.calls [0][0] () )
+            .toBeDefined ();
     });
 
 });

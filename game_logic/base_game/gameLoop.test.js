@@ -25,39 +25,35 @@ beforeEach ( () =>
  * TESTS
  ***************************************************************************/
 
-test ( "window.babylonProject.currentGameState is defined", () =>
-{
-    expect ( window.babylonProject.currentGameState ).toBeDefined ();
-});
-
-describe ( "window.babylonProject.gameLoop", () =>
+describe ( "window.babylonProject.GameLoop", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.gameLoop ).toBeDefined ();
+        expect ( window.babylonProject.GameLoop ).toBeDefined ();
     });
 
-    test ( "calls update() on window.babylonProject.currentGameState", () =>
+    test ( "stores function in constructor as gameLoop.currentGameState", () =>
     {
-        window.babylonProject.currentGameState = get_mock_game_state ();
-        
-        window.babylonProject.gameLoop ();
+        testFunc = jest.fn ();
 
-        expect ( window.babylonProject.currentGameState.update )
-            .toHaveBeenCalledTimes ( 1 );
+        gameLoop = new window.babylonProject.GameLoop ( testFunc );
+
+        expect ( gameLoop.currentGameState ).toBe ( testFunc  );
     });
 
-    test ( "stores result of babylonProject.currentGameState.update() in "+
-           "window.babylonProject.currentGameState", () =>
+    test ( "stores return of current state as new state", () =>
     {
-        window.babylonProject.currentGameState = get_mock_game_state ();
+        testFunc = jest.fn ();
 
-        window.babylonProject.currentGameState.update
-           .mockReturnValue(10); 
-         
-        window.babylonProject.gameLoop ();
+        gameLoop = new window.babylonProject.GameLoop ( testFunc );
 
-        expect ( window.babylonProject.currentGameState ).toBe( 10 );
+        testNewState = jest.fn ();
+
+        testFunc.mockReturnValueOnce ( testNewState );
+    
+        gameLoop.update ();
+
+        expect ( gameLoop.currentGameState ).toBe ( testNewState );
     });
 
 

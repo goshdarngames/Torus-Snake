@@ -58,21 +58,10 @@ describe ( "window.babylonProject.startState", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.StartState )
+        expect ( window.babylonProject.startState )
             .toBeDefined ();
     });
 
-    test ( "instance has an update function", () =>
-    {
-        let mock_babylon = new MockBabylon ();
-        let mock_engine = new MockEngine ();
-
-        let startState = 
-            new window.babylonProject.StartState ( 
-                    mock_babylon, mock_engine );
-
-        expect ( startState.update ).toBeDefined ();
-    });
 
     test ( "error is thrown if engine or babylon is undefined", () =>
     {
@@ -81,26 +70,24 @@ describe ( "window.babylonProject.startState", () =>
 
         expect (() =>
                 {
-                    new window.babylonProject.StartState (mock_babylon)
+                    window.babylonProject.startState (mock_babylon)
                 })
             .toThrow ("Engine is undefined.");
 
         expect (() =>
                 {
-                    new window.babylonProject.StartState (
+                    window.babylonProject.startState (
                             undefined, mock_engine )
                 })
             .toThrow ("Babylon is undefined.");
     });
 
-    test ( "createVRScene is called during constructor "+
-           "with babylon and engine as paramters", () =>
+    test ( "if game data is undefined it is created", () =>
     {
        let mock_babylon = new MockBabylon ();
        let mock_engine = new MockEngine ();
 
-       let startState = 
-            new window.babylonProject.StartState ( 
+       window.babylonProject.startState ( 
                     mock_babylon, mock_engine );
 
        expect ( window.babylonProject.createVRScene )
@@ -110,18 +97,16 @@ describe ( "window.babylonProject.startState", () =>
            .toHaveBeenCalledWith ( mock_babylon, mock_engine );
     });
 
-    test ( "instance.update() returns instance of StartState", () =>
+    test ( "calling the startState function returns a function", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_engine = new MockEngine ();
 
-        let startState = 
-            new window.babylonProject.StartState ( 
+        let retval = window.babylonProject.startState ( 
                     mock_babylon, mock_engine );
 
-        expect ( startState.update () )
-            .toBeInstanceOf (
-                 window.babylonProject.StartState  );
+        expect ( retval )
+            .toBeInstanceOf ( Function );
 
     });
 
@@ -131,8 +116,7 @@ describe ( "window.babylonProject.startState", () =>
         let mock_babylon = new MockBabylon ();
         let mock_engine = new MockEngine ();
 
-        let startState = 
-            new window.babylonProject.StartState ( 
+        window.babylonProject.startState ( 
                     mock_babylon, mock_engine );
 
         expect ( mock_babylon.DirectionalLight )

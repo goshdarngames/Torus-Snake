@@ -28,12 +28,13 @@
         let engine = babylonProject
             .createBabylonEngine ( babylonRef, canvas );
 
-        let startState = new window.babylonProject
-            .StartState( babylonRef, engine );
+        let startState = ( () => 
+                window.babylonProject
+                    .startState( babylonRef, engine ));
 
-        babylonProject.currentGameState = startState;
+        let gameLoop = new window.babylonProject.GameLoop ( startState );
 
-        engine.runRenderLoop ( babylonProject.gameLoop );
+        engine.runRenderLoop ( gameLoop.update );
     };
 
     /**

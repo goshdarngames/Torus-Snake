@@ -19,7 +19,7 @@
      * The update function should return the next state - it should return
      * 'this' if the state is not changing.
      */
-    babylonProject.StartState = function ( babylon, engine )
+    babylonProject.startState = function ( babylon, engine )
     {
         if ( engine == undefined )
         {
@@ -38,14 +38,7 @@
 
         light.position = new babylon.Vector3 ( 0, 5, -2 );
 
-        this.update = function ()
-        {
-            scene.render ();
-            
-            
-
-            return this;
-        };
+        return () => babylonProject.startState ( babylon, engine );
     }; 
 
 } ( window.babylonProject = window.babylonProject || {} ));
