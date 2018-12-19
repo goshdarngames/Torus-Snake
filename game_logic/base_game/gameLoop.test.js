@@ -1,60 +1,35 @@
 const renderLoop = require ( "./gameLoop" );
 
 /****************************************************************************
- * MOCK DATA
- ***************************************************************************/
-function get_mock_game_state ()
-{
-    let MockState = jest.fn (
-            function ()
-            {
-                this.update = jest.fn(
-                        function ()
-                        {
-                            return this;
-                        });
-            });
-
-    return new MockState ();
-}
-beforeEach ( () =>
-{
-});
-
-/****************************************************************************
  * TESTS
  ***************************************************************************/
 
-describe ( "window.babylonProject.GameLoop", () =>
+describe ( "window.babylonProject.gameLoop", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.GameLoop ).toBeDefined ();
+        expect ( window.babylonProject.gameLoop ).toBeDefined ();
     });
 
-    test ( "stores function in constructor as gameLoop.currentGameState", () =>
+    test ( "stores return of current state as next update", () =>
     {
         testFunc = jest.fn ();
-
-        gameLoop = new window.babylonProject.GameLoop ( testFunc );
-
-        expect ( gameLoop.currentGameState ).toBe ( testFunc  );
-    });
-
-    test ( "stores return of current state as new state", () =>
-    {
-        testFunc = jest.fn ();
-
-        gameLoop = new window.babylonProject.GameLoop ( testFunc );
+    
+        window.babylonProject.nextUpdate = testFunc;
 
         testNewState = jest.fn ();
 
         testFunc.mockReturnValueOnce ( testNewState );
     
-        gameLoop.update ();
+        window.babylonProject.gameLoop ();
 
-        expect ( gameLoop.currentGameState ).toBe ( testNewState );
+        expect ( window.babylonProject.nextUpdate ).toBe ( testNewState );
     });
 
 
+});
+
+test ( "window.babylonProject.nextUpdate is defined", () =>
+{
+    expect ( window.babylonProject.nextUpdate ).toBeDefined ();
 });

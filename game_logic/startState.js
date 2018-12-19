@@ -19,7 +19,7 @@
      * The update function should return the next state - it should return
      * 'this' if the state is not changing.
      */
-    babylonProject.startState = function ( babylon, engine )
+    babylonProject.startState = function ( babylon, engine, gameData )
     {
         if ( engine == undefined )
         {
@@ -31,14 +31,23 @@
             throw new Error ( "Babylon is undefined." );
         }
 
-        let scene = babylonProject.createVRScene ( babylon, engine );
+        if ( gameData == undefined )
+        {
+            let scene = babylonProject.createVRScene ( babylon, engine );
         
-        let light = new  babylon.DirectionalLight (
-                    "light", new babylon.Vector3 ( 0, 0.5, 1.0 ), scene  );
+//            let light = new  babylon.DirectionalLight (
+//                    "light", new babylon.Vector3 ( 0, 0.5, 1.0 ), scene  );
 
-        light.position = new babylon.Vector3 ( 0, 5, -2 );
+//            light.position = new babylon.Vector3 ( 0, 5, -2 );
 
-        return () => babylonProject.startState ( babylon, engine );
+            return () => 
+                babylonProject.startState ( 
+                        babylon, engine, scene  );
+        }
+
+        gameData.render ();
+
+        return () => babylonProject.startState ( babylon, engine, gameData );
     }; 
 
 } ( window.babylonProject = window.babylonProject || {} ));

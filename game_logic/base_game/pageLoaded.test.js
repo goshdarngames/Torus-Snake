@@ -27,20 +27,14 @@ MockBabylon = jest.fn (
 
 beforeEach ( ()=>
 {
-    window.babylonProject.startState =
-        jest.fn ( function ()
+    window.babylonProject.nextUpdate =
+        function ( babylon, engine )
                 {
-                    return jest.fn ();
-                });
+                    return () => 
+                        window.babylonProject.nextUpdate ( babylon, engine )
+                };
 
-    window.babylonProject.GameLoop = 
-        jest.fn ( function ( startState ) 
-                {
-                    this.update = function ()
-                    {
-                        return 1;
-                    } 
-                });
+    window.babylonProject.gameLoop = jest.fn ();
 });
  
 /****************************************************************************
@@ -131,7 +125,8 @@ describe ( "window.babylonProject.pageLoaded" , () =>
     });
 
 
-    test ( "calls runRenderLoop on the engine instance created.",
+    test ( "calls runRenderLoop on the engine instance created "+
+           "and passes window.babylonProject.gameLoop.",
             () =>
     {
         let mock_doc = new MockDoc ();
@@ -156,44 +151,18 @@ describe ( "window.babylonProject.pageLoaded" , () =>
         window.babylonProject.createBabylonEngine.
             mockReturnValueOnce ( engineInstance );
 
-
-
         window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
 
         expect ( engineInstance.runRenderLoop )
             .toHaveBeenCalledTimes ( 1 );
 
-        //check that the render loop was called with a function
+        //check that the render loop was called with babylonProject.gameLoop
         expect ( engineInstance.runRenderLoop.mock.calls [0][0] )
-            .toBeInstanceOf ( Function );
-
-        //try and call the function inside ( expecting state function )
-        expect ( engineInstance.runRenderLoop.mock.calls [0][0] () )
-            .toBeDefined ();
+            .toBe ( window.babylonProject.gameLoop );
 
         //restore the old version of the engine creation function
         window.babylonProject.createBabylonEngine = createBabylonEngineFunc;
  
-    });
-
-    test ( "creates an instance of babylonProject.GameLoop", () =>
-    {
-        let mock_doc = new MockDoc ();
-
-        let mock_babylon = new MockBabylon ();
-
-        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
-
-        expect ( window.babylonProject.GameLoop )
-            .toHaveBeenCalledTimes ( 1 );
-
-        //check that gameloop was called with a function
-        expect ( window.babylonProject.GameLoop.mock.calls [0][0] )
-            .toBeInstanceOf ( Function );
-
-        //try and call the function inside ( expecting state function )
-        expect ( window.babylonProject.GameLoop.mock.calls [0][0] () )
-            .toBeDefined ();
     });
 
 });

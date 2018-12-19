@@ -12,23 +12,12 @@
 
 ( function ( babylonProject, undefined )
 {
-    /**
-     * The current game state that will be updated during game loop cycles.
-     *
-     * The initial value is set i pageLoaded.js when the game starts.
-     */
+    babylonProject.nextUpdate = () => {};
 
-    babylonProject.GameLoop = function ( startState )
+    babylonProject.gameLoop = function ()
     {
-        this.currentGameState = startState;
-    
-        this.update = function ()
-        {
-
-            //update state and store return value as current state
-            this.currentGameState = 
-                this.currentGameState (); 
-        }
-    };
+        //update state and store return value as next update
+        babylonProject.nextUpdate = babylonProject.nextUpdate (); 
+    }
 
 } ( window.babylonProject = window.babylonProject || {} ));

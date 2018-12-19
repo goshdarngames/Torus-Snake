@@ -82,7 +82,7 @@ describe ( "window.babylonProject.startState", () =>
             .toThrow ("Babylon is undefined.");
     });
 
-    test ( "if game data is undefined it is created", () =>
+    test ( "if game data is undefined it is created ", () =>
     {
        let mock_babylon = new MockBabylon ();
        let mock_engine = new MockEngine ();
@@ -95,6 +95,32 @@ describe ( "window.babylonProject.startState", () =>
 
        expect ( window.babylonProject.createVRScene )
            .toHaveBeenCalledWith ( mock_babylon, mock_engine );
+
+       //call startState again with mock data
+
+       window.babylonProject.startState ( 
+                    mock_babylon, mock_engine, new MockScene () );
+
+       //expect data not to be created again
+       //
+       expect ( window.babylonProject.createVRScene )
+           .toHaveBeenCalledTimes ( 1 );
+
+    });
+
+    test ( "when startState is called with gameData the scene is updated",
+            () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_engine = new MockEngine ();
+        let mock_scene = new MockScene ();
+
+
+       window.babylonProject.startState ( 
+                    mock_babylon, mock_engine, mock_scene );
+
+       expect ( mock_scene.render ).toHaveBeenCalledTimes ( 1 );
+
     });
 
     test ( "calling the startState function returns a function", () =>
@@ -107,10 +133,13 @@ describe ( "window.babylonProject.startState", () =>
 
         expect ( retval )
             .toBeInstanceOf ( Function );
-
+        
+        //The function returned should also return a function when called
+        expect ( retval () )
+            .toBeInstanceOf ( Function );
     });
 
-
+/*
     test ( "creates instance of Directional Light", () =>
     {
         let mock_babylon = new MockBabylon ();
@@ -123,5 +152,5 @@ describe ( "window.babylonProject.startState", () =>
           .toHaveBeenCalledTimes ( 1 ); 
 
     });
-
+*/
 });
