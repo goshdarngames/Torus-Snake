@@ -47,7 +47,18 @@
             let light = new  babylon.DirectionalLight (
                     "light", new babylon.Vector3 ( 0, 0.5, 1.0 ), scene  );
 
-            light.position = new babylon.Vector3 ( 0, 5, -2 );
+            light.position = new babylon.Vector3 ( 0, 5, 2 );
+
+            let torus_options = 
+            {
+                diameter : 10,
+                thickness : 2
+            }
+
+            let torus = babylon.MeshBuilder.CreateTorus (
+                    "torus", torus_options, scene );
+
+            torus.position = new babylon.Vector3 ( 0, 2, 0 );
 
             return () => 
                 babylonProject.startState ( 

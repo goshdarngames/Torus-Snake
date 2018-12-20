@@ -18,14 +18,14 @@ let MockScene = jest.fn (
 let MockMeshBuilder = jest.fn (
     function ()
     {
-        this.CreateBox = jest.fn(
+        this.CreateTorus = jest.fn(
             function ()
             {
-                return new MockBox ();
+                return new MockTorus ();
             });
     });
 
-let MockBox = jest.fn (
+let MockTorus = jest.fn (
     function ()
     {
         this.position = { x:0, y:0, z:0 };
@@ -152,6 +152,27 @@ describe ( "window.babylonProject.startState", () =>
         let light = mock_babylon.DirectionalLight.mock.instances [0];
 
         expect ( light.position )
+            .toBeInstanceOf ( mock_babylon.Vector3 );
+
+    });
+
+
+    test ( "creates instance of Torus mesh"+
+           "and sets its position.", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_engine = new MockEngine ();
+
+        window.babylonProject.startState ( 
+                    mock_babylon, mock_engine );
+
+        expect ( mock_babylon.MeshBuilder.CreateTorus )
+          .toHaveBeenCalledTimes ( 1 ); 
+
+        let torus = mock_babylon.MeshBuilder.CreateTorus.mock.results [0]
+            .value;
+
+        expect ( torus.position )
             .toBeInstanceOf ( mock_babylon.Vector3 );
 
     });
