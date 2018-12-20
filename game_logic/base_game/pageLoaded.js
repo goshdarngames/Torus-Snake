@@ -17,6 +17,9 @@
      * The first game logic function that is called when the
      * HTML page is ready.
      *
+     * Sets the babylonProject.nextUpdate function pointer to be
+     * babylonProject.startState
+     *
      * Parameters:
      *  - documentRef: The HTML DOM object 'document'
      *  - babylonRef : A reference to the Babylon object
@@ -28,6 +31,7 @@
         let engine = babylonProject
             .createBabylonEngine ( babylonRef, canvas );
 
+        //set the next update to be the startState function
         babylonProject.nextUpdate = () => 
                     babylonProject.startState( babylonRef, engine );
 
