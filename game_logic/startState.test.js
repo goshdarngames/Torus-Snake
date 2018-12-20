@@ -137,8 +137,8 @@ describe ( "window.babylonProject.startState", () =>
             .toBeInstanceOf ( Function );
     });
 
-/*
-    test ( "creates instance of Directional Light", () =>
+    test ( "creates instance of Directional Light "+
+           "and sets its position.", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_engine = new MockEngine ();
@@ -149,6 +149,10 @@ describe ( "window.babylonProject.startState", () =>
         expect ( mock_babylon.DirectionalLight )
           .toHaveBeenCalledTimes ( 1 ); 
 
+        let light = mock_babylon.DirectionalLight.mock.instances [0];
+
+        expect ( light.position )
+            .toBeInstanceOf ( mock_babylon.Vector3 );
+
     });
-*/
 });
