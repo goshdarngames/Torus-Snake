@@ -149,6 +149,11 @@ describe ( "window.babylonProject.startState", () =>
         expect ( mock_babylon.DirectionalLight )
           .toHaveBeenCalledTimes ( 1 ); 
 
+        //check ID was firt parameter
+        expect ( mock_babylon.DirectionalLight.mock.calls[0][0] )
+            .toBe ( "light" );
+
+        //check the position value was set
         let light = mock_babylon.DirectionalLight.mock.instances [0];
 
         expect ( light.position )
@@ -167,8 +172,13 @@ describe ( "window.babylonProject.startState", () =>
                     mock_babylon, mock_engine );
 
         expect ( mock_babylon.MeshBuilder.CreateTorus )
-          .toHaveBeenCalledTimes ( 1 ); 
+            .toHaveBeenCalledTimes ( 1 ); 
 
+        //check ID was firt parameter
+        expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][0] )
+            .toBe ( "torus" );
+
+        //check the position value was set
         let torus = mock_babylon.MeshBuilder.CreateTorus.mock.results [0]
             .value;
 
