@@ -82,7 +82,7 @@ describe ( "window.babylonProject.startState", () =>
             .toThrow ("Babylon is undefined.");
     });
 
-    test ( "if game data is undefined it is created ", () =>
+    test ( "if scene is undefined it is created ", () =>
     {
        let mock_babylon = new MockBabylon ();
        let mock_engine = new MockEngine ();
@@ -96,19 +96,17 @@ describe ( "window.babylonProject.startState", () =>
        expect ( window.babylonProject.createVRScene )
            .toHaveBeenCalledWith ( mock_babylon, mock_engine );
 
-       //call startState again with mock data
-
+       //call startState again with mock scene
        window.babylonProject.startState ( 
                     mock_babylon, mock_engine, new MockScene () );
 
-       //expect data not to be created again
-       //
+       //expect scene not to be created again
        expect ( window.babylonProject.createVRScene )
            .toHaveBeenCalledTimes ( 1 );
 
     });
 
-    test ( "when startState is called with gameData the scene is updated",
+    test ( "if startState is called with scene then scene.render is called",
             () =>
     {
         let mock_babylon = new MockBabylon ();
