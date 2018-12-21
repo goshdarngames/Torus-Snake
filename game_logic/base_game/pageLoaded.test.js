@@ -27,12 +27,9 @@ MockBabylon = jest.fn (
 
 beforeEach ( ()=>
 {
-    window.babylonProject.nextUpdate =
-        function ( babylon, engine )
-                {
-                    return () => 
-                        window.babylonProject.nextUpdate ( babylon, engine )
-                };
+    window.babylonProject.nextUpdate = null;
+
+    window.babylonProject.startState = jest.fn ();
 
     window.babylonProject.gameLoop = jest.fn ();
 });
@@ -164,6 +161,52 @@ describe ( "window.babylonProject.pageLoaded" , () =>
         window.babylonProject.createBabylonEngine = createBabylonEngineFunc;
  
     });
+
+    test ( "Sets window.babylonProject.nextUpdate to a function "+
+           "that when executed calls babylonProject.startState "+
+           "( babylon, { engine : engine })", () =>
+    {
+        let mock_doc = new MockDoc ();
+        let mock_babylon = new MockBabylon ();
+        
+        //A reference to the existing function is stored so that it can
+        //be mocked without changing its functionaliy
+        // - This allows jest to inspect the parameters it was called with
+        let createBabylonEngineFunc = 
+            window.babylonProject.createBabylonEngine;
+      
+        //create mocked function using existing functionality 
+        window.babylonProject.createBabylonEngine = 
+            jest.fn ( createBabylonEngineFunc );
+
+        window.babylonProject.pageLoaded ( mock_doc, mock_babylon );
+       
+        //check a function was stored as the next update 
+        expect ( window.babylonProject.nextUpdate )
+            .toBeInstanceOf ( Function );
+
+        //call the function
+        window.babylonProject.nextUpdate ();
+
+        expect ( window.babylonProject.startState )
+            .toHaveBeenCalledTimes ( 1 );
+       
+        //check the first result is the babylon library 
+        expect ( window.babylonProject.startState.mock.calls [0][0] )
+            .toBe ( mock_babylon );
+
+        //check the second result is an object with property holding the
+        //engine
+        expect ( window.babylonProject.startState.mock.calls [0][1].engine )
+            .toBe ( window.babylonProject.createBabylonEngine
+                        .mock.results[0].value );
+
+
+        //restore old function
+        window.babylonProject.createBabylonEngine = createBabylonEngineFunc; 
+ 
+    });
+
 
 });
 

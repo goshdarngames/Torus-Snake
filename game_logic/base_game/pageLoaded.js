@@ -28,14 +28,17 @@
     {
         let canvas = documentRef.querySelector( "#renderCanvas" );
 
-        let engine = babylonProject
-            .createBabylonEngine ( babylonRef, canvas );
+        let gameData = 
+        {
+            engine : babylonProject
+                        .createBabylonEngine ( babylonRef, canvas )
+        }
 
         //set the next update to be the startState function
         babylonProject.nextUpdate = () => 
-                    babylonProject.startState( babylonRef, engine );
+                    babylonProject.startState( babylonRef, gameData );
 
-        engine.runRenderLoop ( babylonProject.gameLoop );
+        gameData.engine.runRenderLoop ( babylonProject.gameLoop );
     };
 
     /**
