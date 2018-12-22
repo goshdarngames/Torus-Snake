@@ -4,64 +4,76 @@ const startState = require ( "./startState" );
  * MOCK DATA
  ***************************************************************************/
 
-let MockGameData = jest.fn (
-    function ()
-    {
-        this.engine = new MockEngine ();
-        this.scene = new MockScene ();
-    });
+let MockGameData = jest.fn ( function ()
+{
+    this.engine = new MockEngine ();
+    this.scene = new MockScene ();
+});
 
-let MockEngine = jest.fn (
-    function ()
-    {
-    });
+let MockEngine = jest.fn ( function ()
+{
+});
 
-let MockScene = jest.fn (
-    function ()
-    {
-        this.render = jest.fn();
-    });
+let MockScene = jest.fn ( function ()
+{
+    this.render = jest.fn();
+});
 
-let MockMeshBuilder = jest.fn (
-    function ()
+let MockMeshBuilder = jest.fn ( function ()
+{
+    this.CreateTorus = jest.fn( function ()
     {
-        this.CreateTorus = jest.fn(
-            function ()
+        torus =  new MockMesh ();
+
+        //The torus mesh buffer will be read during scene creation
+        //this will mock a torus with tesselation of 10
+        //i.e. a 10x10x3 float buffer in a flat array
+                
+        torus.getVertexBuffer = jest.fn ( function ()
+        {
+            vertBuffer = [];
+
+            for ( let i = 0; i < 300; i++ )
             {
-                return new MockTorus ();
-            });
+                vertBuffer.push ( i );
+            }
+        });
     });
 
-let MockTorus = jest.fn (
+    this.CreateBox = jest.fn(
     function ()
     {
-        this.position = { x:0, y:0, z:0 };
+        return new MockMesh ();
     });
 
-MockBabylon = jest.fn (
-    function ()
+});
+
+let MockMesh = jest.fn ( function ()
+{
+    this.position = { x:0, y:0, z:0 };
+});
+
+MockBabylon = jest.fn ( function ()
+{
+    this.MeshBuilder = new MockMeshBuilder (); 
+
+    this.DirectionalLight = jest.fn ();
+
+    this.Vector3 = jest.fn ();
+
+    this.StandardMaterial = jest.fn ( function ( name )
     {
-        this.MeshBuilder = new MockMeshBuilder (); 
-
-        this.DirectionalLight = jest.fn ();
-
-        this.Vector3 = jest.fn ();
-
-        this.StandardMaterial = jest.fn (
-                function ( name )
-                {
-                    this.name = name;
-                    this.wireframe = false;
-                });
+        this.name = name;
+        this.wireframe = false;
     });
+});
 
 beforeEach ( () =>
 {
-    window.babylonProject.createVRScene = jest.fn (
-            function ()
-            {
-                return new MockScene ();
-            });
+    window.babylonProject.createVRScene = jest.fn ( function ()
+    {
+        return new MockScene ();
+    });
 })
 
 /****************************************************************************
@@ -231,4 +243,21 @@ describe ( "window.babylonProject.startState", () =>
 
 
     });
+
+    test ( "creates a cube for each torus vertex", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        mock_gameData.scene = undefined;
+
+        window.babylonProject.startState ( 
+                    mock_babylon, mock_gameData );
+
+        //the mesh mock will have 10 mock vertices
+        expect ( mock_babylon.MeshBuilder.createBox )
+            .toHaveBeenCalledTimes ( 10 );
+
+    });
+
 });

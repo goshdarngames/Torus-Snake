@@ -68,9 +68,11 @@
 
     let initializeGameData = function ( babylon, gameData )
     {
+       //create the VR scene using base_game/ createVRScene function
        gameData.scene =
            babylonProject.createVRScene ( babylon, gameData.engine );
 
+       //create light
        gameData.light = new babylon.DirectionalLight (
                "light", 
                new babylon.Vector3 ( 0, 0.5, 1.0 ), 
@@ -78,6 +80,7 @@
 
        gameData.light.position = new babylon.Vector3 ( 0, 5, 2 );
 
+       //Create torus
        torus_options = 
        {
            diameter : 10,
@@ -89,6 +92,7 @@
 
        gameData.torus.position = new babylon.Vector3 ( 0, 2, 0 );
 
+       //set torus material and make wireframe
        gameData.torus.material =
            new babylon.StandardMaterial ( "torusMat", gameData.scene );
 
