@@ -98,5 +98,34 @@
 
        gameData.torus.material.wireframe = true;
 
+       //create a cube for every vertex of the torus
+       
+       let torusVD = gameData.torus
+           .getVerticesData ( babylon.VertexBuffer.PositionKind ) ;
+
+       gameData.torusCubes = [];
+
+       //loop through vertex position buffer 3 spaces at a time 
+       //in order to read position data as float3[]
+
+       for ( let i = 0; i < torusVD.length; i += 3 )
+       {
+           let cube = babylon.MeshBuilder.CreateBox (
+                   `TorusCube${i}`,
+                   { size : 0.1 },
+                   gameData.scene );
+
+           let vertexPos = babylon.Vector3.FromArray ( torusVD, i );
+
+           cube.position = vertexPos.add (
+                  gameData.torus.position,  );
+
+//           cube.position = babylon.Vector3.TransformCoordinates ( 
+//                  vertexPos, gameData.torus.getWorldMatrix () ); 
+
+           gameData.torusCubes.push ( cube );
+       }
+       
+
     }
 } ( window.babylonProject = window.babylonProject || {} ));

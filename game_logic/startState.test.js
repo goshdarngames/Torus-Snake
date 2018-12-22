@@ -19,6 +19,11 @@ let MockScene = jest.fn ( function ()
     this.render = jest.fn();
 });
 
+let MockVector3 = jest.fn ( function ()
+{
+    this.add = jest.fn ();
+});    
+
 let MockMeshBuilder = jest.fn ( function ()
 {
     this.CreateTorus = jest.fn( function ()
@@ -29,15 +34,19 @@ let MockMeshBuilder = jest.fn ( function ()
         //this will mock a torus with tesselation of 10
         //i.e. a 10x10x3 float buffer in a flat array
                 
-        torus.getVertexBuffer = jest.fn ( function ()
+        torus.getVerticesData = jest.fn ( function ()
         {
-            vertBuffer = [];
+            vertData = [];
 
             for ( let i = 0; i < 300; i++ )
             {
-                vertBuffer.push ( i );
+                vertData.push ( i );
             }
+
+            return vertData;
         });
+
+        return torus;
     });
 
     this.CreateBox = jest.fn(
@@ -51,6 +60,8 @@ let MockMeshBuilder = jest.fn ( function ()
 let MockMesh = jest.fn ( function ()
 {
     this.position = { x:0, y:0, z:0 };
+
+    this.getWorldMatrix = jest.fn ();
 });
 
 MockBabylon = jest.fn ( function ()
@@ -59,13 +70,29 @@ MockBabylon = jest.fn ( function ()
 
     this.DirectionalLight = jest.fn ();
 
-    this.Vector3 = jest.fn ();
+    this.VertexBuffer = jest.fn();
+
+    this.VertexBuffer.PositionKind = jest.fn();
 
     this.StandardMaterial = jest.fn ( function ( name )
     {
         this.name = name;
         this.wireframe = false;
     });
+
+    this.Vector3 = jest.fn( function ()
+    {
+        this.add = jest.fn ();
+    });
+    
+    this.Vector3.FromArray = function ()
+    {
+        return new MockVector3 ();
+    }
+
+    this.Vector3.TransformCoordinates = jest.fn ();
+
+
 });
 
 beforeEach ( () =>
@@ -254,9 +281,9 @@ describe ( "window.babylonProject.startState", () =>
         window.babylonProject.startState ( 
                     mock_babylon, mock_gameData );
 
-        //the mesh mock will have 10 mock vertices
-        expect ( mock_babylon.MeshBuilder.createBox )
-            .toHaveBeenCalledTimes ( 10 );
+        //the mesh mock will have 100 mock vertices
+        expect ( mock_babylon.MeshBuilder.CreateBox )
+            .toHaveBeenCalledTimes ( 100 );
 
     });
 
