@@ -111,7 +111,7 @@
        for ( let i = 0; i < torusVD.length; i += 3 )
        {
            let cube = babylon.MeshBuilder.CreateBox (
-                   `TorusCube${i}`,
+                   `TorusCube${ i/3 }`,
                    { size : 0.1 },
                    gameData.scene );
 

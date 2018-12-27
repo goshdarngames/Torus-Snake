@@ -80,6 +80,10 @@ MockBabylon = jest.fn ( function ()
         this.wireframe = false;
     });
 
+    //Mock Babylon has its own Vector3 constructor
+    //this is because there were problems when trying to add
+    //'static' methods to the mock.
+
     this.Vector3 = jest.fn( function ()
     {
         this.add = jest.fn ();
@@ -87,6 +91,9 @@ MockBabylon = jest.fn ( function ()
     
     this.Vector3.FromArray = function ()
     {
+        //Returns an instance of the standalone MockVector3 as there
+        //were problems trying to this.Vector3 to return an instance of
+        //itself.
         return new MockVector3 ();
     }
 
@@ -284,6 +291,36 @@ describe ( "window.babylonProject.startState", () =>
         //the mesh mock will have 100 mock vertices
         expect ( mock_babylon.MeshBuilder.CreateBox )
             .toHaveBeenCalledTimes ( 100 );
+
+        expect ( mock_gameData.torusCubes )
+            .toBeDefined ();
+
+        //check that the cubes were returned by create box
+        //note:  assumes that the torus cubes are the first objects 
+        //       created with the CreateBox method
+
+        mock_babylon.MeshBuilder.CreateBox.mock.results.forEach(
+            function ( result, index )
+            {
+                expect ( result.value )
+                    .toBe ( mock_gameData.torusCubes [ index ] );
+            }
+        );
+
+        //check the parameters that create box was called with
+
+        mock_babylon.MeshBuilder.CreateBox.mock.calls.forEach(
+            function ( call, index )
+            {
+                expect ( call [0] ).toBe ( "TorusCube"+index );
+
+                expect ( call [1].size  )
+                    .toBeCloseTo ( 0.1 );
+
+                expect ( call [2] ).toBe ( mock_gameData.scene );
+
+            }
+        );
 
     });
 
