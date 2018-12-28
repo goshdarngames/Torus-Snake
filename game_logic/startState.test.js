@@ -3,6 +3,7 @@ const startState = require ( "./startState" );
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
+let expectedTorusPosition = { x : 0, y : 2, z : 0 };
 
 let MockGameData = jest.fn ( function ()
 {
@@ -19,9 +20,21 @@ let MockScene = jest.fn ( function ()
     this.render = jest.fn();
 });
 
-let MockVector3 = jest.fn ( function ()
+let MockVector3 = jest.fn ( function (x, y, z)
 {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+
     this.add = jest.fn ();
+
+    this.add = jest.fn (function (other)
+    {
+        return new MockVector3 ( this.x + other.x,
+                                 this.y + other.y,
+                                 this.z + other.z );
+    });
+ 
 });    
 
 let MockMeshBuilder = jest.fn ( function ()
@@ -84,17 +97,14 @@ MockBabylon = jest.fn ( function ()
     //this is because there were problems when trying to add
     //'static' methods to the mock.
 
-    this.Vector3 = jest.fn( function ()
+    this.Vector3 = jest.fn( function (x, y, z)
     {
-        this.add = jest.fn ();
+        return new MockVector3 ( x, y, z );
     });
     
-    this.Vector3.FromArray = function ()
+    this.Vector3.FromArray = function ( array, i)
     {
-        //Returns an instance of the standalone MockVector3 as there
-        //were problems trying to this.Vector3 to return an instance of
-        //itself.
-        return new MockVector3 ();
+        return new MockVector3 ( array[i], array[i+1], array[i+2] );
     }
 
     this.Vector3.TransformCoordinates = jest.fn ();
@@ -232,7 +242,7 @@ describe ( "window.babylonProject.startState", () =>
         let light = mock_babylon.DirectionalLight.mock.instances [0];
 
         expect ( light.position )
-            .toBeInstanceOf ( mock_babylon.Vector3 );
+            .toBeInstanceOf ( MockVector3 );
 
     });
 
@@ -260,7 +270,11 @@ describe ( "window.babylonProject.startState", () =>
             .value;
 
         expect ( torus.position )
-            .toBeInstanceOf ( mock_babylon.Vector3 );
+            .toBeInstanceOf ( MockVector3 );
+
+        expect ( torus.position.x ).toBe ( expectedTorusPosition.x );
+        expect ( torus.position.y ).toBe ( expectedTorusPosition.y );
+        expect ( torus.position.z ).toBe ( expectedTorusPosition.z );
 
         //check the material was set
         expect ( mock_babylon.StandardMaterial )
@@ -324,4 +338,33 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
+    test ( "sets positions of torus cubes correctly", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        mock_gameData.scene = undefined;
+
+        window.babylonProject.startState ( 
+                    mock_babylon, mock_gameData );
+
+        mock_gameData.torusCubes.forEach (
+            function ( cube, index )
+            {
+                //cubes are created from vector3 so their index needs to
+                //be adjusted
+                let cubeIdx = index * 3;
+
+                expect ( cube.position.x )
+                    .toBeCloseTo ( cubeIdx + expectedTorusPosition.x );
+
+                expect ( cube.position.y )
+                    .toBeCloseTo ( cubeIdx + 1 + expectedTorusPosition.y );
+
+                expect ( cube.position.z )
+                    .toBeCloseTo ( cubeIdx + 2 + expectedTorusPosition.z );
+
+            });
+
+    });
 });
