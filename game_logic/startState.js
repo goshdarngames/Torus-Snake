@@ -83,14 +83,15 @@
        //Create torus
        torus_options = 
        {
-           diameter : 10,
-           thickness : 2
+           diameter : 3,
+           thickness : 0.75,
+           tessellation : 16 
        }
 
        gameData.torus = babylon.MeshBuilder.CreateTorus (
                "torus", torus_options, gameData.scene );
 
-       gameData.torus.position = new babylon.Vector3 ( 0, 2, 0 );
+       gameData.torus.position = new babylon.Vector3 ( 0, 1, 0 );
 
        //set torus material and make wireframe
        gameData.torus.material =

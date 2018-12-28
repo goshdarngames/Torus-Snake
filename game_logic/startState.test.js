@@ -1,10 +1,20 @@
 const startState = require ( "./startState" );
+/****************************************************************************
+ * EXPECTED TEST VALUES
+ ***************************************************************************/
+
+let expectedTorusPosition = { x : 0, y : 1, z : 0 };
+
+let expectedTorusOptions = 
+{
+    diameter : 3,
+    thickness : 0.75,
+    tessellation : 16
+};
 
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
-let expectedTorusPosition = { x : 0, y : 2, z : 0 };
-
 let MockGameData = jest.fn ( function ()
 {
     this.engine = new MockEngine ();
@@ -264,6 +274,24 @@ describe ( "window.babylonProject.startState", () =>
         //check ID was firt parameter
         expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][0] )
             .toBe ( "torus" );
+
+        //check the expected options were the second paramter
+
+        torusOptionsCall =
+            mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][1];
+        
+        expect ( torusOptionsCall.diameter )
+            .toBe ( expectedTorusOptions.diameter );
+
+        expect ( torusOptionsCall.thickness )
+            .toBe ( expectedTorusOptions.thickness );
+
+        expect ( torusOptionsCall.tessellation )
+            .toBe ( expectedTorusOptions.tessellation );
+
+        //check the scene was the third paramter
+        expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][2] )
+            .toBe ( mock_gameData.scene );
 
         //check the position value was set
         let torus = mock_babylon.MeshBuilder.CreateTorus.mock.results [0]
