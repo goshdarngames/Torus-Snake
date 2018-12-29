@@ -1,7 +1,5 @@
 /****************************************************************************
- * createSnakeState.test.js
- *
- * Verifies that the snake is created correctly.
+ * snakeMoveState.test.js
  ***************************************************************************/
 
 /****************************************************************************
@@ -16,11 +14,11 @@
  * TESTS
  ***************************************************************************/
 
-describe ( "window.babylonProject.createSnakeState", () =>
+describe ( "snakeMoveState.test", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.createSnakeState )
+        expect ( snakeMoveState.test )
             .toBeDefined ();
     });
 });

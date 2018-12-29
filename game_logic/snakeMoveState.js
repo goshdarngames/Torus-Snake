@@ -1,7 +1,7 @@
 /****************************************************************************
- * createSnakeState.js
+ * snakeMoveState.js
  *
- * This state clears the board and creates a new snake.
+ * Checks if the snake has moved and updates the grid squares if so.
  ***************************************************************************/
 
 ( function ( babylonProject, undefined )
