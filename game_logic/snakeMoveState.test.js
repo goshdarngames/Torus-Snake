@@ -16,11 +16,11 @@ const startState = require ( "./snakeMoveState" );
  * TESTS
  ***************************************************************************/
 
-describe ( "snakeMoveState", () =>
+describe ( "window.babylonProject.snakeMoveState", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( snakeMoveState )
+        expect ( window.babylonProject.snakeMoveState )
             .toBeDefined ();
     });
 });

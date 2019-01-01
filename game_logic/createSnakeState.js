@@ -6,7 +6,7 @@
 
 ( function ( babylonProject, undefined )
 {
-    bablonProject.createSnakeState = function ()
+    babylonProject.createSnakeState = function ()
     {
     }
 
