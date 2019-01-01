@@ -6,7 +6,7 @@
 
 ( function ( babylonProject, undefined )
 {
-    babylonProject.snakeMoveState = function ()
+    babylonProject.snakeMoveState = function ( babylon, gameData )
     {
     }
 
