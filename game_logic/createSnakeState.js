@@ -6,5 +6,8 @@
 
 ( function ( babylonProject, undefined )
 {
+    bablonProject.createSnakeState = function ()
+    {
+    }
 
 } ( window.babylonProject = window.babylonProject || {} ));

@@ -1,3 +1,5 @@
+const startState = require ( "./createSnakeState" );
+
 /****************************************************************************
  * createSnakeState.test.js
  *

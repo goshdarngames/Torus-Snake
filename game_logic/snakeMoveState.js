@@ -6,5 +6,8 @@
 
 ( function ( babylonProject, undefined )
 {
+    babylonProject.snakeMoveState = function ()
+    {
+    }
 
 } ( window.babylonProject = window.babylonProject || {} ));

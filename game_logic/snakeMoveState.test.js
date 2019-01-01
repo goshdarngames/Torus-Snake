@@ -1,3 +1,5 @@
+const startState = require ( "./snakeMoveState" );
+
 /****************************************************************************
  * snakeMoveState.test.js
  ***************************************************************************/
@@ -14,11 +16,11 @@
  * TESTS
  ***************************************************************************/
 
-describe ( "snakeMoveState.test", () =>
+describe ( "snakeMoveState", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( snakeMoveState.test )
+        expect ( snakeMoveState )
             .toBeDefined ();
     });
 });
