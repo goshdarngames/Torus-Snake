@@ -37,6 +37,9 @@
         {
             gameData.snakeParts.push ( { x : i, y : 0 } );
         }
+
+        //return the snake move state as the next state
+        return  () => babylonProject.snakeMoveState ( babylon, gameData );
     }
 
 } ( window.babylonProject = window.babylonProject || {} ));

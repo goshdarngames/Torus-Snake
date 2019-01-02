@@ -59,7 +59,7 @@
 
         gameData.scene.render ();
 
-        return () => babylonProject.startState ( babylon, gameData );
+        return () => babylonProject.createSnakeState ( babylon, gameData );
     }; 
 
     /************************************************************************

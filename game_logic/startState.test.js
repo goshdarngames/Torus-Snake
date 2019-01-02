@@ -128,6 +128,8 @@ beforeEach ( () =>
     {
         return new MockScene ();
     });
+
+    window.babylonProject.createSnakeState = jest.fn ();
 })
 
 /****************************************************************************
@@ -212,22 +214,6 @@ describe ( "window.babylonProject.startState", () =>
 
         expect ( mock_gameData.scene.render ).toHaveBeenCalledTimes ( 1 );
 
-    });
-
-    test ( "calling the startState function returns a function", () =>
-    {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
-
-        let retval = window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
-
-        expect ( retval )
-            .toBeInstanceOf ( Function );
-        
-        //The function returned should also return a function when called
-        expect ( retval () )
-            .toBeInstanceOf ( Function );
     });
 
     test ( "creates instance of Directional Light "+
@@ -394,5 +380,34 @@ describe ( "window.babylonProject.startState", () =>
 
             });
 
+    });
+
+
+    test ( "returns a function that calls createSnakeState", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        //when the current state is called it should return a function
+        //that calls the next state function
+
+        let retVal = window.babylonProject.startState ( 
+                    mock_babylon, mock_gameData );
+
+        expect ( retVal )
+            .toBeInstanceOf ( Function );
+
+        //check the next state function was not called during the current
+        //state function
+
+        expect ( window.babylonProject.createSnakeState )
+            .not.toHaveBeenCalled ();
+
+        //call the returned function and check the next state was called
+
+        retVal ();
+
+        expect ( window.babylonProject.createSnakeState )
+            .toHaveBeenCalledTimes ( 1 );
     });
 });
