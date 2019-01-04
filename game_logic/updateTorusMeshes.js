@@ -11,6 +11,13 @@
 
 ( function ( babylonProject, undefined )
 {
+    /**
+     * babylonProject.updateTorusMeshes
+     * 
+     * Given a list of the meshes that appear at each vertex of the 
+     * torus this function will toggle isVisible on each according
+     * to the current position of the snake.
+     */  
     babylonProject.updateTorusMeshes =  
         function 
         (
@@ -40,6 +47,34 @@
         {
             throw ( "headIndex is not a valid index of meshes" );
         }
+
+        meshSize = Math.sqrt ( meshes.length );
+
+        if ( !Number.isInteger ( meshSize ) )
+        {
+            throw  ( "meshes.length should be square number" );
+        }
+
+        //set all meshes to be invisble
+        meshes.forEach ( 
+            function ( mesh )
+            {
+                mesh.isVisible = false;
+            });
+
+        //set the snake meshes to be visible
+        snakeParts.forEach (
+            function ( s )
+            {
+                //note:  could potentially cache these indexes to
+                //       improve performance if needed
+
+                meshIdx =  ( ( meshSize * s.x ) + s.y ) % meshes.length; 
+
+                meshes [ meshIdx ].isVisible = true;
+
+            });
+
     }
 
 } ( window.babylonProject = window.babylonProject || {} ));
