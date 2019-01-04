@@ -35,6 +35,11 @@
         {
             throw ( "meshes.length should be >= snakeParts.length" );
         }
+
+        if ( headIndex < 0 || headIndex >= meshes.length )
+        {
+            throw ( "headIndex is not a valid index of meshes" );
+        }
     }
 
 } ( window.babylonProject = window.babylonProject || {} ));

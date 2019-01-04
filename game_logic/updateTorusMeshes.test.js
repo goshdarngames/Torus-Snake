@@ -18,21 +18,18 @@ let valid_snakeParts = [ { x : 0, y : 0 },
 
 let MockMesh = jest.fn ();
 
-let valid_meshes = [];
+//creates a list of MockMeshes of n size
+let ValidMeshes = function ( n )
+{
+    valid_meshes = [];
 
-beforeEach ( () =>
-    function ()
+    for ( i = 0; i < n; i++ )
     {
-        //re-create the list of mock meshes each test so their mock calls
-        //are reset
+        valid_meshes.push ( new MockMesh () );
+    }
 
-        valid_meshes = [];
-
-        for ( i = 0; i < 10; i++ )
-        {
-            valid_meshes.push ( new MockMesh () );
-        }
-    });
+    return valid_meshes;
+}
 
 /****************************************************************************
  * TESTS
@@ -60,14 +57,27 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         //snakeParts undefined
         expect ( () => 
             window.babylonProject.updateTorusMeshes
-                ( valid_meshes, undefined, 0 ) )
+                ( ValidMeshes(1), undefined, 0 ) )
             .toThrow ( "snakeParts should be a list of tuples" );
+
 
         //meshes.length < snakeParts.length
         expect ( () => 
             window.babylonProject.updateTorusMeshes
-                ( [ valid_meshes [0] ], valid_snakeParts, 0 ) )
+                ( ValidMeshes(1), valid_snakeParts, 0 ) )
             .toThrow ( "meshes.length should be >= snakeParts.length" );
+
+        //headIndex within bounds of meshes
+
+        expect ( () => 
+            window.babylonProject.updateTorusMeshes
+                ( ValidMeshes( 10 ), valid_snakeParts, -1 ) )
+            .toThrow ( "headIndex is not a valid index of meshes" );
+
+        expect ( () => 
+            window.babylonProject.updateTorusMeshes
+                ( ValidMeshes( 10 ), valid_snakeParts, 11 ) )
+            .toThrow ( "headIndex is not a valid index of meshes" );
 
     });
 });
