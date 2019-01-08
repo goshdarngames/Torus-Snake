@@ -70,7 +70,7 @@ let MockMeshBuilder = jest.fn ( function ()
         return torus;
     });
 
-    this.CreateBox = jest.fn(
+    this.CreateSphere = jest.fn(
     function ()
     {
         return new MockMesh ();
@@ -289,7 +289,7 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
-    test ( "creates a cube for each torus vertex", () =>
+    test ( "creates a mesh for each torus vertex", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_gameData = new MockGameData ();
@@ -300,32 +300,32 @@ describe ( "window.babylonProject.startState", () =>
                     mock_babylon, mock_gameData );
 
         //the mesh mock will have 100 mock vertices
-        expect ( mock_babylon.MeshBuilder.CreateBox )
+        expect ( mock_babylon.MeshBuilder.CreateSphere )
             .toHaveBeenCalledTimes ( 100 );
 
-        expect ( mock_gameData.torusCubes )
+        expect ( mock_gameData.torusMeshes )
             .toBeDefined ();
 
-        //check that the cubes were returned by create box
-        //note:  assumes that the torus cubes are the first objects 
-        //       created with the CreateBox method
+        //check that the meshes were returned by create box
+        //note:  assumes that the torus meshes are the first objects 
+        //       created with the CreateSphere method
 
-        mock_babylon.MeshBuilder.CreateBox.mock.results.forEach(
+        mock_babylon.MeshBuilder.CreateSphere.mock.results.forEach(
             function ( result, index )
             {
                 expect ( result.value )
-                    .toBe ( mock_gameData.torusCubes [ index ] );
+                    .toBe ( mock_gameData.torusMeshes [ index ] );
             }
         );
 
         //check the parameters that create box was called with
 
-        mock_babylon.MeshBuilder.CreateBox.mock.calls.forEach(
+        mock_babylon.MeshBuilder.CreateSphere.mock.calls.forEach(
             function ( call, index )
             {
-                expect ( call [0] ).toBe ( "TorusCube"+index );
+                expect ( call [0] ).toBe ( "TorusMesh"+index );
 
-                expect ( call [1].size  )
+                expect ( call [1].diameter  )
                     .toBeCloseTo ( 0.1 );
 
                 expect ( call [2] ).toBe ( mock_gameData.scene );
@@ -335,7 +335,7 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
-    test ( "sets positions of torus cubes correctly", () =>
+    test ( "sets positions of torus meshes correctly", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_gameData = new MockGameData ();
@@ -345,21 +345,21 @@ describe ( "window.babylonProject.startState", () =>
         window.babylonProject.startState ( 
                     mock_babylon, mock_gameData );
 
-        mock_gameData.torusCubes.forEach (
-            function ( cube, index )
+        mock_gameData.torusMeshes.forEach (
+            function ( mesh, index )
             {
-                //cubes are created from vector3 so their index needs to
+                //meshes are created from vector3 so their index needs to
                 //be adjusted
-                let cubeIdx = index * 3;
+                let meshIdx = index * 3;
 
-                expect ( cube.position.x )
-                    .toBeCloseTo ( cubeIdx + expectedTorusPosition.x );
+                expect ( mesh.position.x )
+                    .toBeCloseTo ( meshIdx + expectedTorusPosition.x );
 
-                expect ( cube.position.y )
-                    .toBeCloseTo ( cubeIdx + 1 + expectedTorusPosition.y );
+                expect ( mesh.position.y )
+                    .toBeCloseTo ( meshIdx + 1 + expectedTorusPosition.y );
 
-                expect ( cube.position.z )
-                    .toBeCloseTo ( cubeIdx + 2 + expectedTorusPosition.z );
+                expect ( mesh.position.z )
+                    .toBeCloseTo ( meshIdx + 2 + expectedTorusPosition.z );
 
             });
 

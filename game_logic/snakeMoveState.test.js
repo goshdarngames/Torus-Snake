@@ -18,7 +18,7 @@ let MockGameData = jest.fn ( function ()
 {
     this.snakeParts = [];
     this.scene = new MockScene ();
-    this.torusCubes = [];
+    this.torusMeshes = [];
 });
 
 let MockScene = jest.fn ( function ()
@@ -94,7 +94,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( window.babylonProject.updateTorusMeshes )
-            .toHaveBeenCalledWith ( mock_gameData.torusCubes,
+            .toHaveBeenCalledWith ( mock_gameData.torusMeshes,
                                     mock_gameData.snakeParts,
                                     0 );
 

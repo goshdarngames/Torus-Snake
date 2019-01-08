@@ -29,6 +29,21 @@ loop with the initial state defined in:
 
     ./startState.js
 
+The pageLoaded function will set startState as the first state function
+to be called by the game loop.
+
+The following parameters will be passed to the startState function:
+
+    - babylon: The instance of the babylon library object.  Commonly
+               referred to by the global BABYLON - it is explicitly
+               passed as a dependency parameter in this project.
+
+    - gameData: A data structure for holding the current game state.
+                The page loaded function will only set one value:
+
+    - gameData.engine:  The BabylonJS engine instance that is currently
+                        rendering to the canvas.
+
 Game Loop Finite State Machine
 ==============================
 

@@ -24,7 +24,7 @@
         }
 
         window.babylonProject.updateTorusMeshes (
-                gameData.torusCubes,
+                gameData.torusMeshes,
                 gameData.snakeParts,
                 0 );
 
