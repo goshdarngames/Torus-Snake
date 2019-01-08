@@ -18,7 +18,6 @@ let expectedTorusOptions =
 let MockGameData = jest.fn ( function ()
 {
     this.engine = new MockEngine ();
-    this.scene = new MockScene ();
 });
 
 let MockEngine = jest.fn ( function ()
@@ -27,7 +26,6 @@ let MockEngine = jest.fn ( function ()
 
 let MockScene = jest.fn ( function ()
 {
-    this.render = jest.fn();
 });
 
 let MockVector3 = jest.fn ( function (x, y, z)
@@ -199,21 +197,6 @@ describe ( "window.babylonProject.startState", () =>
         expect ( window.babylonProject.createVRScene )
             .toHaveBeenCalledTimes ( 1 );
  
-    });
-
-    test ( "if scene is found in game data then scene.render is called",
-            () =>
-    {
-        let mock_babylon = new MockBabylon ();
-
-        let mock_gameData = new MockGameData ();
-
-
-        window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
-
-        expect ( mock_gameData.scene.render ).toHaveBeenCalledTimes ( 1 );
-
     });
 
     test ( "creates instance of Directional Light "+

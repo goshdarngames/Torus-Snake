@@ -22,6 +22,15 @@
         {
             throw new Error ( "gameData.snakeParts is undefined." );
         }
+
+        window.babylonProject.updateTorusMeshes (
+                gameData.torusCubes,
+                gameData.snakeParts,
+                0 );
+
+        gameData.scene.render ();
+
+        return () => babylonProject.snakeMoveState ( babylon, gameData );
     }
 
 } ( window.babylonProject = window.babylonProject || {} ));

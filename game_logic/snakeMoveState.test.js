@@ -14,11 +14,22 @@ const startState = require ( "./snakeMoveState" );
 
 let MockBabylon = jest.fn ();
 
-let MockGameData = jest.fn (
-    function ()
-    {
-        this.snakeParts = [];
-    });
+let MockGameData = jest.fn ( function ()
+{
+    this.snakeParts = [];
+    this.scene = new MockScene ();
+    this.torusCubes = [];
+});
+
+let MockScene = jest.fn ( function ()
+{
+    this.render = jest.fn();
+});
+
+beforeEach ( () => 
+{
+    window.babylonProject.updateTorusMeshes = jest.fn ();
+});
 
 /****************************************************************************
  * TESTS
@@ -54,5 +65,55 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                 window.babylonProject.snakeMoveState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeParts is undefined" );
+    });
+
+    test ( "scene.render is called",
+            () =>
+    {
+        let mock_babylon = new MockBabylon ();
+
+        let mock_gameData = new MockGameData ();
+
+
+        window.babylonProject.snakeMoveState ( 
+                    mock_babylon, mock_gameData );
+
+        expect ( mock_gameData.scene.render ).toHaveBeenCalledTimes ( 1 );
+
+    });
+
+
+    test ( "calls babylonProject,updateTorusMeshes", () =>
+    {
+        mock_babylon = new MockBabylon ();
+        mock_gameData = new MockGameData ();
+
+        window.babylonProject.snakeMoveState ( mock_babylon, mock_gameData ); 
+
+        expect ( window.babylonProject.updateTorusMeshes )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( window.babylonProject.updateTorusMeshes )
+            .toHaveBeenCalledWith ( mock_gameData.torusCubes,
+                                    mock_gameData.snakeParts,
+                                    0 );
+
+
+    });
+
+    test ( "returns a function", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        //when the current state is called it should return a function
+        //that calls the next state function
+
+        let retVal = window.babylonProject.snakeMoveState ( 
+                    mock_babylon, mock_gameData );
+
+        expect ( retVal )
+            .toBeInstanceOf ( Function );
+
     });
 });
