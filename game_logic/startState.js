@@ -119,9 +119,6 @@
            mesh.position = vertexPos.add (
                   gameData.torus.position,  );
 
-//           mesh.position = babylon.Vector3.TransformCoordinates ( 
-//                  vertexPos, gameData.torus.getWorldMatrix () ); 
-
            gameData.torusMeshes.push ( mesh );
        }
        
