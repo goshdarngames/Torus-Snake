@@ -117,6 +117,12 @@ MockBabylon = jest.fn ( function ()
 
     this.Vector3.TransformCoordinates = jest.fn ();
 
+    this.Color3 = jest.fn ( function ( r, g, b )
+    {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    });
 
 });
 
@@ -240,7 +246,7 @@ describe ( "window.babylonProject.startState", () =>
         expect ( mock_babylon.MeshBuilder.CreateTorus )
             .toHaveBeenCalledTimes ( 1 ); 
 
-        //check ID was firt parameter
+        //check ID was first parameter
         expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][0] )
             .toBe ( "torus" );
 
@@ -278,10 +284,7 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalled ();
 
         expect ( torus.material )
-            .toBeInstanceOf ( mock_babylon.StandardMaterial );
-
-        expect ( torus.material.name )
-            .toBe ( "torusMat" );
+            .toBe ( mock_gameData.torusMat );
 
         expect ( torus.material.wireframe )
             .toBe ( true );
@@ -365,6 +368,49 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
+    test ( "initializes material data", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        mock_gameData.scene = undefined;
+
+        window.babylonProject.startState ( 
+                    mock_babylon, mock_gameData );
+
+        //torus material
+        expect ( mock_gameData.torusMat )
+            .toBeDefined ();
+
+        expect ( mock_gameData.torusMat )
+            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+
+        expect ( mock_gameData.torusMat.name )
+            .toBe ( "torusMat" );
+
+        //snake material
+        expect ( mock_gameData.snakeMat )
+            .toBeDefined ();
+
+        expect ( mock_gameData.snakeMat )
+            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+
+        expect ( mock_gameData.snakeMat.name )
+            .toBe ( "snakeMat" );
+
+        expect ( mock_gameData.snakeMat.diffuseColor )
+            .toBeInstanceOf ( mock_babylon.Color3 );
+
+        expect ( mock_gameData.snakeMat.diffuseColor.r )
+            .toBe ( 0 );
+
+        expect ( mock_gameData.snakeMat.diffuseColor.g )
+            .toBe ( 255 );
+
+        expect ( mock_gameData.snakeMat.diffuseColor.b )
+            .toBe ( 0 );
+
+    });
 
     test ( "returns a function that calls createSnakeState", () =>
     {
