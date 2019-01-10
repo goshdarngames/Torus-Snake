@@ -94,7 +94,7 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
             .toThrow ( "gameData.torusMeshes.length should "+
                        "be >= gameData.snakeParts.length" );
 
-        //meshes.length is a square number
+        //torusMeshes.length is a square number
         mock_gameData = new MockGameData ();
 
         mock_gameData.torusMeshes = ValidMeshes ( 6 );
@@ -125,8 +125,8 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
                 expect ( torusMeshes [ meshIdx ].isVisible )
                     .toBe ( true )
                 
-//                expect ( meshes [ meshIdx ].material )
-//                    .toBe ( 
+                expect ( torusMeshes [ meshIdx ].material )
+                    .toBe ( mock_gameData.snakeMat );
 
                 //set the visibility to false after so next check can 
                 //test that all cells are invisible

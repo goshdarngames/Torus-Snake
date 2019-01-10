@@ -70,6 +70,8 @@
 
                 torusMeshes [ meshIdx ].isVisible = true;
 
+                torusMeshes [ meshIdx ].material = gameData.snakeMat;
+
             });
 
     }
