@@ -4,10 +4,53 @@ Game Logic
 The modules that control the behaviour of the game can be found in this
 directory.  
 
-The files specific to the game of Simon Says are found in:
-    ./simon_says/
+Game Data
+=========
 
-These modules use the namespace 'window.simonSays'.
+The current state of the game is passed between functions using a data
+structure called 'gameData'.  
+
+gameData has the following properties:
+
+    * engine - The BabylonJS engine that is rendering to the canvas.
+
+    * torus - The mesh of the ring that surrounds the player
+    
+    * torusMeshes - A list of meshes, one for each vertex of the torus.
+                    This list is used to draw the graphics of the snake.
+    
+    * snakeMat - The material used for meshes that are part of the snake's
+                 body.
+ 
+    * appleMat - The material used for the apple.
+
+The advantage of passing the data around like this is that it makes 
+mocking the current state much easier in tests.  
+
+Modules
+=======
+
+The main modules are:
+
+    * StartState.js: 
+
+      The initial state of the game loop.  Performs initialization of data.
+
+    * CreateSnakeState.js:
+      
+      This game loop state creates the snake data as it should
+      be of the beginning of a new game.
+
+    * SnakeMoveState.js:
+
+      This game loop state handles the delay timer between moves.
+
+    * updateTorusMeshes.js:
+
+      This function changes the torus Meshes to display the current
+      state of the snake.
+
+These modules use the namespace 'window.babylonProject'.
 
 Modules that are not specific to any game are found in:
     ./base_game/
