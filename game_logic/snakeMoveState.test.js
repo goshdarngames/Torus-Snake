@@ -94,9 +94,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( window.babylonProject.updateTorusMeshes )
-            .toHaveBeenCalledWith ( mock_gameData.torusMeshes,
-                                    mock_gameData.snakeParts,
-                                    0 );
+            .toHaveBeenCalledWith ( mock_gameData );
 
 
     });

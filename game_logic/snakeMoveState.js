@@ -23,10 +23,7 @@
             throw new Error ( "gameData.snakeParts is undefined." );
         }
 
-        window.babylonProject.updateTorusMeshes (
-                gameData.torusMeshes,
-                gameData.snakeParts,
-                0 );
+        window.babylonProject.updateTorusMeshes ( gameData );
 
         gameData.scene.render ();
 

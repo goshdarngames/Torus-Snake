@@ -33,6 +33,15 @@ let ValidMeshes = function ( n )
     return valid_meshes;
 }
 
+let MockGameData = jest.fn ( function ()
+{
+    this.snakeParts = valid_snakeParts;
+
+    this.torusMeshes = ValidMeshes ( 25 );
+
+    this.snakeMat = jest.fn ();
+});
+
 /****************************************************************************
  * TESTS
  ***************************************************************************/
@@ -46,78 +55,90 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
             .toBeDefined ();
     });
 
-    test ( "checks parameters are correct", () =>
+    test ( "checks that gameData has expected properties", () =>
     {
-        //snakeParts undefined
+        let mock_gameData = new MockGameData ();
+
+        //game data undefined
         expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( undefined, undefined, 0 ) )
-            .toThrow ( "snakeParts should be a list of tuples" );
+            window.babylonProject.updateTorusMeshes ( undefined ))
+            .toThrow ( "gameData parameter is undefined" );
+
+        //snakeParts undefined
+        mock_gameData = new MockGameData ();
+
+        mock_gameData.snakeParts = undefined;
+
+        expect ( () => 
+            window.babylonProject.updateTorusMeshes ( mock_gameData ))
+            .toThrow ( "gameData.snakeParts should be a list of "+
+                       "tuples" );
 
         //meshes undefined
+        mock_gameData = new MockGameData ();
+
+        mock_gameData.torusMeshes = undefined;
+
         expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( undefined, valid_snakeParts, 0 ) )
-            .toThrow ( "meshes paramter should be a list of meshes with " +
-                       "length >= snakeParts" );
+            window.babylonProject.updateTorusMeshes ( mock_gameData ))
+            .toThrow ( "gameData.torusMeshes should be a list "+
+                       "of meshes with length >= gameData.snakeParts" );
 
         //meshes.length < snakeParts.length
+        mock_gameData = new MockGameData ();
+        
+        mock_gameData.torusMeshes = ValidMeshes ( 2 );
+
         expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( ValidMeshes( 4 ), valid_snakeParts, 0 ) )
-            .toThrow ( "meshes.length should be >= snakeParts.length" );
+            window.babylonProject.updateTorusMeshes ( mock_gameData ))
+            .toThrow ( "gameData.torusMeshes.length should "+
+                       "be >= gameData.snakeParts.length" );
 
         //meshes.length is a square number
-        expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( ValidMeshes( 13 ), valid_snakeParts, 0 ) )
-            .toThrow ( "meshes.length should be square number" );
+        mock_gameData = new MockGameData ();
 
-        //headIndex within bounds of meshes
+        mock_gameData.torusMeshes = ValidMeshes ( 6 );
 
         expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( ValidMeshes( 9 ), valid_snakeParts, -1 ) )
-            .toThrow ( "headIndex is not a valid index of meshes" );
-
-        expect ( () => 
-            window.babylonProject.updateTorusMeshes
-                ( ValidMeshes( 9 ), valid_snakeParts, 11 ) )
-            .toThrow ( "headIndex is not a valid index of meshes" );
+            window.babylonProject.updateTorusMeshes ( mock_gameData ))
+            .toThrow ( "gameData.torusMeshes.length should "+
+                       "be square number" );
 
     });
 
     test ( "sets snake meshes as visible and others as not", () =>
     {
-        meshes = ValidMeshes ( 25 );
+        let mock_gameData = new MockGameData ();
 
         //the mesh is assumed to be square so size is the root of that
-        meshSize = 5;
+        gridSize = 5;
 
-        window.babylonProject
-            .updateTorusMeshes ( meshes, valid_snakeParts, 5);
+        let torusMeshes = mock_gameData.torusMeshes;
+
+        window.babylonProject.updateTorusMeshes ( mock_gameData );
 
         valid_snakeParts.forEach ( 
             function ( s )
             {
-                meshIdx =  ( ( meshSize * s.x ) + s.y ) % meshes.length; 
+                meshIdx =  ( ( gridSize * s.x ) + s.y ) % torusMeshes.length; 
 
-                expect ( 
-                    meshes [ meshIdx ]
-                        .isVisible )
+                expect ( torusMeshes [ meshIdx ].isVisible )
                     .toBe ( true )
                 
+//                expect ( meshes [ meshIdx ].material )
+//                    .toBe ( 
+
                 //set the visibility to false after so next check can 
                 //test that all cells are invisible
 
-                meshes [ meshIdx ].isVisible = false;
+                torusMeshes [ meshIdx ].isVisible = false;
 
             });
 
         //expect all meshes isVisible to be false after checking snake
         //snake cells
 
-        meshes.forEach ( 
+        torusMeshes.forEach ( 
             function ( mesh )
             {
                 expect ( mesh.isVisible ).toBe ( false );

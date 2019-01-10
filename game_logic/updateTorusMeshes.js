@@ -18,60 +18,57 @@
      * torus this function will toggle isVisible on each according
      * to the current position of the snake.
      */  
-    babylonProject.updateTorusMeshes =  
-        function 
-        (
-             meshes, 
-             snakeParts, 
-             headIndex 
-        )
+    babylonProject.updateTorusMeshes = function ( gameData )
     {
 
-        if ( snakeParts == undefined )
+        if ( gameData == undefined )
         {
-            throw (  "snakeParts should be a list of tuples" );
+            throw ( "gameData parameter is undefined" );
         }
         
-        if ( meshes == undefined )
+        if ( gameData.snakeParts == undefined )
         {
-            throw ( "meshes paramter should be a list of meshes with " +
-                    "length >= snakeParts" );
+            throw (  "gameData.snakeParts should be a list of tuples" );
+        }
+        
+        if ( gameData.torusMeshes == undefined )
+        {
+            throw ( "gameData.torusMeshes should be a list of "+
+                    "meshes with length >= gameData.snakeParts" );
         }
 
-        if ( meshes.length < snakeParts.length )
+        if ( gameData.torusMeshes.length < gameData.snakeParts.length )
         {
-            throw ( "meshes.length should be >= snakeParts.length" );
+            throw ( "gameData.torusMeshes.length should be >= "+
+                    "gameData.snakeParts.length" );
         }
 
-        if ( headIndex < 0 || headIndex >= meshes.length )
+        gridSize = Math.sqrt ( gameData.torusMeshes.length );
+
+        if ( !Number.isInteger ( gridSize ) )
         {
-            throw ( "headIndex is not a valid index of meshes" );
+            throw  ( "gameData.torusMeshes.length should be square number" );
         }
 
-        meshSize = Math.sqrt ( meshes.length );
+        let torusMeshes = gameData.torusMeshes;
 
-        if ( !Number.isInteger ( meshSize ) )
-        {
-            throw  ( "meshes.length should be square number" );
-        }
-
-        //set all meshes to be invisble
-        meshes.forEach ( 
+        //set all torusMeshes to be invisble
+        torusMeshes.forEach ( 
             function ( mesh )
             {
                 mesh.isVisible = false;
             });
 
-        //set the snake meshes to be visible
-        snakeParts.forEach (
+        //set the snake torusMeshes to be visible
+        gameData.snakeParts.forEach (
             function ( s )
             {
                 //note:  could potentially cache these indexes to
                 //       improve performance if needed
 
-                meshIdx =  ( ( meshSize * s.x ) + s.y ) % meshes.length; 
+                meshIdx =  ( ( gridSize * s.x ) + s.y ) % torusMeshes.length; 
 
-                meshes [ meshIdx ].isVisible = true;
+                torusMeshes [ meshIdx ].isVisible = true;
 
             });
 
