@@ -73,6 +73,8 @@
         createTorus ( babylon, gameData );
 
         createTorusMeshes ( babylon, gameData ); 
+
+        createTorusIndexFunctions ( gameData );
     }
 
     let createScene = function ( babylon, gameData )
@@ -160,5 +162,22 @@
  
             gameData.torusMeshes.push ( mesh );
         }
+    }
+
+    /**
+     * This sub-routine stores function calls to the index mapping
+     * functions so that they can be called elsewhere in the system
+     * without having to pass things like the grid size or other
+     * data that doesn't change throughout the game.
+     */ 
+    let createTorusIndexFunctions = function ( gameData )
+    {
+        let gridSize = Math.sqrt ( gameData.torusMeshes.length );
+
+        gameData.meshListIdxToSnakePartOffset = 
+            ( i ) => window.babylonProject.listIdxTo2DCoord 
+                         ( 
+                            i, gridSize, gridSize
+                         );
     }
 } ( window.babylonProject = window.babylonProject || {} ));

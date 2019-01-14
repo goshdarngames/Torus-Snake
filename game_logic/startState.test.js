@@ -54,6 +54,10 @@ let MockMeshBuilder = jest.fn ( function ()
         //The torus mesh buffer will be read during scene creation
         //this will mock a torus with tesselation of 10
         //i.e. a 10x10x3 float buffer in a flat array
+        //
+        //For this mock the torus will always have 100 meshes -
+        //in the real world the number of meshes is based on the 
+        //tesselation...
                 
         torus.getVerticesData = jest.fn ( function ()
         {
@@ -134,6 +138,8 @@ beforeEach ( () =>
     });
 
     window.babylonProject.createSnakeState = jest.fn ();
+
+    window.babylonProject.listIdxTo2DCoord = jest.fn ();
 })
 
 /****************************************************************************
@@ -464,5 +470,35 @@ describe ( "window.babylonProject.startState", () =>
 
         expect ( window.babylonProject.createSnakeState )
             .toHaveBeenCalledTimes ( 1 );
+    });
+
+    test ( "creates mapping function for torus and snake indexes", () =>
+    {
+
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.startState ( mock_babylon, mock_gameData );
+
+        expect ( mock_gameData.meshListIdxToSnakePartOffset )
+            .toBeDefined ();
+
+        expect ( mock_gameData.meshListIdxToSnakePartOffset )
+            .toBeInstanceOf ( Function );
+
+        //call the stored function 
+        mock_gameData.meshListIdxToSnakePartOffset ( 0 );
+        
+        expect ( window.babylonProject.listIdxTo2DCoord )
+            .toHaveBeenCalledTimes ( 1 );
+
+        //check correct parameters are passed to the function 
+        mock_gameData.meshListIdxToSnakePartOffset ( 5 );
+        
+        expect ( window.babylonProject.listIdxTo2DCoord )
+            .toHaveBeenCalledTimes ( 2 );
+
+        expect ( window.babylonProject.listIdxTo2DCoord )
+            .toHaveBeenLastCalledWith ( 5, 10, 10 );
     });
 });
