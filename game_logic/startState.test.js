@@ -378,6 +378,10 @@ describe ( "window.babylonProject.startState", () =>
         window.babylonProject.startState ( 
                     mock_babylon, mock_gameData );
 
+        //expected number of materials
+        expect ( mock_babylon.StandardMaterial )
+            .toHaveBeenCalledTimes ( 3 );
+
         //torus material
         expect ( mock_gameData.torusMat )
             .toBeDefined ();
@@ -408,6 +412,28 @@ describe ( "window.babylonProject.startState", () =>
             .toBe ( 255 );
 
         expect ( mock_gameData.snakeMat.diffuseColor.b )
+            .toBe ( 0 );
+
+        //apple material
+        expect ( mock_gameData.appleMat )
+            .toBeDefined ();
+
+        expect ( mock_gameData.appleMat )
+            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+
+        expect ( mock_gameData.appleMat.name )
+            .toBe ( "appleMat" );
+
+        expect ( mock_gameData.appleMat.diffuseColor )
+            .toBeInstanceOf ( mock_babylon.Color3 );
+
+        expect ( mock_gameData.appleMat.diffuseColor.r )
+            .toBe ( 255 );
+
+        expect ( mock_gameData.appleMat.diffuseColor.g )
+            .toBe ( 0 );
+
+        expect ( mock_gameData.appleMat.diffuseColor.b )
             .toBe ( 0 );
 
     });
