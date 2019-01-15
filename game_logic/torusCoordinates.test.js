@@ -1,7 +1,7 @@
-const test_module = require ("./listIdxToCoord");
+const test_module = require ("./torusCoordinates");
 
 /****************************************************************************
- * listIdxToCoord.js
+ * torusCoordinates.js
  *
  * Tests the mapping of list indexes to coordinates with a variety
  * of array sizes and shapes.
@@ -31,10 +31,16 @@ let listD = [ 0,
               1,
               2 ];
 
+let listE = [ 0,  1,  2,  3,  4, 
+              5,  6,  7,  8,  9,
+              10, 11, 12, 13, 14,
+              15, 16, 17, 18, 19,
+              20, 21, 22, 23, 24 ];
+
 //This list of data represents the values the test function will
 //call the listIdxToCoord function with and what results it should
 
-let testCallData = [
+let normalRangeData = [
 
     //first index
     { idx : 0, width : 3, list : listA, coord : { x:0, y:0 }},
@@ -55,6 +61,52 @@ let testCallData = [
     { idx : 2, width : 1, list : listD, coord : { x:0, y:2 }},
 ];
 
+//This list of data focuses on parameters where the index goes out of
+//bounds of the array size and should wrap around.
+
+let wrapRangeData = [
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 0,
+        startCoord   : { x : 0, y : 0 },
+        displacement : { x : 0, y : -1 },
+        finishIdx    : 20,
+        finishCoord  : { x : 0, y : 4 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 0,
+        startCoord   : { x : 0, y : 0 },
+        displacement : { x : -1, y : 0 },
+        finishIdx    : 4,
+        finishCoord  : { x : 4, y : 0 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 24,
+        startCoord   : { x : 4, y : 4 },
+        displacement : { x : 1, y : 0 },
+        finishIdx    : 20,
+        finishCoord  : { x : 0, y : 4 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 24,
+        startCoord   : { x : 4, y : 4 },
+        displacement : { x : 0, y : 1 },
+        finishIdx    : 4,
+        finishCoord  : { x : 4, y : 0 }
+    }
+];
+
 /****************************************************************************
  * TESTS
  ***************************************************************************/
@@ -68,9 +120,9 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
     });
 
 
-    test ( "test function with valid paramters from testCallData", () =>
+    test ( "test function with valid paramters from normalRangeData", () =>
     {
-        testCallData.forEach ( function ( testData )
+        normalRangeData.forEach ( function ( testData )
         {
             let idx = testData.idx;
             let width = testData.width;
@@ -78,8 +130,8 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
             let ret = 
                 window.babylonProject.listIdxToCoord ( idx, width );
 
-            expect ( ret.x ).toBe ( testData.coord.x );
-            expect ( ret.y ).toBe ( testData.coord.y );
+            expect ( ret.x ).toEqual ( testData.coord.x );
+            expect ( ret.y ).toEqual ( testData.coord.y );
         });
     });
 
@@ -104,18 +156,71 @@ describe ( "window.babylonProject.coordToListIdx", () =>
             .toBeDefined ();
     });
 
-    test ( "test function with valid paramters from testCallData", () =>
+    test ( "test function with valid paramters from normalRangeData", () =>
     {
-        testCallData.forEach ( function ( testData )
+        normalRangeData.forEach ( function ( testData )
         {
             let coord = testData.coord;
             let width = testData.width;
 
             let ret = 
-                window.babylonProject.coordToListIdx ( coord, width );
+                window.babylonProject.coordToListIdx ( 
+                        coord, width, testData.list.length );
 
-            expect ( ret ).toBe ( testData.idx );
+            expect ( ret ).toEqual ( testData.idx );
 
+        });
+    });
+
+    test ( "has a 1 to 1 mapping with listIdxToCoord", () =>
+    {
+        normalRangeData.forEach ( function ( testData )
+        {
+            let coord = testData.coord;
+            let width = testData.width;
+
+            let ret = 
+                window.babylonProject.coordToListIdx ( 
+                        coord, width, testData.list.length );
+
+            let retCoord = 
+                window.babylonProject.listIdxToCoord ( ret, width );
+
+            expect ( retCoord ).toEqual ( coord );
+
+        });
+    });
+
+    test ( "test function with out of bounds data", () =>
+    {
+        expect ( () =>
+                window.babylonProject.coordToListIdx  ( undefined, 0, 1 ) )
+            .toThrow ( "width must be > 0" );
+
+        expect ( () =>
+                window.babylonProject.coordToListIdx  ( undefined, 1, 0 ) )
+            .toThrow ( "list length must be > 0" );
+
+        expect ( () =>
+                window.babylonProject.coordToListIdx  ( 0, 3, 7 ) )
+            .toThrow ( "width should divide length with no remainder." );
+
+    });
+
+    test ( "test function with wrap range data", () =>
+    {
+        wrapRangeData.forEach ( function ( testData )
+        {
+            let coord = 
+            {
+                x : testData.startCoord.x + testData.displacement.x,
+                y : testData.startCoord.y + testData.displacement.y
+            }
+
+            expect ( 
+                babylonProject.coordToListIdx ( 
+                    coord, testData.width, testData.list.length ))
+                .toEqual ( testData.finishIdx );
         });
     });
 });
