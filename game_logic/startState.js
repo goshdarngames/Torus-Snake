@@ -179,5 +179,11 @@
                          ( 
                             i, width, gameData.torusMeshes.length
                          );
+
+        gameData.torusCoordToMeshIdx  = 
+            ( coord ) => window.babylonProject.coordToListIdx  
+                         ( 
+                            coord, width, gameData.torusMeshes.length
+                         );
     }
 } ( window.babylonProject = window.babylonProject || {} ));
