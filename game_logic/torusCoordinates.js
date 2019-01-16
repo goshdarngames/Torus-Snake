@@ -15,16 +15,26 @@
     //values, which is not what is wanted to wrap coordinates.
     let wrap = ( x, n ) => ( x % n + n ) % n;
 
-    babylonProject.listIdxToCoord = function ( idx, width )
+    babylonProject.listIdxToCoord = function ( idx, width, length )
     {
-        if ( idx < 0 )
+        if ( idx < 0 || idx == undefined )
         {
             throw ( "idx must be >= 0" );
         }
 
-        if ( width < 1 )
+        if ( idx > length - 1)
+        {
+            throw ( "idx out of bounds of the list" );
+        }
+
+        if ( width < 1 || width == undefined )
         {
             throw ( "width must be >= 0" );
+        }
+
+        if ( length % width != 0 )
+        {
+            throw ( "width should divide length with no remainder." );
         }
 
         let coord = 
@@ -53,7 +63,7 @@
      */
     babylonProject.coordToListIdx = function ( coord, width, length )
     {
-        if ( width < 1 )
+        if ( width < 1 || width == undefined )
         {
             throw ( "width must be > 0" );
         }

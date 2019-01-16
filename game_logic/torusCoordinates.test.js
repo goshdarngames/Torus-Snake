@@ -104,6 +104,46 @@ let wrapRangeData = [
         displacement : { x : 0, y : 1 },
         finishIdx    : 4,
         finishCoord  : { x : 4, y : 0 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 2,
+        startCoord   : { x : 2, y : 0 },
+        displacement : { x : 0, y : -3 },
+        finishIdx    : 12,
+        finishCoord  : { x : 2, y : 2 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 22,
+        startCoord   : { x : 2, y : 4 },
+        displacement : { x : 0, y : 3 },
+        finishIdx    : 12,
+        finishCoord  : { x : 2, y : 2 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 10,
+        startCoord   : { x : 0, y : 2 },
+        displacement : { x : -3, y : 0 },
+        finishIdx    : 12,
+        finishCoord  : { x : 2, y : 2 }
+    },
+
+    { 
+        list         : listE,
+        width        : 5,
+        startIdx     : 14,
+        startCoord   : { x : 4, y : 2 },
+        displacement : { x : 3, y : 0 },
+        finishIdx    : 12,
+        finishCoord  : { x : 2, y : 2 }
     }
 ];
 
@@ -128,7 +168,8 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
             let width = testData.width;
 
             let ret = 
-                window.babylonProject.listIdxToCoord ( idx, width );
+                window.babylonProject.listIdxToCoord ( 
+                        idx, width, testData.list.length );
 
             expect ( ret.x ).toEqual ( testData.coord.x );
             expect ( ret.y ).toEqual ( testData.coord.y );
@@ -138,12 +179,24 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
     test ( "test function with out of bounds data", () =>
     {
         expect ( () =>
-                window.babylonProject.listIdxToCoord ( -1, 2 ) )
+                window.babylonProject.listIdxToCoord ( -1, 2, undefined ) )
             .toThrow ( "idx must be >= 0" );
 
         expect ( () =>
-                window.babylonProject.listIdxToCoord ( 1, 0 ) )
+                window.babylonProject.listIdxToCoord ( 1, undefined ) )
             .toThrow ( "width must be >= 0" );
+
+        expect ( () =>
+                window.babylonProject.listIdxToCoord  ( 1, 4, 5 ) )
+            .toThrow ( "width should divide length with no remainder." );
+
+        expect ( () =>
+                window.babylonProject.listIdxToCoord  ( 1, 4, undefined ) )
+            .toThrow ( "width should divide length with no remainder." );
+
+        expect ( () =>
+                window.babylonProject.listIdxToCoord  ( 5, 2, 4 ) )
+            .toThrow ( "idx out of bounds of the list" );
 
     });
 });
@@ -184,7 +237,8 @@ describe ( "window.babylonProject.coordToListIdx", () =>
                         coord, width, testData.list.length );
 
             let retCoord = 
-                window.babylonProject.listIdxToCoord ( ret, width );
+                window.babylonProject.listIdxToCoord ( 
+                        ret, width, testData.list.length );
 
             expect ( retCoord ).toEqual ( coord );
 
