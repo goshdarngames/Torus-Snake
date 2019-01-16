@@ -146,3 +146,63 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
 
     });
 });
+
+
+describe ( "window.babylonProject.disableTorusMesh", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.disableTorusMesh )
+            .toBeDefined ();
+    });
+
+    test ( "validates parameters", () =>
+    {
+        expect ( () => window.babylonProject.disableTorusMesh ( 
+                    0, undefined ) )
+            .toThrow ( "gameData is undefined" );
+
+        let mock_gameData = new MockGameData ();
+        
+        mock_gameData.torusMeshes = undefined;
+
+        expect ( () => window.babylonProject.disableTorusMesh ( 
+                    0, mock_gameData ) )
+            .toThrow ( "gameData.torusMeshes is undefined" );
+
+        mock_gameData = new MockGameData ();
+
+        expect ( () => window.babylonProject.disableTorusMesh ( 
+                    -1, mock_gameData ) )
+            .toThrow ( "meshIdx outside torus mesh list range" );
+
+        mock_gameData = new MockGameData ();
+
+        expect ( () => window.babylonProject.disableTorusMesh ( 
+                    54, mock_gameData ) )
+            .toThrow ( "meshIdx outside torus mesh list range" );
+
+    });
+
+    test ( "sets the mesh at meshIdx isVisible property to false", () =>
+    {
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.disableTorusMesh ( 7, mock_gameData );
+
+        //check idx 7 is visible was set and others are undefined
+
+        mock_gameData.torusMeshes.forEach ( 
+            function ( mesh, idx )
+            {
+                if ( idx != 7 )
+                {
+                    expect ( mesh.isVisible ).not.toBeDefined ();
+                }
+                else
+                {
+                    expect ( mesh.isVisible ).toBe ( false );
+                }
+            });
+    });
+});

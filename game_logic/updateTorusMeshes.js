@@ -76,4 +76,25 @@
 
     }
 
+    babylonProject.disableTorusMesh = function ( meshIdx, gameData )
+    {
+        if ( gameData == undefined )
+        {
+            throw ( "gameData is undefined" );
+        }
+
+        if ( gameData.torusMeshes == undefined )
+        {
+            throw ( "gameData.torusMeshes is undefined" );
+        }
+
+        if ( meshIdx < 0 || meshIdx > gameData.torusMeshes.length )
+        {
+            throw ( "meshIdx outside torus mesh list range" );
+        }
+
+        gameData.torusMeshes [ meshIdx ].isVisible = false;
+
+    }
+
 } ( window.babylonProject = window.babylonProject || {} ));
