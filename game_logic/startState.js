@@ -172,12 +172,12 @@
      */ 
     let createTorusIndexFunctions = function ( gameData )
     {
-        let gridSize = Math.sqrt ( gameData.torusMeshes.length );
+        let width = Math.sqrt ( gameData.torusMeshes.length );
 
-        gameData.meshListIdxToSnakePartOffset = 
-            ( i ) => window.babylonProject.listIdxTo2DCoord 
+        gameData.meshIdxToTorusCoord = 
+            ( i ) => window.babylonProject.listIdxToCoord 
                          ( 
-                            i, gridSize, gridSize
+                            i, width, gameData.torusMeshes.length
                          );
     }
 } ( window.babylonProject = window.babylonProject || {} ));

@@ -139,7 +139,9 @@ beforeEach ( () =>
 
     window.babylonProject.createSnakeState = jest.fn ();
 
-    window.babylonProject.listIdxTo2DCoord = jest.fn ();
+    window.babylonProject.listIdxToCoord = jest.fn ();
+
+    window.babylonProject.coordToListIdx = jest.fn ();
 })
 
 /****************************************************************************
@@ -472,7 +474,7 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledTimes ( 1 );
     });
 
-    test ( "creates mapping function for torus and snake indexes", () =>
+    test ( "creates mapping functions for torus and snake indexes", () =>
     {
 
         let mock_babylon = new MockBabylon ();
@@ -480,25 +482,53 @@ describe ( "window.babylonProject.startState", () =>
 
         window.babylonProject.startState ( mock_babylon, mock_gameData );
 
-        expect ( mock_gameData.meshListIdxToSnakePartOffset )
+        //mesh list idx -> coordinates
+       
+        expect ( mock_gameData.meshIdxToTorusCoord )
             .toBeDefined ();
 
-        expect ( mock_gameData.meshListIdxToSnakePartOffset )
+        expect ( mock_gameData.meshIdxToTorusCoord )
             .toBeInstanceOf ( Function );
 
         //call the stored function 
-        mock_gameData.meshListIdxToSnakePartOffset ( 0 );
+        mock_gameData.meshIdxToTorusCoord ( 0 );
         
-        expect ( window.babylonProject.listIdxTo2DCoord )
+        expect ( window.babylonProject.listIdxToCoord )
             .toHaveBeenCalledTimes ( 1 );
 
         //check correct parameters are passed to the function 
-        mock_gameData.meshListIdxToSnakePartOffset ( 5 );
+        mock_gameData.meshIdxToTorusCoord ( 5 );
         
-        expect ( window.babylonProject.listIdxTo2DCoord )
+        expect ( window.babylonProject.listIdxToCoord )
             .toHaveBeenCalledTimes ( 2 );
 
-        expect ( window.babylonProject.listIdxTo2DCoord )
-            .toHaveBeenLastCalledWith ( 5, 10, 10 );
+        expect ( window.babylonProject.listIdxToCoord )
+            .toHaveBeenLastCalledWith ( 5, 10, 100 );
+
+        //coordinates -> mesh list idx
+       
+        expect ( mock_gameData.torusCoordToMeshIdx )
+            .toBeDefined ();
+
+        expect ( mock_gameData.torusCoordToMeshIdx )
+            .toBeInstanceOf ( Function );
+
+        //call the stored function 
+        mock_gameData.torusCoordToMeshIdx ( 0 );
+        
+        expect ( window.babylonProject.coordToListIdx )
+            .toHaveBeenCalledTimes ( 1 );
+
+        //check correct parameters are passed to the function 
+
+        let testCoord = { x : 1, y : 1 };
+
+        mock_gameData.torusCoordToMeshIdx ( testCoord );
+        
+        expect ( window.babylonProject.coordToListIdx )
+            .toHaveBeenCalledTimes ( 2 );
+
+        expect ( window.babylonProject.coordToListIdx )
+            .toHaveBeenLastCalledWith ( testCoord, 10, 100 );
     });
 });
