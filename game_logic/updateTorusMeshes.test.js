@@ -206,3 +206,72 @@ describe ( "window.babylonProject.disableTorusMesh", () =>
             });
     });
 });
+
+describe ( "window.babylonProject.enableTorusMesh", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.enableTorusMesh )
+            .toBeDefined ();
+    });
+
+    test ( "validates parameters", () =>
+    {
+        expect ( () => window.babylonProject.enableTorusMesh ( 
+                    0, undefined, undefined ) )
+            .toThrow ( "gameData is undefined" );
+
+        let mock_gameData = new MockGameData ();
+        
+        mock_gameData.torusMeshes = undefined;
+
+        expect ( () => window.babylonProject.enableTorusMesh ( 
+                    0, undefined, mock_gameData ) )
+            .toThrow ( "gameData.torusMeshes is undefined" );
+
+        mock_gameData = new MockGameData ();
+
+        expect ( () => window.babylonProject.enableTorusMesh ( 
+                    -1, undefined, mock_gameData ) )
+            .toThrow ( "meshIdx outside torus mesh list range" );
+
+        mock_gameData = new MockGameData ();
+
+        expect ( () => window.babylonProject.enableTorusMesh ( 
+                    54, undefined, mock_gameData ) )
+            .toThrow ( "meshIdx outside torus mesh list range" );
+
+        expect ( () => window.babylonProject.enableTorusMesh ( 
+                    0, undefined, mock_gameData ) )
+            .toThrow ( "material undefined" );
+
+    });
+
+    test ( "sets the mesh at meshIdx isVisible property to true "+
+           "and sets material.", () =>
+    {
+        let mock_gameData = new MockGameData ();
+
+        let mock_material = jest.fn ();
+
+        window.babylonProject.enableTorusMesh ( 
+                7, mock_material, mock_gameData );
+
+        //check idx 7 was changed and others are unaffected
+
+        mock_gameData.torusMeshes.forEach ( 
+            function ( mesh, idx )
+            {
+                if ( idx != 7 )
+                {
+                    expect ( mesh.isVisible ).not.toBeDefined ();
+                    expect ( mesh.material ).not.toBeDefined ();
+                }
+                else
+                {
+                    expect ( mesh.isVisible ).toBe ( true );
+                    expect ( mesh.material ).toBe ( mock_material );
+                }
+            });
+    });
+});
