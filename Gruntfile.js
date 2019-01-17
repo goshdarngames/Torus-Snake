@@ -17,7 +17,7 @@ module.exports = function ( grunt ) {
             npm_test_jest:
             {
                 cmd : 'npm',
-                args : [ 'test', './game_logic/', '--silent' ]
+                args : [ 'test', '--', '--bail', './game_logic/' ]
             }
         },
 
