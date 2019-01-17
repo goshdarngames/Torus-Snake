@@ -40,6 +40,13 @@ let MockGameData = jest.fn ( function ()
     this.torusMeshes = ValidMeshes ( 25 );
 
     this.snakeMat = jest.fn ();
+
+    this.torusCoordToMeshIdxCallCount = 0;
+
+    this.torusCoordToMeshIdx = jest.fn ( function ()
+    {
+        return this.torusCoordToMeshIdxCallCount++;
+    });
 });
 
 /****************************************************************************
@@ -148,10 +155,61 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
 
         window.babylonProject.updateTorusMeshes ( mock_gameData );
 
+        //Check that every torus mesh was disabled
+
         expect ( babylonProject.disableTorusMesh )
             .toHaveBeenCalledTimes ( 25 );
 
-        //TODO - check paramters disable... is called with
+        babylonProject.disableTorusMesh.mock.calls.forEach ( 
+            function ( call, idx )
+            {
+                expect ( call [ 0 ] )
+                    .toBe ( idx );
+
+                expect ( call [ 1 ] )
+                    .toBe ( mock_gameData );
+
+            });
+
+        //check the first 5 calls to the coordinate mapping function are
+        //the snake parts
+
+        expect ( mock_gameData.torusCoordToMeshIdx )
+            .toHaveBeenCalledTimes ( 5 );
+
+        mock_gameData.torusCoordToMeshIdx.mock.calls.forEach (
+            function ( call, idx )
+            {
+                if ( idx < 5 )
+                {
+                    expect ( call [ 0 ] )
+                        .toBe ( mock_gameData.snakeParts [ idx ]);
+                }
+            });
+
+        //expect enableTorusMesh to have been called 5 times with each
+        //call referencing the meshIdx for a snakePart
+
+        expect ( babylonProject.enableTorusMesh )
+            .toHaveBeenCalledTimes ( 5 );
+
+        babylonProject.enableTorusMesh.mock.calls.forEach ( 
+            function ( call, idx )
+            {
+                //check that the idx was the result of converting
+                //a torus coord ( from the snake ) to a meshIdx
+                expect ( call [ 0 ] )
+                    .toBe ( mock_gameData.torusCoordToMeshIdx.mock.
+                        results [ idx ].value );
+
+                expect ( call [ 1 ] )
+                    .toBe ( mock_gameData.snakeMat );
+
+                expect ( call [ 2 ] )
+                    .toBe ( mock_gameData );
+
+            });
+
     });
 });
 
