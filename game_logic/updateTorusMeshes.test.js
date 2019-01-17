@@ -43,6 +43,27 @@ let MockGameData = jest.fn ( function ()
 });
 
 /****************************************************************************
+ * SETUP / TEARDOWN
+ ***************************************************************************/
+
+beforeEach ( () =>
+{
+});
+
+//Tests can assign a function here to have it called after they exit
+let oneTimeCleanUp = () => {};
+
+afterEach ( () =>
+{
+    //execute the one time cleanup and then set it as an empty function
+    //again
+ 
+    oneTimeCleanUp ();
+
+    oneTimeCleanUp  = () => {};
+});
+
+/****************************************************************************
  * TESTS
  ***************************************************************************/
 
@@ -110,40 +131,27 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
     {
         let mock_gameData = new MockGameData ();
 
-        //the mesh is assumed to be square so size is the root of that
-        gridSize = 5;
+        //replace enable/disable functions with mocks
+        let oldDisableFunc = babylonProject.disableTorusMesh;
+        let oldEnableFunc = babylonProject.enableTorusMesh;
 
-        let torusMeshes = mock_gameData.torusMeshes;
+        babylonProject.disableTorusMesh = jest.fn ();
+        babylonProject.enableTorusMesh = jest.fn ();
+
+        //set oneTimeCleanUp to restore functions
+        
+        oneTimeCleanUp = () => 
+        {
+            babylonProject.disableTorusMesh = oldDisableFunc; 
+            babylonProject.enableTorusMesh = oldEnableFunc;
+        }
 
         window.babylonProject.updateTorusMeshes ( mock_gameData );
 
-        valid_snakeParts.forEach ( 
-            function ( s )
-            {
-                meshIdx =  ( ( gridSize * s.x ) + s.y ) % torusMeshes.length; 
+        expect ( babylonProject.disableTorusMesh )
+            .toHaveBeenCalledTimes ( 25 );
 
-                expect ( torusMeshes [ meshIdx ].isVisible )
-                    .toBe ( true )
-                
-                expect ( torusMeshes [ meshIdx ].material )
-                    .toBe ( mock_gameData.snakeMat );
-
-                //set the visibility to false after so next check can 
-                //test that all cells are invisible
-
-                torusMeshes [ meshIdx ].isVisible = false;
-
-            });
-
-        //expect all meshes isVisible to be false after checking snake
-        //snake cells
-
-        torusMeshes.forEach ( 
-            function ( mesh )
-            {
-                expect ( mesh.isVisible ).toBe ( false );
-            });
-
+        //TODO - check paramters disable... is called with
     });
 });
 
