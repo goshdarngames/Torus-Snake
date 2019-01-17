@@ -13,6 +13,10 @@
  *
  * The first value in the list represents the snake's head and the last
  * element is the tip of its tail.
+ *
+ * The y axis describes the long torus rings that  surround the player.  
+ * The x-axis is along the smaller rings that form the circumference of the 
+ * torus tube
  ***************************************************************************/
 
 ( function ( babylonProject, undefined )
@@ -32,10 +36,15 @@
         //create an empty list to hold the snake's body positions
         gameData.snakeParts = [];
 
-        //create the three initial pieces in a horizontal line
+        //create the snake as a line of 3 pieces along the y axis.
+        // - Note:  The y axis describes the long torus rings that 
+        //          surround the player.  The x-axis is the
+        //          smaller rings that form the circumference of the 
+        //          torus tube
+
         for ( let i=0; i<3; i++ )
         {
-            gameData.snakeParts.push ( { x : i, y : 0 } );
+            gameData.snakeParts.push ( { x : 0, y : i } );
         }
 
         //return the snake move state as the next state

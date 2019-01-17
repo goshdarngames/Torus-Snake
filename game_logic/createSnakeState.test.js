@@ -66,12 +66,12 @@ describe ( "window.babylonProject.createSnakeState", () =>
         expect ( mock_gameData.snakeParts.length )
             .toBe ( 3 );
 
-        //check that the snake forms a horizontal line
+        //check that the snake forms a line along the y axis
         mock_gameData.snakeParts.forEach ( 
         ( val, idx ) => 
         {
-            expect ( val.x ).toBe ( idx );
-            expect ( val.y ).toBe ( 0 );
+            expect ( val.x ).toBe ( 0 );
+            expect ( val.y ).toBe ( idx );
         });          
     });
 
