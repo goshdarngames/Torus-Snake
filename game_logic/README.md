@@ -4,6 +4,21 @@ Game Logic
 The modules that control the behaviour of the game can be found in this
 directory.  
 
+The system creates a torus mesh using Babylon's Mesh Builder.  At the 
+position of each mesh of the torus a smaller mesh is created.  These 
+smaller meshes act like the pixels of a 2D display on the surface of the
+torus and are enabled or disabled in order to display the snake.
+
+The snake moves on a 2D grid and the positions of its body parts are 
+translated to positions in the 'torusMeshes' list - the list of smaller 
+meshes.  
+
+The X axis of snake movement describes movement around the smaller circles
+of the torus - the circumference of the tube.
+
+The Y axis of snake movement describes movement on the larger circles - 
+the disc of the torus that surrounds the player.
+
 Game Data
 =========
 
@@ -24,8 +39,19 @@ gameData has the following properties:
  
     * appleMat - The material used for the apple.
 
-The advantage of passing the data around like this is that it makes 
-mocking the current state much easier in tests.  
+gameData defines two functions that are used to map between the 2D
+coordinate system of the snake and the torusMeshes list:
+
+    * gameData.meshIdxToTorusCoord :
+
+      Maps a list index to a 2 dimesnioal { x, y } coordinate
+
+    * gameData.torusCoordToMeshIdx :
+ 
+      Maps a 2D { x, y } coordinate tuple to an index of the 
+      torus meshes list.  If the x or y values exceed the width and
+      height of the space then the coordinates will be wrapped.
+
 
 Modules
 =======
