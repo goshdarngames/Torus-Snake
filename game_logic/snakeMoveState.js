@@ -23,6 +23,16 @@
             throw new Error ( "gameData.snakeParts is undefined." );
         }
 
+        if ( gameData.snakeMoveInterval == undefined )
+        {
+            throw new Error ( "gameData.snakeMoveInterval is undefined." );
+        }
+
+        if ( gameData.snakeMoveTimer  == undefined )
+        {
+            throw new Error ( "gameData.snakeMoveTimer is undefined." );
+        }
+
         window.babylonProject.updateTorusMeshes ( gameData );
 
         gameData.scene.render ();
