@@ -51,11 +51,8 @@
             throw new Error ( "Babylon is undefined." );
         }
 
-        if ( gameData.scene == undefined )
-        {
-            //private procedure used to initialize all the game objects
-            initializeGameData ( babylon, gameData );
-        }
+        //private procedure used to initialize all the game objects
+        initializeGameData ( babylon, gameData );
 
         return () => babylonProject.createSnakeState ( babylon, gameData );
     }; 
@@ -75,6 +72,8 @@
         createTorusMeshes ( babylon, gameData ); 
 
         createTorusIndexFunctions ( gameData );
+
+        gameData.applePos = 1;
     }
 
     let createScene = function ( babylon, gameData )

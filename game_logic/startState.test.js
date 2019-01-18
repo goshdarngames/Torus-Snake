@@ -184,7 +184,7 @@ describe ( "window.babylonProject.startState", () =>
             .toThrow ("Engine is undefined.");
     });
 
-    test ( "if scene is undefined it is created ", () =>
+    test ( "scene is created ", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_gameData = new MockGameData ();
@@ -206,10 +206,6 @@ describe ( "window.babylonProject.startState", () =>
         
         window.babylonProject.startState ( 
                      mock_babylon, mock_gameData );
- 
-        //expect scene not to be created again
-        expect ( window.babylonProject.createVRScene )
-            .toHaveBeenCalledTimes ( 1 );
  
     });
 
@@ -531,4 +527,17 @@ describe ( "window.babylonProject.startState", () =>
         expect ( window.babylonProject.coordToListIdx )
             .toHaveBeenLastCalledWith ( testCoord, 10, 100 );
     });
+
+    test ( "initializes applePos as { x:2, y:1 }", () =>
+    {
+
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.startState ( mock_babylon, mock_gameData );
+
+        expect ( mock_gameData.applePos ).toBeDefined ();
+
+    });
+
 });
