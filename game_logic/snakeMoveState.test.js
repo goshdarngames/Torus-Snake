@@ -8,6 +8,38 @@ const startState = require ( "./snakeMoveState" );
  * EXPECTED TEST VALUES
  ***************************************************************************/
 
+let timerTestData = [
+    { 
+        snakeMoveTimerBefore : 0,
+        moveFunctionsCalled  : true,
+        snakeMoveTimerAfter  : 0.5
+    }, 
+
+    { 
+        snakeMoveTimerBefore : 0.1,
+        moveFunctionsCalled  : false,
+        snakeMoveTimerAfter  : 0.0
+    }, 
+
+    { 
+        snakeMoveTimerBefore : 0.2,
+        moveFunctionsCalled  : false,
+        snakeMoveTimerAfter  : 0.1
+    }, 
+
+    { 
+        snakeMoveTimerBefore : 0.3,
+        moveFunctionsCalled  : false,
+        snakeMoveTimerAfter  : 0.2
+    }, 
+
+    { 
+        snakeMoveTimerBefore : 0.4,
+        moveFunctionsCalled  : false,
+        snakeMoveTimerAfter  : 0.3
+    } ] 
+
+
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
@@ -102,27 +134,46 @@ describe ( "window.babylonProject.snakeMoveState", () =>
            "causes the timer to elapse.",
             () =>
     {
+
         let mock_babylon = new MockBabylon ();
 
         let mock_gameData = new MockGameData ();
 
+        timerTestData.forEach ( function ( testData, idx )
+        {
+            mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
-        window.babylonProject.snakeMoveState ( 
-                    mock_babylon, mock_gameData );
+            let retVal = window.babylonProject.snakeMoveState ( 
+                        mock_babylon, mock_gameData );
 
-        expect ( mock_gameData.scene.render ).toHaveBeenCalledTimes ( 1 );
+            //render should be called every time
+            expect ( mock_gameData.scene.render )
+                .toHaveBeenCalledTimes ( idx + 1 );
 
-        expect ( window.babylonProject.updateTorusMeshes )
-            .toHaveBeenCalledTimes ( 1 );
+            //these functions should only be called once 
+            //(when the snake move timer elapses)
 
-        expect ( window.babylonProject.updateTorusMeshes )
-            .toHaveBeenCalledWith ( mock_gameData );
+            expect ( window.babylonProject.updateTorusMeshes )
+                .toHaveBeenCalledTimes ( 1 );
 
-        let retVal = window.babylonProject.snakeMoveState ( 
-                    mock_babylon, mock_gameData );
+            expect ( window.babylonProject.updateTorusMeshes )
+                .toHaveBeenCalledWith ( mock_gameData );
 
-        expect ( retVal )
-            .toBeInstanceOf ( Function );
+            //the return of the state function should be another function
+
+            expect ( retVal )
+                .toBeInstanceOf ( Function );
+            
+            //the move timer should have decreased by 0.1
+
+            expect ( mock_gameData.snakeMoveTimer )
+                .toEqual ( testData.snakeMoveTimerAfter );
+
+            //the move interval should be unchanged
+
+            expect ( mock_gameData.snakeMoveInterval )
+                .toEqual ( 0.5 );
+        });
 
     });
 });
