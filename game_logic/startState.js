@@ -75,6 +75,10 @@
 
         //set apple pos to a value - this should be randomized later
         gameData.applePos = { x : 2, y : 1 };
+
+        gameData.snakeMoveInterval = 0.5;
+
+        gameData.snakeMoveTimer = 0.5;
     }
 
     let createScene = function ( babylon, gameData )

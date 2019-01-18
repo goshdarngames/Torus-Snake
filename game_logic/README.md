@@ -46,6 +46,10 @@ gameData has the following properties:
  
     * appleMat - The material used for the apple.
 
+    * snakeMoveInterval - The time in seconds between each snake move.
+
+    * snakeMoveTimer - The time in seconds until the next snake move.
+
 gameData defines two functions that are used to map between the 2D
 coordinate system of the snake and the torusMeshes list:
 

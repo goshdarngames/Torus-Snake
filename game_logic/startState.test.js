@@ -543,4 +543,17 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
+    test ( "initializes snakeMoveInterval and snakeMoveTimer", () =>
+    {
+
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.startState ( mock_babylon, mock_gameData );
+
+        expect ( mock_gameData.snakeMoveInterval ).toBe ( 0.5 );
+        expect ( mock_gameData.snakeMoveTimer ).toBe ( 0.5 );
+
+    });
+
 });
