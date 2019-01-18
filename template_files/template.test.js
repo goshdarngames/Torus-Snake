@@ -15,6 +15,27 @@ const test_module = require ("./$module_path");
  ***************************************************************************/
 
 /****************************************************************************
+ * SETUP / TEARDOWN
+ ***************************************************************************/
+
+beforeEach ( () =>
+{
+});
+
+//Tests can assign a function here to have it called after they exit
+let oneTimeCleanUp = () => {};
+
+afterEach ( () =>
+{
+    //execute the one time cleanup and then set it as an empty function
+    //again
+ 
+    oneTimeCleanUp ();
+
+    oneTimeCleanUp  = () => {};
+});
+
+/****************************************************************************
  * TESTS
  ***************************************************************************/
 
