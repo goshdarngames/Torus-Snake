@@ -21,7 +21,7 @@ the disc of the torus that surrounds the player.
 
 The flow of gamestates is shown in the following diagram.
 
-![Game state flowchart]('game-flow.png' "Game State Flowchart")
+![Game state flowchart]('state-flow.png' "Game State Flowchart")
 
 Some details on the finite state machine used in the project can be
 found below.
