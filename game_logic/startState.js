@@ -73,7 +73,8 @@
 
         createTorusIndexFunctions ( gameData );
 
-        gameData.applePos = 1;
+        //set apple pos to a value - this should be randomized later
+        gameData.applePos = { x : 2, y : 1 };
     }
 
     let createScene = function ( babylon, gameData )

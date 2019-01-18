@@ -538,6 +538,9 @@ describe ( "window.babylonProject.startState", () =>
 
         expect ( mock_gameData.applePos ).toBeDefined ();
 
+        expect ( mock_gameData.applePos.x ).toBe ( 2 );
+        expect ( mock_gameData.applePos.y ).toBe ( 1 );
+
     });
 
 });
