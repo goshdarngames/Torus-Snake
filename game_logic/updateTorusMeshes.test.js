@@ -37,6 +37,8 @@ let MockGameData = jest.fn ( function ()
 {
     this.snakeParts = valid_snakeParts;
 
+    this.applePos = { x : 2, y : 2 };
+
     this.torusMeshes = ValidMeshes ( 25 );
 
     this.snakeMat = jest.fn ();
@@ -175,7 +177,7 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         //the snake parts
 
         expect ( mock_gameData.torusCoordToMeshIdx )
-            .toHaveBeenCalledTimes ( 5 );
+            .toHaveBeenCalledTimes ( 6 );
 
         mock_gameData.torusCoordToMeshIdx.mock.calls.forEach (
             function ( call, idx )
@@ -191,11 +193,16 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         //call referencing the meshIdx for a snakePart
 
         expect ( babylonProject.enableTorusMesh )
-            .toHaveBeenCalledTimes ( 5 );
+            .toHaveBeenCalledTimes ( 6 );
 
         babylonProject.enableTorusMesh.mock.calls.forEach ( 
             function ( call, idx )
             {
+                if ( idx > 4 )
+                {
+                    return;
+                }
+
                 //check that the idx was the result of converting
                 //a torus coord ( from the snake ) to a meshIdx
                 expect ( call [ 0 ] )
@@ -211,7 +218,48 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
             });
 
     });
+
+    test ( "sets apple mesh as visible", () =>
+    {
+        let mock_gameData = new MockGameData ();
+
+        //replace enable/disable functions with mocks
+        let oldDisableFunc = babylonProject.disableTorusMesh;
+        let oldEnableFunc = babylonProject.enableTorusMesh;
+
+        babylonProject.disableTorusMesh = jest.fn ();
+        babylonProject.enableTorusMesh = jest.fn ();
+
+        //set oneTimeCleanUp to restore functions
+        
+        oneTimeCleanUp = () => 
+        {
+            babylonProject.disableTorusMesh = oldDisableFunc; 
+            babylonProject.enableTorusMesh = oldEnableFunc;
+        }
+
+        window.babylonProject.updateTorusMeshes ( mock_gameData );
+
+        //expect the 6th call to the coord to mesh function to be the apple
+
+        let idxCall = mock_gameData.torusCoordToMeshIdx.mock.calls [ 5 ];
+
+        expect ( idxCall [ 0 ] ).toBe ( mock_gameData.applePos );
+
+        let appleIdx = mock_gameData.torusCoordToMeshIdx.mock
+            .results [ 5 ].value;
+
+        //expect the final call to enableTorusMesh to be the apple
+
+        let call = babylonProject.enableTorusMesh.mock.calls [ 5 ];
+
+        expect ( call [ 0 ] ).toBe ( appleIdx );
+        expect ( call [ 1 ] ).toBe ( mock_gameData.appleMat );
+        expect ( call [ 2 ] ).toBe ( mock_gameData );
+
+    });
 });
+
 
 
 describe ( "window.babylonProject.disableTorusMesh", () =>

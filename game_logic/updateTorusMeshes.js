@@ -68,6 +68,13 @@
             babylonProject.enableTorusMesh ( 
                     meshIdx, gameData.snakeMat, gameData );
         });
+
+        //set the apple mesh to be visible
+
+        let appleIdx = gameData.torusCoordToMeshIdx ( gameData.applePos );
+
+        babylonProject.enableTorusMesh ( 
+            appleIdx, gameData.appleMat, gameData );
     }
 
     babylonProject.disableTorusMesh = function ( meshIdx, gameData )
