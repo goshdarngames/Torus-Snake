@@ -142,6 +142,8 @@ beforeEach ( () =>
     window.babylonProject.listIdxToCoord = jest.fn ();
 
     window.babylonProject.coordToListIdx = jest.fn ();
+
+    window.babylonProject.wrapCoordinate = jest.fn ();
 })
 
 /****************************************************************************
@@ -526,6 +528,24 @@ describe ( "window.babylonProject.startState", () =>
 
         expect ( window.babylonProject.coordToListIdx )
             .toHaveBeenLastCalledWith ( testCoord, 10, 100 );
+
+        //wrap coordinates function
+
+        expect ( mock_gameData.wrapTorusCoord )
+            .toBeDefined ();
+
+        expect ( mock_gameData.wrapTorusCoord )
+            .toBeInstanceOf ( Function );
+
+        //call the stored function
+
+        mock_gameData.wrapTorusCoord ( testCoord );
+
+        expect ( window.babylonProject.wrapCoordinate )
+            .toHaveBeenCalledTimes ( 1 );
+        
+        expect ( window.babylonProject.wrapCoordinate )
+            .toHaveBeenCalledWith ( testCoord, 10, 10 ); 
     });
 
     test ( "initializes applePos as { x:2, y:1 }", () =>

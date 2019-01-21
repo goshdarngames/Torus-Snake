@@ -189,5 +189,12 @@
                          ( 
                             coord, width, gameData.torusMeshes.length
                          );
+
+        gameData.wrapTorusCoord  = 
+            ( coord ) => window.babylonProject.wrapCoordinate  
+                         ( 
+                            coord, width, width
+                         );
+
     }
 } ( window.babylonProject = window.babylonProject || {} ));
