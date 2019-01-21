@@ -147,6 +147,59 @@ let wrapRangeData = [
     }
 ];
 
+//This list of data provides test cases for the 'wrapCoordinate' function
+let wrapCoordinateData = [
+    { 
+        coordIn  : { x :  0, y :  0 }, 
+        coordOut : { x :  0, y :  0 },
+        width    : 5,
+        height   : 5
+    },
+
+    { 
+        coordIn  : { x : -1, y :  0 }, 
+        coordOut : { x :  4, y :  0 },
+        width    : 5,
+        height   : 5
+    },
+
+    { 
+        coordIn  : { x :  0, y : -1 }, 
+        coordOut : { x :  0, y :  3 },
+        width    : 4,
+        height   : 4
+    },
+
+    { 
+        coordIn  : { x :  4, y :  0 }, 
+        coordOut : { x :  0, y :  0 },
+        width    : 4,
+        height   : 4
+    },
+
+    { 
+        coordIn  : { x :  0, y :  4 }, 
+        coordOut : { x :  0, y :  0 },
+        width    : 4,
+        height   : 4
+    },
+
+    { 
+        coordIn  : { x : -1, y : -1 }, 
+        coordOut : { x :  3, y :  3 },
+        width    : 4,
+        height   : 4
+    },
+
+    { 
+        coordIn  : { x :  4, y :  4 }, 
+        coordOut : { x :  1, y :  1 },
+        width    : 3,
+        height   : 3
+    },
+
+];
+
 /****************************************************************************
  * TESTS
  ***************************************************************************/
@@ -277,4 +330,24 @@ describe ( "window.babylonProject.coordToListIdx", () =>
                 .toEqual ( testData.finishIdx );
         });
     });
+});
+
+describe ( "window.babylonProject.wrapCoordinate", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.wrapCoordinate )
+            .toBeDefined ();
+    });
+
+    test ( "executs test data correctly", () =>
+    {
+        wrapCoordinateData.forEach ( function ( testData )
+        {
+            expect ( window.babylonProject.wrapCoordinate (
+                testData.coordIn, testData.width, testData.height ) )
+                .toEqual ( testData.coordOut );
+        });
+    });
+
 });

@@ -83,4 +83,21 @@
         return width * wrap ( coord.y, height ) + wrap ( coord.x, width );
     };
 
+    /**
+     * wrapCoordinate
+     *
+     * Wraps the x and y of the coordinate parameter to  fit within
+     * a torus shaped grid with the width and length provided.
+     */
+    babylonProject.wrapCoordinate = function ( coord, width, height )
+    {
+       let wrappedCoord = 
+       {
+           x : wrap ( coord.x, width ),
+           y : wrap ( coord.y, height )
+       };
+
+       return wrappedCoord;
+    }
+
 } ( window.babylonProject = window.babylonProject || {} ));
