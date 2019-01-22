@@ -576,4 +576,21 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
+    test ( "initializes directions", () =>
+    {
+
+        let mock_babylon = new MockBabylon ();
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.startState ( mock_babylon, mock_gameData );
+
+        expect ( mock_gameData.dirLeft  ).toEqual ( { x :  0, y : -1 } );
+        expect ( mock_gameData.dirRight ).toEqual ( { x :  0, y :  1 } );
+        expect ( mock_gameData.dirUp    ).toEqual ( { x :  1, y :  0 } );
+        expect ( mock_gameData.dirDown  ).toEqual ( { x : -1, y :  0 } );
+
+        expect ( mock_gameData.currentDir ).toEqual ( { x : 0, y : -1 } );
+
+    });
+
 });
