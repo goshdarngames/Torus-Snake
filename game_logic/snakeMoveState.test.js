@@ -211,15 +211,6 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         expect ( mock_gameData.snakeParts.length )
             .toEqual ( 3 );
 
-        //first item on snakeParts is head ( x:0, y:0 )
-
-        expect ( mock_gameData.snakeParts [ 0 ] )
-            .toEqual ( { x : 0, y : 0 } ); 
-
-
-        //remaining parts have had their position offset
-
-        //apple's position is offset by direction
     });
 });
 
@@ -229,5 +220,37 @@ describe ( "window.babylonProject.moveSnake", () =>
     {
         expect ( window.babylonProject.moveSnake )
             .toBeDefined ();
+    });
+
+    test ( "updates snakePart values as expected", () =>
+    {
+        let dir = { x : 0, y : -1 };
+
+        let startSnake = [ { x : 0, y : 0 },
+                           { x : 0, y : 1 },
+                           { x : 1, y : 1 },
+                           { x : 1, y : 2 },
+                           { x : 2, y : 2 } ];
+
+        //deep copy data into snakeParts
+
+        let snakeParts = startSnake.map ( 
+                p => 
+                { 
+                    return { x : p.x, y : p.y };
+                });
+
+        //wrap function returns its param so it can be checked if this
+        //result was stored in the output
+
+        let wrapFunc = jest.fn ( function ( coord )
+        {
+            return coord;
+        });
+
+        //execute the test function
+        
+        window.babylonProject.moveSnake ( dir, snakeParts, wrapFunc );
+
     });
 });
