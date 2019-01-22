@@ -8,6 +8,9 @@ const startState = require ( "./snakeMoveState" );
  * EXPECTED TEST VALUES
  ***************************************************************************/
 
+//This test data is used to check that the move function is called when
+//the timer elapses and that the timer values are set correctly each time
+
 let timerTestData = [
     { 
         snakeMoveTimerBefore : 0,
@@ -17,8 +20,8 @@ let timerTestData = [
 
     { 
         snakeMoveTimerBefore : 0.1,
-        moveFunctionsCalled  : false,
-        snakeMoveTimerAfter  : 0.0
+        moveFunctionsCalled  : true,
+        snakeMoveTimerAfter  : 0.5
     }, 
 
     { 
@@ -52,10 +55,14 @@ let MockGameData = jest.fn ( function ()
     this.scene = new MockScene ();
     this.torusMeshes = [];
 
+    this.applePos = { x : 1, y : 0 };
+
     this.snakeMoveInterval = 0.5;
     this.snakeMoveTimer = 0.5;
 
     this.engine = new MockEngine ();
+
+    this.wrapTorusCoords = jest.fn ();
 });
 
 let MockScene = jest.fn ( function ()
@@ -139,6 +146,11 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         let mock_gameData = new MockGameData ();
 
+        //keep a count of how many times the move functions should have
+        //been called during the test execution
+
+        let expectedMoveCalls = 0;
+
         timerTestData.forEach ( function ( testData, idx )
         {
             mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
@@ -150,11 +162,16 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             expect ( mock_gameData.scene.render )
                 .toHaveBeenCalledTimes ( idx + 1 );
 
-            //these functions should only be called once 
-            //(when the snake move timer elapses)
+            //these functions should only be called when the snake move 
+            //timer elapses
+
+            if ( testData.moveFunctionsCalled )
+            {
+                expectedMoveCalls += 1;
+            } 
 
             expect ( window.babylonProject.updateTorusMeshes )
-                .toHaveBeenCalledTimes ( 1 );
+                .toHaveBeenCalledTimes ( expectedMoveCalls );
 
             expect ( window.babylonProject.updateTorusMeshes )
                 .toHaveBeenCalledWith ( mock_gameData );
@@ -167,13 +184,50 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             //the move timer should have decreased by 0.1
 
             expect ( mock_gameData.snakeMoveTimer )
-                .toEqual ( testData.snakeMoveTimerAfter );
+                .toBeCloseTo ( testData.snakeMoveTimerAfter );
 
             //the move interval should be unchanged
 
             expect ( mock_gameData.snakeMoveInterval )
-                .toEqual ( 0.5 );
+                .toBeCloseTo ( 0.5 );
         });
 
+    });
+
+    test ( "snakeParts is correct after move.", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+
+        let mock_gameData = new MockGameData ();
+
+        mock_gameData.snakeParts = [
+            { x : 0, y : 0 },
+            { x : 0, y : 1 },
+            { x : 0, y : 2 }
+        ];
+
+        //snake parts length is unchanged
+
+        expect ( mock_gameData.snakeParts.length )
+            .toEqual ( 3 );
+
+        //first item on snakeParts is head ( x:0, y:0 )
+
+        expect ( mock_gameData.snakeParts [ 0 ] )
+            .toEqual ( { x : 0, y : 0 } ); 
+
+
+        //remaining parts have had their position offset
+
+        //apple's position is offset by direction
+    });
+});
+
+describe ( "window.babylonProject.moveSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.moveSnake )
+            .toBeDefined ();
     });
 });
