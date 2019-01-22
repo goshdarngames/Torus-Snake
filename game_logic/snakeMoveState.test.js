@@ -5,6 +5,27 @@ const startState = require ( "./snakeMoveState" );
  ***************************************************************************/
 
 /****************************************************************************
+ * SETUP / TEARDOWN
+ ***************************************************************************/
+
+beforeEach ( () =>
+{
+});
+
+//Tests can assign a function here to have it called after they exit
+let oneTimeCleanUp = () => {};
+
+afterEach ( () =>
+{
+    //execute the one time cleanup and then set it as an empty function
+    //again
+ 
+    oneTimeCleanUp ();
+
+    oneTimeCleanUp  = () => {};
+});
+
+/****************************************************************************
  * EXPECTED TEST VALUES
  ***************************************************************************/
 
@@ -151,6 +172,22 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         let expectedMoveCalls = 0;
 
+        //mock the movesnake function and set the function to be restored
+        //after
+
+        let oldMoveFunc = window.babylonProject.moveSnake 
+
+        window.babylonProject.moveSnake = jest.fn ( 
+        function ( dir, snakeParts, wrapFunc )
+        {
+            return snakeParts;
+        });
+
+        oneTimeCleanUp  = () => 
+        {
+            window.babylonProject.moveSnake = oldMoveFunc;
+        };
+
         timerTestData.forEach ( function ( testData, idx )
         {
             mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
@@ -175,6 +212,9 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
             expect ( window.babylonProject.updateTorusMeshes )
                 .toHaveBeenCalledWith ( mock_gameData );
+
+            expect ( window.babylonProject.moveSnake )
+                .toHaveBeenCalledTimes ( expectedMoveCalls );
 
             //the return of the state function should be another function
 
@@ -250,7 +290,33 @@ describe ( "window.babylonProject.moveSnake", () =>
 
         //execute the test function
         
-        window.babylonProject.moveSnake ( dir, snakeParts, wrapFunc );
+        let newSnake = 
+            window.babylonProject.moveSnake ( dir, snakeParts, wrapFunc );
 
+        //length unchanged
+        
+        expect ( newSnake.length )
+            .toEqual ( startSnake.length );
+
+        //head should be (0,0)
+
+        expect ( newSnake [ 0 ] )
+            .toEqual ( { x : 0, y : 0 } );
+
+        //subseqent snake parts should be the result of:
+        //  snakeParts [ n ] = snakeParts [ n - 1 ] + dir
+
+        newSnake.forEach ( function ( value, idx, arr )
+        {
+            if ( idx == 0 )
+            {
+                return;
+            }
+
+            let prevCoord = arr [ idx - 1 ];
+
+            let sumCoord = 
+                { x : dir.x + prevCoord.x, y : dir.y + prevCoord.y };
+        });
     });
 });
