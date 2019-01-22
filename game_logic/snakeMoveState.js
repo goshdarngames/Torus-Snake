@@ -48,6 +48,12 @@
                         gameData.currentDir, 
                         gameData.snakeParts, 
                         gameData.wrapTorusCoord );
+
+            gameData.applePos = 
+            {
+                x : gameData.applePos.x + gameData.currentDir.x,
+                y : gameData.applePos.y + gameData.currentDir.y
+            };
         } 
 
         //render the scene and return next state

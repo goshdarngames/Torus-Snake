@@ -84,6 +84,8 @@ let MockGameData = jest.fn ( function ()
     this.engine = new MockEngine ();
 
     this.wrapTorusCoords = jest.fn ();
+
+    this.currentDir = { x : 0, y : 1 };
 });
 
 let MockScene = jest.fn ( function ()
@@ -215,6 +217,11 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
             expect ( window.babylonProject.moveSnake )
                 .toHaveBeenCalledTimes ( expectedMoveCalls );
+
+            //the apple' y position should change each time
+
+            expect ( mock_gameData.applePos.y )
+                .toEqual ( expectedMoveCalls );
 
             //the return of the state function should be another function
 
