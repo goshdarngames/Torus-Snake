@@ -571,8 +571,8 @@ describe ( "window.babylonProject.startState", () =>
 
         window.babylonProject.startState ( mock_babylon, mock_gameData );
 
-        expect ( mock_gameData.snakeMoveInterval ).toBe ( 0.5 );
-        expect ( mock_gameData.snakeMoveTimer ).toBe ( 0.5 );
+        expect ( mock_gameData.snakeMoveInterval ).toBe ( 750 );
+        expect ( mock_gameData.snakeMoveTimer ).toBe ( 750 );
 
     });
 
