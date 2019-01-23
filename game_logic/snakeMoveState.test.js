@@ -83,7 +83,12 @@ let MockGameData = jest.fn ( function ()
 
     this.engine = new MockEngine ();
 
-    this.wrapTorusCoords = jest.fn ();
+    this.wrapTorusCoord = jest.fn ( function ( coord )
+    {
+        return coord;
+    });
+
+     
 
     this.currentDir = { x : 0, y : 1 };
 });

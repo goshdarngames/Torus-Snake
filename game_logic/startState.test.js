@@ -55,9 +55,11 @@ let MockMeshBuilder = jest.fn ( function ()
         //this will mock a torus with tesselation of 10
         //i.e. a 10x10x3 float buffer in a flat array
         //
-        //For this mock the torus will always have 100 meshes -
-        //in the real world the number of meshes is based on the 
-        //tesselation...
+        //The torus will have one extra vertex for each dimension of the
+        //grid so the 10x10 vertex list should provide a 9x9 list of
+        //torus meshes.
+        //
+        //The mesh duplicates vertices when it wraps.
                 
         torus.getVerticesData = jest.fn ( function ()
         {
@@ -298,7 +300,8 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
-    test ( "creates a mesh for each torus vertex", () =>
+    test ( "creates a mesh for each torus vertex excluding "+
+           "the duplicate vertices where the mesh wraps.", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_gameData = new MockGameData ();
@@ -308,14 +311,17 @@ describe ( "window.babylonProject.startState", () =>
         window.babylonProject.startState ( 
                     mock_babylon, mock_gameData );
 
-        //the mesh mock will have 100 mock vertices
+        //the torus mesh with have 100 vertices ( 10 ^ 2 )
+        //there will be duplicate meshes along each axis so the 
+        //torusMeshes list should have ( 9 ^ 2 ) elements
+
         expect ( mock_babylon.MeshBuilder.CreateSphere )
-            .toHaveBeenCalledTimes ( 100 );
+            .toHaveBeenCalledTimes ( 81 );
 
         expect ( mock_gameData.torusMeshes )
             .toBeDefined ();
 
-        //check that the meshes were returned by create box
+        //check that the meshes were returned by create sphere
         //note:  assumes that the torus meshes are the first objects 
         //       created with the CreateSphere method
 

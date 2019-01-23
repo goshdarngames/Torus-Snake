@@ -39,8 +39,6 @@
 
         if ( gameData.snakeMoveTimer <= 0 )
         {
-            window.babylonProject.updateTorusMeshes ( gameData );
-
             gameData.snakeMoveTimer = gameData.snakeMoveInterval;
 
             gameData.snakeParts = 
@@ -54,6 +52,14 @@
                 x : gameData.applePos.x + gameData.currentDir.x,
                 y : gameData.applePos.y + gameData.currentDir.y
             };
+
+            gameData.applePos = 
+                gameData.wrapTorusCoord ( gameData.applePos );
+
+            console.log ( gameData.applePos );
+
+            window.babylonProject.updateTorusMeshes ( gameData );
+
         } 
 
         //render the scene and return next state
