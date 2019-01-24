@@ -360,23 +360,68 @@ describe ( "window.babylonProject.startState", () =>
         window.babylonProject.startState ( 
                     mock_babylon, mock_gameData );
 
+        expect ( mock_gameData.torusMeshes.length )
+            .toEqual ( 81 );
+
+        //The mock torus mesh is composed of values 0..99 in a 1D list
+        //Each of these is converted into babylon vector3 values
+        //so for each row of 10 torus vertices there are 30 values for
+        //each vector component
+        let valuesPerRow = 30;
+
+        //The previous x value is stored so that the order of x values
+        //can be checked ( e.g. check that the last value in each
+        //column was skipped )
+        //
+        //Start at -6 because it would be the prevX for 0
+        let prevX = -6;
+
         mock_gameData.torusMeshes.forEach (
-            function ( mesh, index )
+        function ( mesh, idx )
+        {
+            //There should be no multiples of 10 as first vector value
+            //i.e. The last column of vertices was skipped
+
+            expect ( mesh.position.x >= 0 )
+                .toBeTruthy ();
+
+            expect ( ( mesh.position.x + 1 ) % valuesPerRow )
+                .not.toEqual ( 0 );
+
+            //The three vector components should be ( n, n+1, n+2 )
+            //where n is the torusPositon + vertex position data
+
+            //isolate the vertex data
+            let vertex =
             {
-                //meshes are created from vector3 so their index needs to
-                //be adjusted
-                let meshIdx = index * 3;
+                x : mesh.position.x - expectedTorusPosition.x, 
+                y : mesh.position.y - expectedTorusPosition.y, 
+                z : mesh.position.z - expectedTorusPosition.z
+            }
 
-                expect ( mesh.position.x )
-                    .toBeCloseTo ( meshIdx + expectedTorusPosition.x );
+            expect ( vertex.y )
+                .toEqual ( vertex.x + 1 );
 
-                expect ( mesh.position.y )
-                    .toBeCloseTo ( meshIdx + 1 + expectedTorusPosition.y );
+            expect ( vertex.z )
+                .toEqual ( vertex.x + 2 );
 
-                expect ( mesh.position.z )
-                    .toBeCloseTo ( meshIdx + 2 + expectedTorusPosition.z );
+            //check x values to asset the last value of each row was 
+            //skipped
 
-            });
+            if ( ( prevX + 6 ) % valuesPerRow == 0 )
+            {
+                expect ( vertex.x )
+                    .toEqual ( prevX + 6 );
+            }
+            else
+            {
+                expect ( vertex.x )
+                    .toEqual ( prevX + 3 );
+            }
+
+            prevX = vertex.x;
+
+        });
 
     });
 
@@ -507,7 +552,7 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledTimes ( 2 );
 
         expect ( window.babylonProject.listIdxToCoord )
-            .toHaveBeenLastCalledWith ( 5, 10, 100 );
+            .toHaveBeenLastCalledWith ( 5, 9, 81 );
 
         //coordinates -> mesh list idx
        
@@ -533,7 +578,7 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledTimes ( 2 );
 
         expect ( window.babylonProject.coordToListIdx )
-            .toHaveBeenLastCalledWith ( testCoord, 10, 100 );
+            .toHaveBeenLastCalledWith ( testCoord, 9, 81 );
 
         //wrap coordinates function
 
@@ -551,7 +596,7 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledTimes ( 1 );
         
         expect ( window.babylonProject.wrapCoordinate )
-            .toHaveBeenCalledWith ( testCoord, 10, 10 ); 
+            .toHaveBeenCalledWith ( testCoord, 9, 9 ); 
     });
 
     test ( "initializes applePos as { x:2, y:1 }", () =>

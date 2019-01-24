@@ -180,6 +180,9 @@
 
         let snakeGridElems = snakeGridSize * snakeGridSize;
 
+        //keep track of spawn count for assigning ID
+        let spawnCount = 0;
+
         torusVD.forEach ( function ( value, idx, array )
         {
             //vector3s are stored as 3 list elements so only process
@@ -209,7 +212,7 @@
             }
             
             //use string formatter to make unique name
-            let meshName = `TorusMesh${ idx/3 }`; 
+            let meshName = `TorusMesh${ spawnCount++ }`; 
             
             let mesh = babylon.MeshBuilder.CreateSphere (
                     meshName,
