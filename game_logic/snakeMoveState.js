@@ -56,8 +56,6 @@
             gameData.applePos = 
                 gameData.wrapTorusCoord ( gameData.applePos );
 
-            console.log ( gameData.applePos );
-
             window.babylonProject.updateTorusMeshes ( gameData );
 
         } 
