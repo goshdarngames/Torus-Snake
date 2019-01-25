@@ -17,8 +17,14 @@
 
         scene.createDefaultEnvironment ();
         
-        scene.createDefaultVRExperience ();
+        let vrHelper = scene.createDefaultVRExperience ();
 
-        return scene;
+        let returnValue = 
+        {
+            scene    : scene,
+            vrHelper : vrHelper
+        };
+
+        return returnValue;
     };
 } ( window.babylonProject = window.babylonProject || {} ));

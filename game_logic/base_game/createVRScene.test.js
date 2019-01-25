@@ -3,23 +3,22 @@ const createVRScene = require ("./createVRScene");
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
-MockBabylon = jest.fn (
-    function ()
-    {
-        this.Scene = jest.fn (
-                function ()
-                {
-                    this.createDefaultEnvironment = jest.fn ();
-                    this.createDefaultVRExperience = jest.fn ();
-                });
-    });
 
-MockEngine = jest.fn (
-    
-    function ()
-    {
+let MockVRHelper = jest.fn ();
 
+let MockBabylon = jest.fn ( function ()
+{
+    this.Scene = jest.fn ( function ()
+    {
+        this.createDefaultEnvironment = jest.fn ();
+        this.createDefaultVRExperience = jest.fn ( function () 
+        {
+            return new MockVRHelper ();
+        });
     });
+});
+
+let MockEngine = jest.fn ();
 
 
 /****************************************************************************
@@ -33,7 +32,8 @@ describe ( "window.babylonProject.createVRScene", () =>
         expect ( window.babylonProject.createVRScene ).toBeDefined ();
     });
 
-    test ( "returns instance of BABYLON.Scene", () =>
+    test ( "returns a tuple containing an instance of BABYLON.Scene "+
+           "and the returned value of scene.createDefaultExperience", () =>
     {
         mockBabylon = new MockBabylon ();
         mockEngine = new MockEngine ();
@@ -42,7 +42,11 @@ describe ( "window.babylonProject.createVRScene", () =>
                 mockBabylon,
                 mockEngine    );
 
-        expect ( returnValue ).toBeInstanceOf ( mockBabylon.Scene );
+        expect ( returnValue.scene ).toBeInstanceOf ( mockBabylon.Scene );
+
+        expect ( returnValue.vrHelper )
+            .toBe ( returnValue.scene.createDefaultVRExperience.mock
+                        .results [ 0 ].value );
     });
 
     test ( "passed engine to Scene constructor", () =>
@@ -64,11 +68,11 @@ describe ( "window.babylonProject.createVRScene", () =>
         mockBabylon = new MockBabylon ();
         mockEngine = new MockEngine ();
 
-        let scene = window.babylonProject.createVRScene (
+        let retVal = window.babylonProject.createVRScene (
                 mockBabylon,
                 mockEngine    );
 
-        expect ( scene.createDefaultEnvironment )
+        expect ( retVal.scene.createDefaultEnvironment )
             .toBeCalledTimes ( 1 );
     });
   
@@ -77,11 +81,11 @@ describe ( "window.babylonProject.createVRScene", () =>
         mockBabylon = new MockBabylon ();
         mockEngine = new MockEngine ();
 
-        let scene =  window.babylonProject.createVRScene (
+        let retVal =  window.babylonProject.createVRScene (
                 mockBabylon,
                 mockEngine    );
 
-        expect ( scene.createDefaultVRExperience )
+        expect ( retVal.scene.createDefaultVRExperience )
             .toBeCalledTimes ( 1 );
     });
     
