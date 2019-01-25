@@ -20,13 +20,11 @@ let MockGameData = jest.fn ( function ()
     this.engine = new MockEngine ();
 });
 
-let MockEngine = jest.fn ( function ()
-{
-});
+let MockEngine = jest.fn ();
 
-let MockScene = jest.fn ( function ()
-{
-});
+let MockScene = jest.fn ();
+
+let MockVRHelper = jest.fn ();
 
 let MockVector3 = jest.fn ( function (x, y, z)
 {
@@ -136,7 +134,13 @@ beforeEach ( () =>
 {
     window.babylonProject.createVRScene = jest.fn ( function ()
     {
-        return new MockScene ();
+        let retVal = 
+        {
+            scene    : new MockScene (),
+            vrHelper : new MockVRHelper ()
+        };
+
+        return retVal;
     });
 
     window.babylonProject.createSnakeState = jest.fn ();
@@ -194,6 +198,7 @@ describe ( "window.babylonProject.startState", () =>
         let mock_gameData = new MockGameData ();
  
         mock_gameData.scene = undefined;
+        mock_gameData.vrHelper = undefined;
 
         window.babylonProject.startState ( 
                      mock_babylon, mock_gameData );
@@ -204,9 +209,16 @@ describe ( "window.babylonProject.startState", () =>
         expect ( window.babylonProject.createVRScene )
             .toHaveBeenCalledWith ( mock_babylon, mock_gameData.engine );
  
+        let createVRSceneResult = 
+            window.babylonProject.createVRScene.mock.results [ 0 ].value;
+
         //expect scene to be stored in gameData
         expect ( mock_gameData.scene )
-            .toBeInstanceOf ( MockScene );
+            .toBe ( createVRSceneResult.scene ); 
+        
+        //expect vrHelper to be stored in gameData
+        expect ( mock_gameData.vrHelper )
+            .toBe ( createVRSceneResult.vrHelper ); 
         
         window.babylonProject.startState ( 
                      mock_babylon, mock_gameData );

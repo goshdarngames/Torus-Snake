@@ -93,9 +93,13 @@
     {
 
         //create the VR scene using base_game/ createVRScene function
-        gameData.scene =
+        let vrSceneData =
             babylonProject.createVRScene ( babylon, gameData.engine );
  
+        gameData.scene = vrSceneData.scene;
+
+        gameData.vrHelper = vrSceneData.vrHelper;
+
         //create light
         gameData.light = new babylon.DirectionalLight (
                 "light", 
