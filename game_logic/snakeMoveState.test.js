@@ -68,7 +68,15 @@ let timerTestData = [
  * MOCK DATA
  ***************************************************************************/
 
-let MockBabylon = jest.fn ();
+let MockBabylon = jest.fn ( function ()
+{
+    this.Mesh = new MockMesh ();
+});
+
+let MockMesh = jest.fn ( function ()
+{
+    this.CreatePlane = jest.fn ();
+});
 
 let MockGameData = jest.fn ( function ()
 {
@@ -162,6 +170,26 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeMoveTimer is undefined" );
         
+    });
+
+    test ( "defines turnInputControls if it is undefined", () =>
+    {
+        mock_babylon = new MockBabylon ();
+        mock_gameData = new MockGameData ();
+
+        window.babylonProject.snakeMoveState ( mock_babylon, mock_gameData ); 
+
+        expect ( mock_gameData.turnInputControls )
+            .toBeDefined ();
+
+        expect ( mock_babylon.Mesh.CreatePlane )
+            .toHaveBeenCalledTimes ( 1 );
+
+        let createPlaneMock = mock_babylon.Mesh.CreatePlane.mock;
+
+        expect ( mock_gameData.turnInputControls.upPlane )
+            .toBe ( createPlaneMock.results [ 0 ].value );
+
     });
 
     test ( "scene.render is called and a function is returned every time "+

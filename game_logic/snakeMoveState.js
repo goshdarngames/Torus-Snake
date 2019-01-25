@@ -33,6 +33,12 @@
             throw new Error ( "gameData.snakeMoveTimer is undefined." );
         }
 
+        if ( gameData.turnInputControls  == undefined )
+        {
+            gameData.turnInputControls = 
+                new TurnInputControls ( babylon, gameData.scene );
+        }
+
         //check if move timer has elapsed and move if so
 
         gameData.snakeMoveTimer -= gameData.engine.getDeltaTime ();
@@ -106,6 +112,15 @@
         });
 
         return newSnake;
+    };
+
+    /************************************************************************
+     * PRIVATE DATA
+     ***********************************************************************/
+
+    let TurnInputControls = function ( babylon, scene )
+    {
+        this.upPlane = babylon.Mesh.CreatePlane ();
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
