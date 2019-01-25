@@ -24,7 +24,10 @@ let MockEngine = jest.fn ();
 
 let MockScene = jest.fn ();
 
-let MockVRHelper = jest.fn ();
+let MockVRHelper = jest.fn ( function ()
+{
+    this.enableInteractions = jest.fn ();
+});
 
 let MockVector3 = jest.fn ( function (x, y, z)
 {
@@ -220,8 +223,9 @@ describe ( "window.babylonProject.startState", () =>
         expect ( mock_gameData.vrHelper )
             .toBe ( createVRSceneResult.vrHelper ); 
         
-        window.babylonProject.startState ( 
-                     mock_babylon, mock_gameData );
+        //expect enable interactions to have been called on vrHelper
+        expect ( mock_gameData.vrHelper.enableInteractions )
+            .toHaveBeenCalledTimes ( 1 );
  
     });
 

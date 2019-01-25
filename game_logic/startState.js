@@ -100,6 +100,8 @@
 
         gameData.vrHelper = vrSceneData.vrHelper;
 
+        gameData.vrHelper.enableInteractions ();
+
         //create light
         gameData.light = new babylon.DirectionalLight (
                 "light", 
