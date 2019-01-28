@@ -7,8 +7,12 @@
 ( function ( babylonProject, undefined )
 {
 
-    babylonProject.createButtonPlane = function ()
+    babylonProject.createButtonPlane = function ( babylon )
     {
+        if ( babylon == undefined )
+        {
+            throw ( "babylon parameter is undefined" );
+        }
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
