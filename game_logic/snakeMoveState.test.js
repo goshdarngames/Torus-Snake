@@ -71,11 +71,21 @@ let timerTestData = [
 let MockBabylon = jest.fn ( function ()
 {
     this.Mesh = new MockMesh ();
+
+    this.Vector3 = jest.fn ( function ( x, y, z )
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    });
 });
 
 let MockMesh = jest.fn ( function ()
 {
-    this.CreatePlane = jest.fn ();
+    this.CreatePlane = jest.fn (function ()
+    {
+        return new MockMesh ();
+    });
 });
 
 let MockGameData = jest.fn ( function ()
@@ -187,8 +197,16 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         let createPlaneMock = mock_babylon.Mesh.CreatePlane.mock;
 
+        //verify up arrow
+
+        expect ( createPlaneMock.calls [ 0 ] )
+            .toEqual ( [ "upPlane", 0.2, mock_gameData.scene ] );
+
         expect ( mock_gameData.turnInputControls.upPlane )
             .toBe ( createPlaneMock.results [ 0 ].value );
+
+        expect ( mock_gameData.turnInputControls.upPlane.position )
+            .toEqual ( new mock_babylon.Vector3 ( 0.4, 0.8, 0.4 ) );
 
     });
 

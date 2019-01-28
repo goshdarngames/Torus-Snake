@@ -120,7 +120,10 @@
 
     let TurnInputControls = function ( babylon, scene )
     {
-        this.upPlane = babylon.Mesh.CreatePlane ();
+        this.upPlane = babylon.Mesh.CreatePlane (
+                "upPlane", 0.2, scene );
+
+        this.upPlane.position = new babylon.Vector3 ( 0.4, 0.8, 0.4 ); 
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
