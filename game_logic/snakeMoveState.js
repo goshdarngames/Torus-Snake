@@ -123,7 +123,14 @@
         this.upPlane = babylon.Mesh.CreatePlane (
                 "upPlane", 0.2, scene );
 
-        this.upPlane.position = new babylon.Vector3 ( 0.4, 0.8, 0.4 ); 
+        configUp = window.babylonProject.config.upPos;
+
+        this.upPlane.position = 
+            new babylon.Vector3 ( 
+                           configUp.x,
+                           configUp.y,
+                           configUp.z  );
+
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));

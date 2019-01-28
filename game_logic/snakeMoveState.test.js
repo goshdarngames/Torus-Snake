@@ -200,6 +200,8 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         //verify up arrow
 
+        configUp = window.babylonProject.config.upPos;
+
         expect ( createPlaneMock.calls [ 0 ] )
             .toEqual ( [ "upPlane", 0.2, mock_gameData.scene ] );
 
@@ -207,7 +209,11 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .toBe ( createPlaneMock.results [ 0 ].value );
 
         expect ( mock_gameData.turnInputControls.upPlane.position )
-            .toEqual ( new mock_babylon.Vector3 ( 0.4, 0.8, 0.4 ) );
+            .toEqual ( 
+                new mock_babylon.Vector3 (
+                           configUp.x,
+                           configUp.y,
+                           configUp.z ) );
 
     });
 
