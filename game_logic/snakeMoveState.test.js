@@ -10,6 +10,12 @@ const startState = require ( "./snakeMoveState" );
 
 beforeEach ( () =>
 {
+    window.babylonProject.updateTorusMeshes = jest.fn ();
+
+    window.babylonProject.config =
+    {
+        upPos : { x : 1, y : 1, z : 1 }
+    };
 });
 
 //Tests can assign a function here to have it called after they exit
@@ -122,11 +128,6 @@ let MockEngine = jest.fn ( function ()
     {
         return 0.1;
     });
-});
-
-beforeEach ( () => 
-{
-    window.babylonProject.updateTorusMeshes = jest.fn ();
 });
 
 /****************************************************************************
