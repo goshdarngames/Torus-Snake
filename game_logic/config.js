@@ -11,7 +11,7 @@
 
     babylonProject.config = 
     {
-        upPos : { x : 0, y : 1, z : 1 }
+        upPos : { x : 0, y : 2, z : 1 }
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
