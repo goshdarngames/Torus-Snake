@@ -8,30 +8,51 @@ const test_module = require ("./gui");
  * EXPECTED TEST VALUES
  ***************************************************************************/
 
+let defaultOptions = 
+{
+    id         : "buttonPlane",
+    buttonText : "Click Here",
+    planeSize  : 2
+};
+
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
 
 let MockBabylon = jest.fn ( function ()
 {
-    this.GUI = new MockGUI ();
+    this.GUI = 
+    {
+        Button : 
+        {
+            CreateSimpleButton : jest.fn ()
+        },
+        AdvancedDynamicTexture :
+        {
+            CreateForMesh : jest.fn ( function ()
+            {
+                return new MockAdvancedDynamicTexture ();
+            })
+        }
+    };
+
+    this.Mesh =
+    {
+        CreatePlane : jest.fn ( function ()
+        {
+            return new MockMesh ();
+        })
+    };
 });
 
-let MockGUI = jest.fn ( function ()
-{
-    this.Button = new MockButton ();
-
-    this.AdvancedDynamicTexture = new MockAdvancedDynamicTexture ();
-});
+let MockMesh = jest.fn ();
 
 let MockButton = jest.fn ( function ()
 {
-    this.CreateSimpleButton = jest.fn ();
 });
 
 let MockAdvancedDynamicTexture = jest.fn ( function ()
 {
-    this.CreateForMesh = jest.fn ();
 });
 
 /****************************************************************************
@@ -71,6 +92,49 @@ describe ( "window.babylonProject.createButtonPlane", () =>
     {
         expect ( () => window.babylonProject.createButtonPlane () )
             .toThrow ( "babylon parameter is undefined" );
+    });
+
+    test ( "creates and returns button", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+
+        let retVal = 
+            window.babylonProject.createButtonPlane ( mock_babylon );
+
+        expect ( retVal )
+            .toBeDefined ();
+
+        //check button plane was created and returned
+
+        expect ( mock_babylon.Mesh.CreatePlane )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( mock_babylon.Mesh.CreatePlane )
+            .toHaveBeenCalledWith (
+                    defaultOptions.id, defaultOptions.planeSize );
+
+        expect ( retVal.buttonPlane )
+            .toBeDefined ();
+
+        expect ( retVal.buttonPlane )
+            .toBe ( mock_babylon.Mesh.CreatePlane
+                .mock.results [ 0 ].value ); 
+
+        //check advanced texture was created and returned
+
+        expect ( mock_babylon.GUI.AdvancedDynamicTexture.CreateForMesh )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( mock_babylon.GUI.AdvancedDynamicTexture.CreateForMesh )
+            .toHaveBeenCalledWith ( retVal.buttonPlane );
+
+        expect ( retVal.buttonTexture )
+            .toBeDefined ();
+
+        expect ( retVal.buttonTexture )
+            .toBe ( mock_babylon.GUI.AdvancedDynamicTexture.CreateForMesh
+                .mock.results [ 0 ].value ); 
+
     });
 
 });
