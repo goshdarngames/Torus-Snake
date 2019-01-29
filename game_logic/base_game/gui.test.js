@@ -8,13 +8,6 @@ const test_module = require ("./gui");
  * EXPECTED TEST VALUES
  ***************************************************************************/
 
-let defaultOptions = 
-{
-    id         : "buttonPlane",
-    buttonText : "Click Here",
-    planeSize  : 2
-};
-
 /****************************************************************************
  * MOCK DATA
  ***************************************************************************/
@@ -25,7 +18,10 @@ let MockBabylon = jest.fn ( function ()
     {
         Button : 
         {
-            CreateSimpleButton : jest.fn ()
+            CreateSimpleButton : jest.fn ( function ()
+            {
+                return new MockButton ();
+            })
         },
         AdvancedDynamicTexture :
         {
@@ -49,11 +45,30 @@ let MockMesh = jest.fn ();
 
 let MockButton = jest.fn ( function ()
 {
+    this.onPointerUpObservable = 
+    {
+        add : jest.fn ()
+    };
+
 });
 
 let MockAdvancedDynamicTexture = jest.fn ( function ()
 {
 });
+
+let defaultOptions = function ()
+{
+    retVal = 
+    {
+        id         : "buttonPlane",
+        buttonName : "buttonPlaneButton",
+        buttonText : "Click Here",
+        buttonCall : jest.fn (),
+        planeSize  : 2
+    }
+
+    return retVal;
+};
 
 /****************************************************************************
  * SETUP / TEARDOWN
@@ -90,16 +105,26 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
     test ( "validates args", () =>
     {
+        let mock_babylon = new MockBabylon ();
+        
         expect ( () => window.babylonProject.createButtonPlane () )
             .toThrow ( "babylon parameter is undefined" );
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( mock_babylon ) )
+            .toThrow ( "options parameter is undefined" );
+
     });
 
     test ( "creates and returns button", () =>
     {
         let mock_babylon = new MockBabylon ();
 
+        let options = defaultOptions ();
+
         let retVal = 
-            window.babylonProject.createButtonPlane ( mock_babylon );
+            window.babylonProject.createButtonPlane ( 
+                    mock_babylon, options );
 
         expect ( retVal )
             .toBeDefined ();
@@ -111,7 +136,7 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
         expect ( mock_babylon.Mesh.CreatePlane )
             .toHaveBeenCalledWith (
-                    defaultOptions.id, defaultOptions.planeSize );
+                    options.id, options.planeSize );
 
         expect ( retVal.buttonPlane )
             .toBeDefined ();
@@ -134,6 +159,33 @@ describe ( "window.babylonProject.createButtonPlane", () =>
         expect ( retVal.buttonTexture )
             .toBe ( mock_babylon.GUI.AdvancedDynamicTexture.CreateForMesh
                 .mock.results [ 0 ].value ); 
+
+        //check button was created and returned
+
+        expect ( mock_babylon.GUI.Button.CreateSimpleButton )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( mock_babylon.GUI.Button.CreateSimpleButton )
+            .toHaveBeenCalledWith ( 
+                    options.buttonName, options.buttonText );
+
+        expect ( retVal.button )
+            .toBeDefined ();
+
+        expect ( retVal.button )
+            .toBe ( mock_babylon.GUI.Button.CreateSimpleButton
+                .mock.results [ 0 ].value ); 
+
+        //check buttonCall is set to the function from the options
+
+        expect ( options.buttonCall )
+            .toHaveBeenCalledTimes ( 0 );
+
+        expect ( retVal.button.onPointerUpObservable.add )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( retVal.button.onPointerUpObservable.add )
+            .toHaveBeenCalledWith ( options.buttonCall );
 
     });
 

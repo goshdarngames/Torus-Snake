@@ -7,30 +7,34 @@
 ( function ( babylonProject, undefined )
 {
 
-    babylonProject.createButtonPlane = function ( babylon )
+    babylonProject.createButtonPlane = function ( babylon, options )
     {
-
-        let defaultOptions = 
-        {
-            id         : "buttonPlane",
-            buttonText : "Click Here",
-            planeSize  : 2
-        };
-
         if ( babylon == undefined )
         {
             throw ( "babylon parameter is undefined" );
         }
 
+        if ( options == undefined )
+        {
+            throw ( "options parameter is undefined" );
+        }
+
         let plane = babylon.Mesh.CreatePlane (
-            defaultOptions.id, defaultOptions.planeSize );
+            options.id, options.planeSize );
 
         let advancedTexture = 
             babylon.GUI.AdvancedDynamicTexture.CreateForMesh ( plane );
 
+        let button = 
+            babylon.GUI.Button.CreateSimpleButton ( 
+                    options.buttonName, options.buttonText );
+
+        button.onPointerUpObservable.add ( options.buttonCall );
+
         let retVal =
         {
             buttonPlane   : plane,
+            button        : button,
             buttonTexture : advancedTexture
         };
 
