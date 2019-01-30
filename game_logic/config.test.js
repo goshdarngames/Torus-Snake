@@ -73,4 +73,11 @@ describe ( "window.babylonProject.config", () =>
 
     });
 
+    test ( "defines turnControlPlaneSize", () =>
+    {
+        expect ( parseFloat ( 
+            window.babylonProject.config.turnControlPlaneSize ) )
+            .not.toBeNaN ();
+    });
+
 });
