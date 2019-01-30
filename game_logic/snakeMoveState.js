@@ -36,7 +36,7 @@
         if ( gameData.turnInputControls  == undefined )
         {
             gameData.turnInputControls = 
-                new TurnInputControls ( babylon, gameData.scene );
+                new TurnInputControls ( babylon, gameData );
         }
 
         //check if move timer has elapsed and move if so
@@ -115,21 +115,25 @@
     };
 
     /************************************************************************
-     * PRIVATE DATA
+     * Input Controls
      ***********************************************************************/
 
-    let TurnInputControls = function ( babylon, scene )
+    let TurnInputControls = function ( babylon, gameData )
     {
-        this.upControl = 
-            window.babylonProject.createButtonPlane (
-                babylon,
-                {
-                        id         : "upButtonPlane",
-                        buttonName : "upButton",
-                        buttonText : "U" 
-                });
+        let config = window.babylonProject.config; 
+        
+        this.upControl = window.babylonProject.createButtonPlane (
+            babylon,
+            {
+                id         : "upButtonPlane",
+                planeSize  : config.turnControlPlaneSize,
+                buttonName : "upButton",
+                buttonText : "U",
+                buttonCall : () => turnControlCallback ( 
+                                             gameData.dirUp, gameData )
+            });
 
-        configUp = window.babylonProject.config.upPos;
+        let configUp = config.upPos;
 
         this.upControl.buttonPlane.position = 
             new babylon.Vector3 ( 
@@ -137,6 +141,11 @@
                            configUp.y,
                            configUp.z  );
 
+    };
+
+    let turnControlCallback = function ( newDir, gameData )
+    {
+        console.log ( "UP" );
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));

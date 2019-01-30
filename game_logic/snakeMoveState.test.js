@@ -14,7 +14,9 @@ beforeEach ( () =>
 
     window.babylonProject.config =
     {
-        upPos : { x : 1, y : 1, z : 1 }
+        upPos : { x : 1, y : 1, z : 1 },
+
+        turnControlPlaneSize : 5
     };
 
     window.babylonProject.createButtonPlane = jest.fn ( function ()
@@ -212,13 +214,23 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         configUp = window.babylonProject.config.upPos;
 
-        expect ( createButtonPlaneMock.calls [ 0 ] )
-            .toEqual ( [ mock_babylon, 
-                    {
-                        id         : "upButtonPlane",
-                        buttonName : "upButton",
-                        buttonText : "U" 
-                    }] );
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 0 ] )
+            .toBe ( mock_babylon ); 
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].id )
+            .toEqual ( "upButtonPlane" );
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].planeSize )
+            .toEqual ( window.babylonProject.config.turnControlPlaneSize );
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonName )
+            .toEqual ( "upButton" );
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonText )
+            .toEqual ( "U" );
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonCall )
+            .toBeInstanceOf ( Function );
 
         expect ( mock_gameData.turnInputControls.upControl )
             .toBeDefined ();
