@@ -16,6 +16,18 @@ beforeEach ( () =>
     {
         upPos : { x : 1, y : 1, z : 1 }
     };
+
+    window.babylonProject.createButtonPlane = jest.fn ( function ()
+    {
+        retVal = 
+        {
+            buttonPlane   : new MockMesh (),
+            button        : jest.fn (),
+            buttonTexture : jest.fn ()
+        };
+
+        return retVal;
+    });
 });
 
 //Tests can assign a function here to have it called after they exit
@@ -88,10 +100,7 @@ let MockBabylon = jest.fn ( function ()
 
 let MockMesh = jest.fn ( function ()
 {
-    this.CreatePlane = jest.fn (function ()
-    {
-        return new MockMesh ();
-    });
+    this.position = jest.fn ();
 });
 
 let MockGameData = jest.fn ( function ()
@@ -193,22 +202,32 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         expect ( mock_gameData.turnInputControls )
             .toBeDefined ();
 
-        expect ( mock_babylon.Mesh.CreatePlane )
+        expect ( window.babylonProject.createButtonPlane )
             .toHaveBeenCalledTimes ( 1 );
 
-        let createPlaneMock = mock_babylon.Mesh.CreatePlane.mock;
+        let createButtonPlaneMock = 
+            window.babylonProject.createButtonPlane.mock;
 
         //verify up arrow
 
         configUp = window.babylonProject.config.upPos;
 
-        expect ( createPlaneMock.calls [ 0 ] )
-            .toEqual ( [ "upPlane", 0.2, mock_gameData.scene ] );
+        expect ( createButtonPlaneMock.calls [ 0 ] )
+            .toEqual ( [ mock_babylon, 
+                    {
+                        id         : "upButtonPlane",
+                        buttonName : "upButton",
+                        buttonText : "U" 
+                    }] );
 
-        expect ( mock_gameData.turnInputControls.upPlane )
-            .toBe ( createPlaneMock.results [ 0 ].value );
+        expect ( mock_gameData.turnInputControls.upControl )
+            .toBeDefined ();
 
-        expect ( mock_gameData.turnInputControls.upPlane.position )
+        expect ( mock_gameData.turnInputControls.upControl )
+            .toEqual ( createButtonPlaneMock.results [ 0 ].value );
+
+        expect ( mock_gameData.turnInputControls.upControl
+                .buttonPlane.position )
             .toEqual ( 
                 new mock_babylon.Vector3 (
                            configUp.x,
