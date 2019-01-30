@@ -114,6 +114,98 @@ describe ( "window.babylonProject.createButtonPlane", () =>
             window.babylonProject.createButtonPlane ( mock_babylon ) )
             .toThrow ( "options parameter is undefined" );
 
+        //validate options
+
+        //id
+
+        let opt = defaultOptions ();
+
+        opt.id = undefined;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.id should be a string" );
+
+        opt.id = 123;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.id should be a string" );
+
+        //buttonName
+
+        opt = defaultOptions ();
+
+        opt.buttonName = undefined;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonName should be a string" );
+
+        opt.buttonName = 123;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonName should be a string" );
+
+        //buttonText
+
+        opt = defaultOptions ();
+
+        opt.buttonText = undefined;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonText should be a string" );
+
+        opt.buttonText = 123;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonText should be a string" );
+
+        //buttonCall
+
+        opt = defaultOptions ();
+
+        opt.buttonCall = undefined;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonCall should be a function" );
+
+        opt.buttonCall = 123;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.buttonCall should be a function" );
+
+        //planeSize
+
+        opt = defaultOptions ();
+
+        opt.planeSize = undefined;
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.planeSize should be a number" );
+
+        opt.planeSize = "123";
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                mock_babylon, opt ) )
+            .toThrow ( "options.planeSize should be a number" );
+
     });
 
     test ( "creates and returns button", () =>
