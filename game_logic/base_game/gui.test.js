@@ -32,13 +32,14 @@ let MockBabylon = jest.fn ( function ()
         }
     };
 
-    this.Mesh =
+    this.MeshBuilder =
     {
-        CreatePlane : jest.fn ( function ()
+        CreatePlane : jest.fn ( function () 
         {
             return new MockMesh ();
         })
     };
+
 });
 
 let MockMesh = jest.fn ();
@@ -56,15 +57,13 @@ let MockAdvancedDynamicTexture = jest.fn ( function ()
 {
 });
 
-let defaultOptions = function ()
+let defaultButtonOptions = function ()
 {
     retVal = 
     {
-        id         : "buttonPlane",
-        buttonName : "buttonPlaneButton",
-        buttonText : "Click Here",
+        name : "buttonPlaneButton",
+        Text : "Click Here",
         buttonCall : jest.fn (),
-        planeSize  : 2
     }
 
     return retVal;
@@ -112,129 +111,42 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
         expect ( () => 
             window.babylonProject.createButtonPlane ( mock_babylon ) )
-            .toThrow ( "options parameter is undefined" );
-
-        //validate options
-
-        //id
-
-        let opt = defaultOptions ();
-
-        opt.id = undefined;
+            .toThrow ( "planeOptions parameter is undefined" );
 
         expect ( () => 
             window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.id should be a string" );
-
-        opt.id = 123;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.id should be a string" );
-
-        //buttonName
-
-        opt = defaultOptions ();
-
-        opt.buttonName = undefined;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonName should be a string" );
-
-        opt.buttonName = 123;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonName should be a string" );
-
-        //buttonText
-
-        opt = defaultOptions ();
-
-        opt.buttonText = undefined;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonText should be a string" );
-
-        opt.buttonText = 123;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonText should be a string" );
-
-        //buttonCall
-
-        opt = defaultOptions ();
-
-        opt.buttonCall = undefined;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonCall should be a function" );
-
-        opt.buttonCall = 123;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.buttonCall should be a function" );
-
-        //planeSize
-
-        opt = defaultOptions ();
-
-        opt.planeSize = undefined;
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.planeSize should be a number" );
-
-        opt.planeSize = "123";
-
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( 
-                mock_babylon, opt ) )
-            .toThrow ( "options.planeSize should be a number" );
-
+                mock_babylon, jest.fn () ) )
+            .toThrow ( "buttonOptions parameter is undefined" );
     });
 
     test ( "creates and returns button", () =>
     {
         let mock_babylon = new MockBabylon ();
 
-        let options = defaultOptions ();
+        let planeOptions = jest.fn ();
+
+        let buttonOptions = defaultButtonOptions ();
 
         let retVal = 
             window.babylonProject.createButtonPlane ( 
-                    mock_babylon, options );
+                    mock_babylon, planeOptions, buttonOptions  );
 
         expect ( retVal )
             .toBeDefined ();
 
         //check button plane was created and returned
 
-        expect ( mock_babylon.Mesh.CreatePlane )
+        expect ( mock_babylon.MeshBuilder.CreatePlane )
             .toHaveBeenCalledTimes ( 1 );
 
-        expect ( mock_babylon.Mesh.CreatePlane )
-            .toHaveBeenCalledWith (
-                    options.id, options.planeSize );
+        expect ( mock_babylon.MeshBuilder.CreatePlane )
+            .toHaveBeenCalledWith ( planeOptions );
 
         expect ( retVal.buttonPlane )
             .toBeDefined ();
 
         expect ( retVal.buttonPlane )
-            .toBe ( mock_babylon.Mesh.CreatePlane
+            .toBe ( mock_babylon.MeshBuilder.CreatePlane
                 .mock.results [ 0 ].value ); 
 
         //check advanced texture was created and returned
@@ -259,7 +171,7 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
         expect ( mock_babylon.GUI.Button.CreateSimpleButton )
             .toHaveBeenCalledWith ( 
-                    options.buttonName, options.buttonText );
+                    buttonOptions.buttonName, buttonOptions.buttonText );
 
         expect ( retVal.button )
             .toBeDefined ();
@@ -268,16 +180,16 @@ describe ( "window.babylonProject.createButtonPlane", () =>
             .toBe ( mock_babylon.GUI.Button.CreateSimpleButton
                 .mock.results [ 0 ].value ); 
 
-        //check buttonCall is set to the function from the options
+        //check buttonCall is set to the function from buttonOptions
 
-        expect ( options.buttonCall )
+        expect ( buttonOptions.buttonCall )
             .toHaveBeenCalledTimes ( 0 );
 
         expect ( retVal.button.onPointerUpObservable.add )
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( retVal.button.onPointerUpObservable.add )
-            .toHaveBeenCalledWith ( options.buttonCall );
+            .toHaveBeenCalledWith ( buttonOptions.buttonCall );
 
     });
 

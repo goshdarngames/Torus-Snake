@@ -7,54 +7,34 @@
 ( function ( babylonProject, undefined )
 {
 
-    babylonProject.createButtonPlane = function ( babylon, options )
+    babylonProject.createButtonPlane = 
+        function ( babylon, planeOptions, buttonOptions )
     {
         if ( babylon == undefined )
         {
             throw ( "babylon parameter is undefined" );
         }
 
-        if ( options == undefined )
+        if ( planeOptions == undefined )
         {
-            throw ( "options parameter is undefined" );
+            throw ( "planeOptions parameter is undefined" );
         }
 
-        if ( typeof options.id !== 'string' )
+        if ( buttonOptions == undefined )
         {
-            throw ( "options.id should be a string" );
+            throw ( "buttonOptions parameter is undefined" );
         }
 
-        if ( typeof options.buttonName !== 'string' )
-        {
-            throw ( "options.buttonName should be a string" );
-        }
-
-        if ( typeof options.buttonText !== 'string' )
-        {
-            throw ( "options.buttonText should be a string" );
-        }
-
-        if ( typeof options.buttonCall !== 'function' )
-        {
-            throw ( "options.buttonCall should be a function" );
-        }
-
-        if ( typeof options.planeSize !== 'number' )
-        {
-            throw ( "options.planeSize should be a number" );
-        }
-
-        let plane = babylon.Mesh.CreatePlane (
-            options.id, options.planeSize );
+        let plane = babylon.MeshBuilder.CreatePlane ( planeOptions );
 
         let advancedTexture = 
             babylon.GUI.AdvancedDynamicTexture.CreateForMesh ( plane );
 
         let button = 
             babylon.GUI.Button.CreateSimpleButton ( 
-                    options.buttonName, options.buttonText );
+                    buttonOptions.buttonName, buttonOptions.buttonText );
 
-        button.onPointerUpObservable.add ( options.buttonCall );
+        button.onPointerUpObservable.add ( buttonOptions.buttonCall );
 
         let retVal =
         {
