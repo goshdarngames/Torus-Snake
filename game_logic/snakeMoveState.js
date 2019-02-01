@@ -123,16 +123,22 @@
         let config = window.babylonProject.config; 
         
         this.upControl = window.babylonProject.createButtonPlane (
-            babylon,
+            "up",
+            //plane options
             {
-                id         : "upButtonPlane",
-                planeSize  : config.turnControlPlaneSize,
-                buttonName : "upButton",
+                size  : config.turnControlPlaneSize
+            },
+            //button options
+            {
                 buttonText : "U",
                 buttonCall : () => turnControlCallback ( 
                                              gameData.dirUp, gameData )
-            });
+            },
+            gameData.scene,
+            babylon
 
+        );
+        
         let configUp = config.upPos;
 
         this.upControl.buttonPlane.position = 

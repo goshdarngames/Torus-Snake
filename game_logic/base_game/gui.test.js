@@ -55,6 +55,7 @@ let MockButton = jest.fn ( function ()
 
 let MockAdvancedDynamicTexture = jest.fn ( function ()
 {
+    this.addControl = jest.fn ();
 });
 
 let defaultButtonOptions = function ()
@@ -191,6 +192,14 @@ describe ( "window.babylonProject.createButtonPlane", () =>
         expect ( retVal.button )
             .toBe ( mock_babylon.GUI.Button.CreateSimpleButton
                 .mock.results [ 0 ].value ); 
+
+        //check button was added to texture as control
+
+        expect ( retVal.buttonTexture.addControl )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( retVal.buttonTexture.addControl )
+            .toHaveBeenCalledWith ( retVal.button );
 
         //check buttonCall is set to the function from buttonOptions
 

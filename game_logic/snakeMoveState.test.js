@@ -215,22 +215,34 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         configUp = window.babylonProject.config.upPos;
 
         expect ( createButtonPlaneMock.calls [ 0 ] [ 0 ] )
-            .toBe ( mock_babylon ); 
+            .toBe ( "up" ); 
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].id )
-            .toEqual ( "upButtonPlane" );
+        //up arrow - planeOptions
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].planeSize )
-            .toEqual ( window.babylonProject.config.turnControlPlaneSize );
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ] )
+            .toEqual ( 
+            {
+                size : window.babylonProject.config.turnControlPlaneSize
+            } );
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonName )
-            .toEqual ( "upButton" );
+        //up arrow button options
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonText )
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonText )
             .toEqual ( "U" );
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ].buttonCall )
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonCall )
             .toBeInstanceOf ( Function );
+
+
+        //scene and babylon parameters
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 3 ] )
+            .toBe ( mock_gameData.scene );
+
+        expect ( createButtonPlaneMock.calls [ 0 ] [ 4 ] )
+            .toBe ( mock_babylon );
+
+        //check input controls were stored in gamedata
 
         expect ( mock_gameData.turnInputControls.upControl )
             .toBeDefined ();

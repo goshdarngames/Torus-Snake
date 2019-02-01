@@ -45,7 +45,15 @@
             babylon.GUI.Button.CreateSimpleButton ( 
                     name+"Button", buttonOptions.buttonText );
 
+        button.width = 1;
+        button.height = 0.4;
+        button.color = "white";
+        button.fontSize = 50;
+        button.background = "green";
+
         button.onPointerUpObservable.add ( buttonOptions.buttonCall );
+
+        advancedTexture.addControl ( button );
 
         let retVal =
         {

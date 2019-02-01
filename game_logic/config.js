@@ -11,9 +11,9 @@
 
     babylonProject.config = 
     {
-        upPos : { x : 0, y : 2, z : 1 },
+        upPos : { x : 0, y : 1.5, z : 1 },
 
-        turnControlPlaneSize : 2
+        turnControlPlaneSize :  0.3
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
