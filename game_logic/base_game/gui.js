@@ -8,11 +8,11 @@
 {
 
     babylonProject.createButtonPlane = 
-        function ( babylon, planeOptions, buttonOptions )
+        function ( name, planeOptions, buttonOptions, scene, babylon )
     {
-        if ( babylon == undefined )
+        if ( name == undefined )
         {
-            throw ( "babylon parameter is undefined" );
+            throw ( "name parameter is undefined" );
         }
 
         if ( planeOptions == undefined )
@@ -25,14 +25,25 @@
             throw ( "buttonOptions parameter is undefined" );
         }
 
-        let plane = babylon.MeshBuilder.CreatePlane ( planeOptions );
+        if ( scene == undefined )
+        {
+            throw ( "scene parameter is undefined" );
+        }
+
+        if ( babylon == undefined )
+        {
+            throw ( "babylon parameter is undefined" );
+        }
+
+        let plane = babylon.MeshBuilder.CreatePlane (
+            name+"ButtonPlane", planeOptions, scene );
 
         let advancedTexture = 
             babylon.GUI.AdvancedDynamicTexture.CreateForMesh ( plane );
 
         let button = 
             babylon.GUI.Button.CreateSimpleButton ( 
-                    buttonOptions.buttonName, buttonOptions.buttonText );
+                    name+"Button", buttonOptions.buttonText );
 
         button.onPointerUpObservable.add ( buttonOptions.buttonCall );
 

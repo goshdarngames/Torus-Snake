@@ -61,7 +61,6 @@ let defaultButtonOptions = function ()
 {
     retVal = 
     {
-        name : "buttonPlaneButton",
         Text : "Click Here",
         buttonCall : jest.fn (),
     }
@@ -107,16 +106,27 @@ describe ( "window.babylonProject.createButtonPlane", () =>
         let mock_babylon = new MockBabylon ();
         
         expect ( () => window.babylonProject.createButtonPlane () )
-            .toThrow ( "babylon parameter is undefined" );
+            .toThrow ( "name parameter is undefined" );
 
-        expect ( () => 
-            window.babylonProject.createButtonPlane ( mock_babylon ) )
+        expect ( () => window.babylonProject.createButtonPlane (
+                    "name" ) )
             .toThrow ( "planeOptions parameter is undefined" );
 
         expect ( () => 
             window.babylonProject.createButtonPlane ( 
-                mock_babylon, jest.fn () ) )
+                "name", jest.fn () ) )
             .toThrow ( "buttonOptions parameter is undefined" );
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                "name", jest.fn (), jest.fn () ) )
+            .toThrow ( "scene parameter is undefined" );
+
+        expect ( () => 
+            window.babylonProject.createButtonPlane ( 
+                "name", jest.fn (), jest.fn (), jest.fn () ) )
+            .toThrow ( "babylon parameter is undefined" );
+
     });
 
     test ( "creates and returns button", () =>
@@ -127,9 +137,11 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
         let buttonOptions = defaultButtonOptions ();
 
+        let scene = jest.fn ();
+
         let retVal = 
             window.babylonProject.createButtonPlane ( 
-                    mock_babylon, planeOptions, buttonOptions  );
+                "name", planeOptions, buttonOptions, scene, mock_babylon );
 
         expect ( retVal )
             .toBeDefined ();
@@ -140,7 +152,7 @@ describe ( "window.babylonProject.createButtonPlane", () =>
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( mock_babylon.MeshBuilder.CreatePlane )
-            .toHaveBeenCalledWith ( planeOptions );
+            .toHaveBeenCalledWith ( "nameButtonPlane", planeOptions, scene );
 
         expect ( retVal.buttonPlane )
             .toBeDefined ();
@@ -171,7 +183,7 @@ describe ( "window.babylonProject.createButtonPlane", () =>
 
         expect ( mock_babylon.GUI.Button.CreateSimpleButton )
             .toHaveBeenCalledWith ( 
-                    buttonOptions.buttonName, buttonOptions.buttonText );
+                    "nameButton", buttonOptions.buttonText );
 
         expect ( retVal.button )
             .toBeDefined ();
