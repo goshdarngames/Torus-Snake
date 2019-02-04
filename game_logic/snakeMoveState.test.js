@@ -199,6 +199,19 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_babylon = new MockBabylon ();
         mock_gameData = new MockGameData ();
 
+        //replace turnSnake with a mock function so the button callback
+        //can be tested
+
+        let oldTurnSnake = window.babylonProject.turnSnake;
+
+        window.babylonProject.turnSnake = jest.fn ();
+
+        oneTimeCleanUp = () => 
+            window.babylonProject.turnSnake = oldTurnSnake;
+
+        //executing the function for the first time should cause the
+        //buttons to be created
+
         window.babylonProject.snakeMoveState ( mock_babylon, mock_gameData ); 
 
         expect ( mock_gameData.turnInputControls )
@@ -233,6 +246,13 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         expect ( createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonCall )
             .toBeInstanceOf ( Function );
 
+        createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonCall ();
+
+        expect ( window.babylonProject.turnSnake )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( window.babylonProject.turnSnake )
+            .toHaveBeenLastCalledWith ( mock_gameData.dirUp, mock_gameData );
 
         //scene and babylon parameters
 
@@ -257,6 +277,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                            configUp.x,
                            configUp.y,
                            configUp.z ) );
+
 
     });
 
@@ -426,5 +447,25 @@ describe ( "window.babylonProject.moveSnake", () =>
             let sumCoord = 
                 { x : dir.x + prevCoord.x, y : dir.y + prevCoord.y };
         });
+    });
+});
+
+describe ( "window.babylonProject.turnSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.turnSnake )
+            .toBeDefined ();
+    });
+
+    test ( "changes the direction in gameData", () =>
+    {
+        let mock_gameData = new MockGameData ();
+
+        window.babylonProject.turnSnake ( 
+                mock_gameData.dirUp, mock_gameData );
+
+        expect ( mock_gameData.currentDir )
+            .toBe ( mock_gameData.dirUp );
     });
 });

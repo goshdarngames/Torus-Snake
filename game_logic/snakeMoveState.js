@@ -114,6 +114,11 @@
         return newSnake;
     };
 
+    babylonProject.turnSnake = function ( newDir, gameData )
+    {
+        gameData.currentDir = newDir;
+    };
+
     /************************************************************************
      * Input Controls
      ***********************************************************************/
@@ -151,7 +156,7 @@
 
     let turnControlCallback = function ( newDir, gameData )
     {
-        console.log ( "UP" );
+        babylonProject.turnSnake ( newDir, gameData );
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
