@@ -14,6 +14,11 @@ beforeEach ( () =>
 
     window.babylonProject.config =
     {
+        dirUp    : { x : -1, y :  0 },
+        dirDown  : { x :  1, y :  0 },
+        dirLeft  : { x :  0, y :  1 },
+        dirRight : { x :  0, y : -1 },
+
         upPos : { x : 1, y : 1, z : 1 },
 
         turnControlPlaneSize : 5
@@ -252,7 +257,8 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( window.babylonProject.turnSnake )
-            .toHaveBeenLastCalledWith ( mock_gameData.dirUp, mock_gameData );
+            .toHaveBeenLastCalledWith ( 
+                    window.babylonProject.config.dirUp, mock_gameData );
 
         //scene and babylon parameters
 

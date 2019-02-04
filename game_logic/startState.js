@@ -81,12 +81,7 @@
 
         gameData.snakeMoveTimer = gameData.snakeMoveInterval;
 
-        gameData.dirLeft  = { x :  0, y :  1 };
-        gameData.dirRight = { x :  0, y : -1 };
-        gameData.dirUp    = { x : -1, y :  0 };
-        gameData.dirDown  = { x :  1, y :  0 };
-
-        gameData.currentDir = gameData.dirLeft;
+        gameData.currentDir = window.babylonProject.config.dirLeft;
 
     }
 

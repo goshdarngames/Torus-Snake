@@ -65,7 +65,7 @@ describe ( "window.babylonProject.config", () =>
         expect ( parseFloat ( window.babylonProject.config.upPos.y ) )
             .not.toBeNaN ();
 
-        expect ( window.babylonProject.config.upPos.x )
+        expect ( window.babylonProject.config.upPos.z )
             .toBeDefined ();
 
         expect ( parseFloat ( window.babylonProject.config.upPos.z ) )
@@ -78,6 +78,31 @@ describe ( "window.babylonProject.config", () =>
         expect ( parseFloat ( 
             window.babylonProject.config.turnControlPlaneSize ) )
             .not.toBeNaN ();
+    });
+
+    test ( "defines snakeMoveInitialInterval", () =>
+    {
+        expect ( window.babylonProject.config.snakeMoveInitialInterval )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.snakeMoveInitialInterval )
+            .not.toBeNaN ();
+    });
+
+    test ( "defines movement directions", () =>
+    {
+        expect ( window.babylonProject.config.dirUp )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.dirDown )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.dirLeft )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.dirRight )
+            .toBeDefined ();
+
     });
 
 });

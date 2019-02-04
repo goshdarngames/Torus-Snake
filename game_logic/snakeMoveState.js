@@ -136,8 +136,8 @@
             //button options
             {
                 buttonText : "U",
-                buttonCall : () => turnControlCallback ( 
-                                             gameData.dirUp, gameData )
+                buttonCall : () => 
+                    turnControlCallback ( config.dirUp, gameData )
             },
             gameData.scene,
             babylon

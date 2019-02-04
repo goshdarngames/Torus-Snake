@@ -137,7 +137,12 @@ beforeEach ( () =>
 {
     window.babylonProject.config =
     {
-        snakeMoveInitialInterval : 1200
+        snakeMoveInitialInterval : 1200,
+
+        dirUp    : { x :  1,  y :  0  },
+        dirDown  : { x : -1,  y :  0  },
+        dirLeft  : { x :  0,  y : -1  },
+        dirRight : { x :  0,  y :  1  }
     };
     
     window.babylonProject.createVRScene = jest.fn ( function ()
@@ -652,7 +657,7 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
-    test ( "initializes directions", () =>
+    test ( "initializes current direction", () =>
     {
 
         let mock_babylon = new MockBabylon ();
@@ -660,12 +665,8 @@ describe ( "window.babylonProject.startState", () =>
 
         window.babylonProject.startState ( mock_babylon, mock_gameData );
 
-        expect ( mock_gameData.dirLeft  ).toEqual ( { x :  0, y :  1 } );
-        expect ( mock_gameData.dirRight ).toEqual ( { x :  0, y : -1 } );
-        expect ( mock_gameData.dirUp    ).toEqual ( { x : -1, y :  0 } );
-        expect ( mock_gameData.dirDown  ).toEqual ( { x :  1, y :  0 } );
-
-        expect ( mock_gameData.currentDir ).toEqual ( { x : 0, y : 1 } );
+        expect ( mock_gameData.currentDir )
+            .toEqual ( window.babylonProject.config.dirLeft );
 
     });
 
