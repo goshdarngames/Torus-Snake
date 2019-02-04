@@ -135,6 +135,11 @@ MockBabylon = jest.fn ( function ()
 
 beforeEach ( () =>
 {
+    window.babylonProject.config =
+    {
+        snakeMoveInitialInterval : 1200
+    };
+    
     window.babylonProject.createVRScene = jest.fn ( function ()
     {
         let retVal = 
@@ -638,8 +643,12 @@ describe ( "window.babylonProject.startState", () =>
 
         window.babylonProject.startState ( mock_babylon, mock_gameData );
 
-        expect ( mock_gameData.snakeMoveInterval ).toBe ( 750 );
-        expect ( mock_gameData.snakeMoveTimer ).toBe ( 750 );
+        expect ( mock_gameData.snakeMoveInterval )
+            .toEqual ( 
+                window.babylonProject.config.snakeMoveInitialInterval );
+
+        expect ( mock_gameData.snakeMoveTimer )
+            .toEqual ( mock_gameData.snakeMoveInterval );
 
     });
 
