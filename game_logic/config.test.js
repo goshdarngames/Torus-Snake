@@ -73,6 +73,81 @@ describe ( "window.babylonProject.config", () =>
 
     });
 
+    test ( "defines downPos", () =>
+    {
+        expect ( window.babylonProject.config.downPos )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.downPos.x )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.downPos.x ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.downPos.y )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.downPos.y ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.downPos.z )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.downPos.z ) )
+            .not.toBeNaN ();
+
+    });
+
+    test ( "defines rightPos", () =>
+    {
+        expect ( window.babylonProject.config.rightPos )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.rightPos.x )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.rightPos.x ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.rightPos.y )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.rightPos.y ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.rightPos.z )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.rightPos.z ) )
+            .not.toBeNaN ();
+
+    });
+
+    test ( "defines leftPos", () =>
+    {
+        expect ( window.babylonProject.config.leftPos )
+            .toBeDefined ();
+
+        expect ( window.babylonProject.config.leftPos.x )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.leftPos.x ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.leftPos.y )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.leftPos.y ) )
+            .not.toBeNaN ();
+
+        expect ( window.babylonProject.config.leftPos.z )
+            .toBeDefined ();
+
+        expect ( parseFloat ( window.babylonProject.config.leftPos.z ) )
+            .not.toBeNaN ();
+
+    });
+
     test ( "defines turnControlPlaneSize", () =>
     {
         expect ( parseFloat ( 
