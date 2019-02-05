@@ -19,6 +19,11 @@ beforeEach ( () =>
         dirLeft  : { x :  0, y :  1 },
         dirRight : { x :  0, y : -1 },
 
+        upPos    : { x : -1, y :  0 },
+        downPos  : { x :  1, y :  0 },
+        leftPos  : { x :  0, y :  1 },
+        rightPos : { x :  0, y : -1 },
+
         upPos : { x : 1, y : 1, z : 1 },
 
         turnControlPlaneSize : 5
@@ -210,33 +215,37 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         let testCases = 
         [
             { 
-                buttonDir   : config.upDir,
+                buttonDir   : config.dirUp,
                 buttonName  : "up",
                 buttonText  : "U",
-                controlName : "upControl"
+                controlName : "upControl",
+                buttonPos   : config.upPos
             },
 
             { 
-                buttonDir   : config.downDir,
+                buttonDir   : config.dirDown,
                 buttonName  : "down",
                 buttonText  : "D",
-                controlName : "downControl"
+                controlName : "downControl",
+                buttonPos   : config.downPos
             },
 
-            { 
-                buttonDir   : config.rightDir,
-                buttonName  : "right",
-                buttonText  : "R",
-                controlName : "rightControl"
-            },
 
             { 
-                buttonDir   : config.leftDir,
+                buttonDir   : config.dirLeft,
                 buttonName  : "left",
                 buttonText  : "L",
-                controlName : "leftControl"
-            }
+                controlName : "leftControl",
+                buttonPos   : config.leftPos
+            },
 
+            { 
+                buttonDir   : config.dirRight,
+                buttonName  : "right",
+                buttonText  : "R",
+                controlName : "rightControl",
+                buttonPos   : config.rightPos
+            }
         ];
 
         //mock data
@@ -296,31 +305,33 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                 .toHaveBeenCalledTimes ( testIdx + 1 );
 
             expect ( window.babylonProject.turnSnake )
-                .toHaveBeenLastCalledWith ( config.dirUp, mock_gameData );
+                .toHaveBeenLastCalledWith ( 
+                        testData.buttonDir, mock_gameData );
 
             //scene and babylon parameters
 
-            expect ( createButtonPlaneMock.calls [ 0 ] [ 3 ] )
+            expect ( createButtonPlaneMock.calls [ testIdx ] [ 3 ] )
                 .toBe ( mock_gameData.scene );
 
-            expect ( createButtonPlaneMock.calls [ 0 ] [ 4 ] )
+            expect ( createButtonPlaneMock.calls [ testIdx ] [ 4 ] )
                 .toBe ( mock_babylon );
 
             //check input controls were stored in gamedata
 
-            expect ( mock_gameData.turnInputControls [ "controlName" ] )
+            expect ( 
+                 mock_gameData.turnInputControls [ testData.controlName ] )
                 .toBeDefined ();
 
-            expect ( mock_gameData.turnInputControls [ "controlName" ] )
-                .toEqual ( createButtonPlaneMock.results [ 0 ].value );
+            expect ( 
+                 mock_gameData.turnInputControls [ testData.controlName ] )
+                .toEqual ( createButtonPlaneMock.results [ testIdx ].value );
 
-            expect ( mock_gameData.turnInputControls [ "controlName" ]
+            //check position was set
+
+            expect ( 
+                 mock_gameData.turnInputControls [ testData.controlName ]
                     .buttonPlane.position )
-                .toEqual ( 
-                    new mock_babylon.Vector3 (
-                               configUp.x,
-                               configUp.y,
-                               configUp.z ) );
+                .toEqual ( testData.buttonPos );
 
         });
 

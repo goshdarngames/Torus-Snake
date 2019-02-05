@@ -126,32 +126,68 @@
     let TurnInputControls = function ( babylon, gameData )
     {
         let config = window.babylonProject.config; 
-        
-        this.upControl = window.babylonProject.createButtonPlane (
-            "up",
-            //plane options
+
+        let buttonData = [
             {
-                size  : config.turnControlPlaneSize
+                name        : "up",
+                text        : "U",
+                dir         : config.dirUp,
+                pos         : config.upPos,
+                controlName : "upControl"
             },
-            //button options
+
             {
-                buttonText : "U",
-                buttonCall : () => 
-                    turnControlCallback ( config.dirUp, gameData )
+                name        : "down",
+                text        : "D",
+                dir         : config.dirDown,
+                pos         : config.downPos,
+                controlName : "downControl"
             },
-            gameData.scene,
-            babylon
 
-        );
+            {
+                name        : "left",
+                text        : "L",
+                dir         : config.dirLeft,
+                pos         : config.leftPos,
+                controlName : "leftControl"
+            },
+
+            {
+                name        : "right",
+                text        : "R",
+                dir         : config.dirRight,
+                pos         : config.rightPos,
+                controlName : "rightControl"
+            }
+        ];
+
+        buttonData.forEach ( function ( data )
+        {
+            this [ data.controlName ] = 
+                window.babylonProject.createButtonPlane (
+
+                    data.name,
+
+                    //plane options
+                    {
+                        size  : config.turnControlPlaneSize
+                    },
+                    //button options
+                    {
+                        buttonText : data.text,
+                        buttonCall : () => 
+                            turnControlCallback ( data.dir, gameData )
+                    },
+                    gameData.scene,
+                    babylon
+
+            );
+            
+
+            this [ data.controlName ].buttonPlane.position = data.pos;
+
+        }, this);
         
-        let configUp = config.upPos;
-
-        this.upControl.buttonPlane.position = 
-            new babylon.Vector3 ( 
-                           configUp.x,
-                           configUp.y,
-                           configUp.z  );
-
     };
 
     let turnControlCallback = function ( newDir, gameData )
