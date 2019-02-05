@@ -201,6 +201,46 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
     test ( "defines turnInputControls if it is undefined", () =>
     {
+        //shorter name for config
+
+        let config = window.babylonProject.config;
+        
+        //test cases
+
+        let testCases = 
+        [
+            { 
+                buttonDir   : config.upDir,
+                buttonName  : "up",
+                buttonText  : "U",
+                controlName : "upControl"
+            },
+
+            { 
+                buttonDir   : config.downDir,
+                buttonName  : "down",
+                buttonText  : "D",
+                controlName : "downControl"
+            },
+
+            { 
+                buttonDir   : config.rightDir,
+                buttonName  : "right",
+                buttonText  : "R",
+                controlName : "rightControl"
+            },
+
+            { 
+                buttonDir   : config.leftDir,
+                buttonName  : "left",
+                buttonText  : "L",
+                controlName : "leftControl"
+            }
+
+        ];
+
+        //mock data
+
         mock_babylon = new MockBabylon ();
         mock_gameData = new MockGameData ();
 
@@ -223,67 +263,66 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .toBeDefined ();
 
         expect ( window.babylonProject.createButtonPlane )
-            .toHaveBeenCalledTimes ( 1 );
+            .toHaveBeenCalledTimes ( 4 );
 
         let createButtonPlaneMock = 
             window.babylonProject.createButtonPlane.mock;
 
-        //verify up arrow
+        testCases.forEach ( function ( testData, testIdx )
+        {
 
-        configUp = window.babylonProject.config.upPos;
+            expect ( createButtonPlaneMock.calls [ testIdx ] [ 0 ] )
+                .toBe ( testData.buttonName ); 
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 0 ] )
-            .toBe ( "up" ); 
+            expect ( createButtonPlaneMock.calls [ testIdx ] [ 1 ] )
+                .toEqual ( 
+                {
+                    size : config.turnControlPlaneSize
+                } );
 
-        //up arrow - planeOptions
+            expect ( 
+                createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonText )
+                .toEqual ( testData.buttonText );
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 1 ] )
-            .toEqual ( 
-            {
-                size : window.babylonProject.config.turnControlPlaneSize
-            } );
+            //test buttonCall
 
-        //up arrow button options
+            expect ( 
+                createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall )
+                .toBeInstanceOf ( Function );
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonText )
-            .toEqual ( "U" );
+            createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall ();
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonCall )
-            .toBeInstanceOf ( Function );
+            expect ( window.babylonProject.turnSnake )
+                .toHaveBeenCalledTimes ( testIdx + 1 );
 
-        createButtonPlaneMock.calls [ 0 ] [ 2 ].buttonCall ();
+            expect ( window.babylonProject.turnSnake )
+                .toHaveBeenLastCalledWith ( config.dirUp, mock_gameData );
 
-        expect ( window.babylonProject.turnSnake )
-            .toHaveBeenCalledTimes ( 1 );
+            //scene and babylon parameters
 
-        expect ( window.babylonProject.turnSnake )
-            .toHaveBeenLastCalledWith ( 
-                    window.babylonProject.config.dirUp, mock_gameData );
+            expect ( createButtonPlaneMock.calls [ 0 ] [ 3 ] )
+                .toBe ( mock_gameData.scene );
 
-        //scene and babylon parameters
+            expect ( createButtonPlaneMock.calls [ 0 ] [ 4 ] )
+                .toBe ( mock_babylon );
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 3 ] )
-            .toBe ( mock_gameData.scene );
+            //check input controls were stored in gamedata
 
-        expect ( createButtonPlaneMock.calls [ 0 ] [ 4 ] )
-            .toBe ( mock_babylon );
+            expect ( mock_gameData.turnInputControls [ "controlName" ] )
+                .toBeDefined ();
 
-        //check input controls were stored in gamedata
+            expect ( mock_gameData.turnInputControls [ "controlName" ] )
+                .toEqual ( createButtonPlaneMock.results [ 0 ].value );
 
-        expect ( mock_gameData.turnInputControls.upControl )
-            .toBeDefined ();
+            expect ( mock_gameData.turnInputControls [ "controlName" ]
+                    .buttonPlane.position )
+                .toEqual ( 
+                    new mock_babylon.Vector3 (
+                               configUp.x,
+                               configUp.y,
+                               configUp.z ) );
 
-        expect ( mock_gameData.turnInputControls.upControl )
-            .toEqual ( createButtonPlaneMock.results [ 0 ].value );
-
-        expect ( mock_gameData.turnInputControls.upControl
-                .buttonPlane.position )
-            .toEqual ( 
-                new mock_babylon.Vector3 (
-                           configUp.x,
-                           configUp.y,
-                           configUp.z ) );
-
+        });
 
     });
 
