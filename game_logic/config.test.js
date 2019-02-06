@@ -180,4 +180,10 @@ describe ( "window.babylonProject.config", () =>
 
     });
 
+    test ( "defines isValidDirection function", () =>
+    {
+        expect ( window.babylonProject.config.isValidDirection )
+            .toBeDefined ();
+    });
+
 });

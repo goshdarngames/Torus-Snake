@@ -33,6 +33,17 @@
             throw new Error ( "gameData.snakeMoveTimer is undefined." );
         }
 
+        if ( gameData.currentDir  == undefined )
+        {
+            throw new Error ( "gameData.currentDir is undefined." );
+        }
+
+        if ( !window.babylonProject.config
+                .isValidDirection ( gameData.currentDir ) )
+        {
+            throw new Error ( "gameData.currentDir is not valid direction" );
+        }
+
         if ( gameData.turnInputControls  == undefined )
         {
             gameData.turnInputControls = 

@@ -19,6 +19,8 @@ beforeEach ( () =>
         dirLeft  : { x :  0, y :  1 },
         dirRight : { x :  0, y : -1 },
 
+        isValidDirection : jest.fn (),
+
         upPos    : { x : -1, y :  0 },
         downPos  : { x :  1, y :  0 },
         leftPos  : { x :  0, y :  1 },
@@ -28,6 +30,9 @@ beforeEach ( () =>
 
         turnControlPlaneSize : 5
     };
+
+    window.babylonProject.config.isValidDirection
+       .mockReturnValue ( true ); 
 
     window.babylonProject.createButtonPlane = jest.fn ( function ()
     {
@@ -133,9 +138,7 @@ let MockGameData = jest.fn ( function ()
         return coord;
     });
 
-     
-
-    this.currentDir = { x : 0, y : 1 };
+    this.currentDir = window.babylonProject.config.dirUp;
 });
 
 let MockScene = jest.fn ( function ()
@@ -201,6 +204,24 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                 window.babylonProject.snakeMoveState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeMoveTimer is undefined" );
+        
+        mock_gameData = new MockGameData ();
+        mock_gameData.currentDir = undefined;
+
+        expect ( () =>
+                window.babylonProject.snakeMoveState (
+                    mock_babylon, mock_gameData ))
+            .toThrow ( "gameData.currentDir is undefined" );
+        
+        mock_gameData = new MockGameData ();
+        
+        window.babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( false );
+
+        expect ( () =>
+                window.babylonProject.snakeMoveState (
+                    mock_babylon, mock_gameData ))
+            .toThrow ( "gameData.currentDir is not valid direction" );
         
     });
 
@@ -399,7 +420,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             //the apple' y position should change each time
 
             expect ( mock_gameData.applePos.y )
-                .toEqual ( expectedMoveCalls );
+                .toEqual ( expectedMoveCalls * mock_gameData.currentDir.y );
 
             //the return of the state function should be another function
 
@@ -514,9 +535,14 @@ describe ( "window.babylonProject.turnSnake", () =>
             .toBeDefined ();
     });
 
-    test ( "changes the direction in gameData", () =>
+    test ( "validates parameters", () =>
+    {
+    });
+
+    test ( "changes direction if newDir is perpindicular to currentDir", () =>
     {
         let mock_gameData = new MockGameData ();
+
 
         window.babylonProject.turnSnake ( 
                 mock_gameData.dirUp, mock_gameData );
