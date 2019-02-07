@@ -537,17 +537,59 @@ describe ( "window.babylonProject.turnSnake", () =>
 
     test ( "validates parameters", () =>
     {
+        //is valid direction returns true by default
+
+        window.babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( false );
+
+        expect ( () => window.babylonProject.turnSnake () )
+            .toThrow ( "newDir is not a valid direction" );
+        
+        expect ( () => window.babylonProject.turnSnake ( ) )
+            .toThrow ( "gameData.currentDir is not defined" );
+        
+        expect ( () => window.babylonProject.turnSnake ( undefined, 123 ) )
+            .toThrow ( "gameData.currentDir is not defined" );
+        
     });
 
-    test ( "changes direction if newDir is perpindicular to currentDir", () =>
+    test ( "changes direction if newDir is perpindicular to currentDir", 
+            () =>
     {
+        let config = window.babylonProject.config;
+
+        let u = config.dirUp;
+        let d = config.dirDown;
+        let l = config.dirLeft;
+        let r = config.dirRight;
+
+        let perpindicular = ( a, b ) => 
+            ( ( ( a == u || a == d ) && ( b == r || b == l ) ) ||
+              ( ( a == r || a == l ) && ( b == u || b == d ) ) );
+
+        let allDirs = [ u, d, l, r ];
+
         let mock_gameData = new MockGameData ();
 
+        //test all directions and check only perpindicular combinations
+        //cause currentDir to change
+        allDirs.forEach ( function ( a )
+        {
+            allDirs.forEach ( function ( b ) 
+            {
+                mock_gameData.currentDir = b;
 
-        window.babylonProject.turnSnake ( 
-                mock_gameData.dirUp, mock_gameData );
+                window.babylonProject.turnSnake ( a, mock_gameData );
 
-        expect ( mock_gameData.currentDir )
-            .toBe ( mock_gameData.dirUp );
+                if ( perpindicular ( a, b ) )
+                {
+                   expect ( mock_gameData.currentDir ) .toBe ( a );
+                }
+                else
+                {
+                   expect ( mock_gameData.currentDir ) .toBe ( b );
+                }
+            });
+        });
     });
 });
