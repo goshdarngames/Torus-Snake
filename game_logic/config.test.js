@@ -184,6 +184,28 @@ describe ( "window.babylonProject.config", () =>
     {
         expect ( window.babylonProject.config.isValidDirection )
             .toBeDefined ();
+
+        let badDir = { x : 0, y : 1 };
+
+        expect ( window.babylonProject.config.isValidDirection ( badDir ) )
+            .toBe ( false );
+
+        expect ( window.babylonProject.config.isValidDirection ( 
+                window.babylonProject.config.dirUp ) )
+            .toBe ( true );
+
+        expect ( window.babylonProject.config.isValidDirection ( 
+                window.babylonProject.config.dirDown ) )
+            .toBe ( true );
+
+        expect ( window.babylonProject.config.isValidDirection ( 
+                window.babylonProject.config.dirLeft ) )
+            .toBe ( true );
+
+        expect ( window.babylonProject.config.isValidDirection ( 
+                window.babylonProject.config.dirRight ) )
+            .toBe ( true );
+
     });
 
 });

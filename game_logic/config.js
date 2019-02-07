@@ -20,6 +20,19 @@
         dirLeft  : { x :  0, y :  1 },
         dirRight : { x :  0, y : -1 },
 
+        isValidDirection : function ( d )
+        {
+            if ( d == this.dirUp   || d == this.dirDown || 
+                 d == this.dirLeft || d == this.dirRight )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        },
+
         //position of the direction button planes
         
         upPos    : { x :    0, y : 1.25, z : 1 },
