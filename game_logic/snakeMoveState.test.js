@@ -118,6 +118,8 @@ let MockBabylon = jest.fn ( function ()
 let MockMesh = jest.fn ( function ()
 {
     this.position = jest.fn ();
+
+    this.isEnabled = jest.fn ();
 });
 
 let MockGameData = jest.fn ( function ()
@@ -356,6 +358,94 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         });
 
+    });
+
+    test ( "disables perpindicular move arrows", () =>
+    {
+        let mock_babylon = new MockBabylon ();
+
+        let mock_gameData = new MockGameData ();
+
+        let config = window.babylonProject.config;
+
+        let u = config.dirUp;
+        let d = config.dirDown;
+        let l = config.dirLeft;
+        let r = config.dirRight;
+
+        let allDirs = [ u, d, l, r ];
+        
+        let testCases = [
+            {
+                currentDir : [ u, d ],
+                enabled    : [ "right", "left" ],
+                disabled   : [ "up",    "down" ]
+            },
+
+            {
+                currentDir : [ r, l ],
+                enabled    : [ "up",    "down" ],
+                disabled   : [ "right", "left" ]
+            }
+
+        ];
+
+        let updateFunc = 
+            window.babylonProject.snakeMoveState ( 
+                    mock_babylon, mock_gameData );
+
+
+        let isEnabledCallCount = 0;
+
+        //loop through each test case
+        testCases.forEach ( function ( testData )
+        {
+            //each test case specifies two current directions to set
+            testData.currentDir.forEach ( function ( cd )
+            {
+                //set the current direction
+                mock_gameData.currentDir = cd;
+
+                //update the current state and store the returned function
+                //for the next testcase
+                updateFunc = updateFunc ();
+
+                //expect isEnabled to have been called on all 4 buttons
+                isEnabledCallCount += 4;
+
+                //these direction controls should be enabled
+                testData.enabled.forEach ( function ( dirName )
+                {
+                    //the buttons are stored using their direction and
+                    //the word 'Control'
+                    let controlName = dirName+"Control";
+
+                     expect ( mock_gameData.turnInputControls
+                            [ controlName ].buttonPlane.isEnabled )
+                        .toHaveBeenCalledTimes ( isEnabledCallCount );
+
+                     expect ( mock_gameData.turnInputControls
+                            [ controlName ].buttonPlane.isEnabled )
+                        .toHaveBeenLastCalledWith ( true );
+               });
+                
+               //these direction controls are expected to have been
+               //disabled
+               testData.disabled.forEach ( function ( dirName )
+               {
+                   let controlName = dirName+"Control";
+
+                   expect ( mock_gameData.turnInputControls
+                           [ controlName ].buttonPlane.isEnabled )
+                       .toHaveBeenCalledTimes ( isEnabledCallCount );
+
+                   expect ( mock_gameData.turnInputControls
+                           [ controlName ].buttonPlane.isEnabled )
+                       .toHaveBeenLastCalledWith ( false );
+               });
+                
+            });
+        });
     });
 
     test ( "scene.render is called and a function is returned every time "+
