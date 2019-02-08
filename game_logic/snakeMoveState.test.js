@@ -39,7 +39,7 @@ beforeEach ( () =>
         retVal = 
         {
             buttonPlane   : new MockMesh (),
-            button        : jest.fn (),
+            button        : new MockButton (),
             buttonTexture : jest.fn ()
         };
 
@@ -120,6 +120,12 @@ let MockMesh = jest.fn ( function ()
     this.position = jest.fn ();
 
     this.isEnabled = jest.fn ();
+});
+
+let MockButton = jest.fn ( function ()
+{
+    this.isEnabled = true;
+    this.isVisible = true;
 });
 
 let MockGameData = jest.fn ( function ()
@@ -394,8 +400,65 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             window.babylonProject.snakeMoveState ( 
                     mock_babylon, mock_gameData );
 
+        let testButtonEnabled = ( dirName, callCount, enabled ) =>
+        {
+            let controlName = dirName+"Control";
 
-        let isEnabledCallCount = 0;
+            //plane isEnabled () function should be called
+
+            expect ( mock_gameData.turnInputControls
+                   [ controlName ].buttonPlane.isEnabled )
+               .toHaveBeenCalledTimes ( callCount );
+
+            expect ( mock_gameData.turnInputControls
+                   [ controlName ].buttonPlane.isEnabled )
+               .toHaveBeenLastCalledWith ( enabled );
+
+            //button isEnabled and isVisible property should be set
+
+            expect ( mock_gameData.turnInputControls
+                   [ controlName ].button.isEnabled )
+               .toBe ( enabled );
+
+            expect ( mock_gameData.turnInputControls
+                   [ controlName ].button.isVisible )
+               .toBe ( enabled );
+
+        };
+
+        //These properties should be reset between each test case
+        let resetButtonProperties = () =>
+        {
+            mock_gameData.turnInputControls
+                .upControl.button.isEnabled = undefined;
+            
+            mock_gameData.turnInputControls
+                .downControl.button.isEnabled = undefined;
+            
+            mock_gameData.turnInputControls
+                .leftControl.button.isEnabled = undefined;
+            
+            mock_gameData.turnInputControls
+                .rightControl.button.isEnabled = undefined;
+
+            mock_gameData.turnInputControls
+                .upControl.button.isVisble = undefined;
+            
+            mock_gameData.turnInputControls
+                .downControl.button.isVisble = undefined;
+            
+            mock_gameData.turnInputControls
+                .leftControl.button.isVisble = undefined;
+            
+            mock_gameData.turnInputControls
+                .rightControl.button.isVisble = undefined;
+
+        };
+
+        //keeps track of how many times isEnabled should have been called
+        //on the buttons - starts at one because it is called during that
+        //first call to the state
+        let isEnabledCallCount = 1;
 
         //loop through each test case
         testCases.forEach ( function ( testData )
@@ -406,43 +469,27 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                 //set the current direction
                 mock_gameData.currentDir = cd;
 
+                resetButtonProperties ();
+
                 //update the current state and store the returned function
                 //for the next testcase
                 updateFunc = updateFunc ();
 
                 //expect isEnabled to have been called on all 4 buttons
-                isEnabledCallCount += 4;
+                isEnabledCallCount += 1;
 
                 //these direction controls should be enabled
                 testData.enabled.forEach ( function ( dirName )
                 {
-                    //the buttons are stored using their direction and
-                    //the word 'Control'
-                    let controlName = dirName+"Control";
-
-                     expect ( mock_gameData.turnInputControls
-                            [ controlName ].buttonPlane.isEnabled )
-                        .toHaveBeenCalledTimes ( isEnabledCallCount );
-
-                     expect ( mock_gameData.turnInputControls
-                            [ controlName ].buttonPlane.isEnabled )
-                        .toHaveBeenLastCalledWith ( true );
-               });
+                    testButtonEnabled ( dirName, isEnabledCallCount, true );
+                });
                 
-               //these direction controls are expected to have been
-               //disabled
-               testData.disabled.forEach ( function ( dirName )
-               {
-                   let controlName = dirName+"Control";
-
-                   expect ( mock_gameData.turnInputControls
-                           [ controlName ].buttonPlane.isEnabled )
-                       .toHaveBeenCalledTimes ( isEnabledCallCount );
-
-                   expect ( mock_gameData.turnInputControls
-                           [ controlName ].buttonPlane.isEnabled )
-                       .toHaveBeenLastCalledWith ( false );
-               });
+                //these direction controls should be enabled
+                testData.disabled.forEach ( function ( dirName )
+                {
+                    testButtonEnabled ( dirName, isEnabledCallCount, false );
+                });
+                
                 
             });
         });
