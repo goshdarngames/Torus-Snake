@@ -150,6 +150,16 @@
         return newSnake;
     };
 
+    /**
+     * babylonProject.turnSnake 
+     *
+     * Changes the snake's direction to newDir.
+     *
+     * Snake is only allowed to turn perpindicular to currentDir.
+     *
+     * The move timer is set to 0 upon turning so the snake will move
+     * straight away.
+     */
     babylonProject.turnSnake = function ( newDir, gameData )
     {
         if ( ! window.babylonProject.config.isValidDirection ( newDir ) )
@@ -164,12 +174,14 @@
 
         let config = window.babylonProject.config;
 
+        let doTurn = false;
+
         if ( newDir == config.dirUp || newDir == config.dirDown )
         {
             if ( gameData.currentDir == config.dirLeft || 
                  gameData.currentDir == config.dirRight )
             {
-                gameData.currentDir = newDir;
+                doTurn = true;
             }
         }
         else if ( newDir == config.dirLeft || newDir == config.dirRight )
@@ -177,8 +189,14 @@
             if ( gameData.currentDir == config.dirUp || 
                  gameData.currentDir == config.dirDown )
             {
-                gameData.currentDir = newDir;
+                doTurn = true;
             }
+        }
+
+        if ( doTurn )
+        {
+            gameData.currentDir = newDir;
+            gameData.snakeMoveTimer = 0;
         }
     };
 

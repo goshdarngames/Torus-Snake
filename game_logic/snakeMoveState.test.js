@@ -690,7 +690,8 @@ describe ( "window.babylonProject.turnSnake", () =>
         
     });
 
-    test ( "changes direction if newDir is perpindicular to currentDir", 
+    test ( "changes direction and sets snakeMoveTimer to 0 if newDir is "+
+           "perpindicular to currentDir", 
             () =>
     {
         let config = window.babylonProject.config;
@@ -716,15 +717,24 @@ describe ( "window.babylonProject.turnSnake", () =>
             {
                 mock_gameData.currentDir = b;
 
+                //set snakeMoveTimer to non-zero value to check it is 
+                //set to zero after successful turn
+
+                mock_gameData.snakeMoveTimer = 123;
+
                 window.babylonProject.turnSnake ( a, mock_gameData );
 
                 if ( perpindicular ( a, b ) )
                 {
                    expect ( mock_gameData.currentDir ) .toBe ( a );
+
+                   expect ( mock_gameData.snakeMoveTimer ).toEqual ( 0 );
                 }
                 else
                 {
                    expect ( mock_gameData.currentDir ) .toBe ( b );
+
+                   expect ( mock_gameData.snakeMoveTimer ).toEqual ( 123 );
                 }
             });
         });
