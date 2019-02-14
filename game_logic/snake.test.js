@@ -94,8 +94,26 @@ describe ( "babylonProject.snake.turnAllowed", () =>
             //test the reverse of each test case
 
             expect ( babylonProject.snake.turnAllowed ( 
-                        testCase [ 0 ], testCase [ 1 ] ) )
+                        testCase [ 1 ], testCase [ 0 ] ) )
                 .toEqual ( true );
+
+        });
+
+        //test cases expected to be false:
+
+        falseTestCases.forEach ( function ( testCase )
+        {
+            //test each pair of directions
+
+            expect ( babylonProject.snake.turnAllowed ( 
+                        testCase [ 0 ], testCase [ 1 ] ) )
+                .toEqual ( false );
+
+            //test the reverse of each test case
+
+            expect ( babylonProject.snake.turnAllowed ( 
+                        testCase [ 1 ], testCase [ 0 ] ) )
+                .toEqual ( false );
 
         });
 
