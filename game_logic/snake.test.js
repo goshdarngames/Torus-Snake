@@ -12,6 +12,18 @@ const test_module = require ("./snake");
  * MOCK DATA
  ***************************************************************************/
 
+beforeEach ( () =>
+{
+    window.babylonProject.config =
+    {
+        dirUp    : { x : -1, y :  0 },
+        dirDown  : { x :  1, y :  0 },
+        dirLeft  : { x :  0, y :  1 },
+        dirRight : { x :  0, y : -1 },
+    };
+
+});
+
 /****************************************************************************
  * SETUP / TEARDOWN
  ***************************************************************************/
@@ -44,6 +56,7 @@ describe ( "babylonProject.snake", () =>
         expect ( babylonProject.snake )
             .toBeDefined ();
     });
+
 });
 
 describe ( "babylonProject.snake.turnAllowed", () =>
@@ -53,5 +66,40 @@ describe ( "babylonProject.snake.turnAllowed", () =>
         expect ( babylonProject.snake.turnAllowed )
             .toBeDefined ();
     });
+
+    test ( "returns true if directions are perpindicular", () =>
+    {
+        let config = window.babylonProject.config;
+
+        let u = config.dirUp;
+        let d = config.dirDown;
+        let l = config.dirLeft;
+        let r = config.dirRight;
+
+        let trueTestCases = [ [ u, r ], [ u, l ], [ d, r ], [ d, l ] ];
+
+        let falseTestCases = [ [ u, u ], [ u, d ], [ d, d ], 
+                               [ r, l ], [ r, r ], [ l, l ] ];
+
+        //test cases expected to be true:
+
+        trueTestCases.forEach ( function ( testCase )
+        {
+            //test each pair of directions
+
+            expect ( babylonProject.snake.turnAllowed ( 
+                        testCase [ 0 ], testCase [ 1 ] ) )
+                .toEqual ( true );
+
+            //test the reverse of each test case
+
+            expect ( babylonProject.snake.turnAllowed ( 
+                        testCase [ 0 ], testCase [ 1 ] ) )
+                .toEqual ( true );
+
+        });
+
+    });
+
 });
 
