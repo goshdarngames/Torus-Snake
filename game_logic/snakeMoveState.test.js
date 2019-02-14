@@ -740,12 +740,3 @@ describe ( "window.babylonProject.turnSnake", () =>
         });
     });
 });
-
-describe ( "window.babylonProject.growSnake", () =>
-{
-    test ( "is defined", () =>
-    {
-        expect ( window.babylonProject.growSnake )
-            .toBeDefined ();
-    };
-});
