@@ -121,3 +121,55 @@ describe ( "babylonProject.snake.turnAllowed", () =>
 
 });
 
+describe ( "babylonProject.snake.moveSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.snake.moveSnake )
+            .toBeDefined ();
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+});
+
+describe ( "babylonProject.snake.turnSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.snake.turnSnake )
+            .toBeDefined ();
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+    test ( "", () =>
+    {
+    });
+
+});
+

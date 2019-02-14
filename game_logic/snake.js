@@ -46,4 +46,12 @@
         
     };
 
+    babylonProject.snake.moveSnake = function ( dir, snakeParts )
+    {
+    }
+
+    babylonProject.snake.turnSnake = 
+        function ( newDir, currentDir, snakeParts )
+    {
+    };
 } ( window.babylonProject = window.babylonProject || {} ));
