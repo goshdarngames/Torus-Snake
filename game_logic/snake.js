@@ -27,6 +27,16 @@
     {
         let config = window.babylonProject.config;
 
+        if ( !config.isValidDirection ( newDir ) )
+        {
+            throw ( "newDir is not valid direction" );
+        }
+
+        if ( !config.isValidDirection ( currentDir ) )
+        {
+            throw ( "currentDir is not valid direction" );
+        }
+
         let u = config.dirUp;
         let d = config.dirDown;
         let l = config.dirLeft;
@@ -48,6 +58,10 @@
 
     babylonProject.snake.moveSnake = function ( dir, snakeParts )
     {
+        if ( !babylonProject.config.isValidDirection ( dir ) )
+        {
+            throw ( "dir is not valid direction" );
+        }
     }
 
     babylonProject.snake.turnSnake = 

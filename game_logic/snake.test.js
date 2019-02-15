@@ -20,8 +20,12 @@ beforeEach ( () =>
         dirDown  : { x :  1, y :  0 },
         dirLeft  : { x :  0, y :  1 },
         dirRight : { x :  0, y : -1 },
+
+        isValidDirection : jest.fn ()
     };
 
+    window.babylonProject.config.isValidDirection
+        .mockReturnValue ( true );
 });
 
 /****************************************************************************
@@ -65,6 +69,25 @@ describe ( "babylonProject.snake.turnAllowed", () =>
     {
         expect ( babylonProject.snake.turnAllowed )
             .toBeDefined ();
+    });
+
+    test ( "validates parameters", () =>
+    {
+        babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( false );
+
+        expect ( () => babylonProject.snake.turnAllowed () )
+            .toThrow ( "newDir is not valid direction" );
+            
+        babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( true );
+
+        babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( false );
+
+        expect ( () => babylonProject.snake.turnAllowed () )
+            .toThrow ( "currentDir is not valid direction" );
+            
     });
 
     test ( "returns true if directions are perpindicular", () =>
@@ -129,8 +152,14 @@ describe ( "babylonProject.snake.moveSnake", () =>
             .toBeDefined ();
     });
 
-    test ( "", () =>
+    test ( "validates parameters", () =>
     {
+        babylonProject.config.isValidDirection
+            .mockReturnValueOnce ( false );
+
+        expect ( () => babylonProject.snake.moveSnake () )
+            .toThrow ( "dir is not valid direction" );
+            
     });
 
     test ( "", () =>
