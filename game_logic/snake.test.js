@@ -1,4 +1,5 @@
 const test_module = require ("./snake");
+!!
 
 /****************************************************************************
  * snake.test.js
@@ -71,7 +72,7 @@ describe ( "babylonProject.snake.turnAllowed", () =>
             .toBeDefined ();
     });
 
-    test ( "validates parameters", () =>
+    test ( "validates direction parameters", () =>
     {
         babylonProject.config.isValidDirection
             .mockReturnValueOnce ( false );
@@ -152,7 +153,7 @@ describe ( "babylonProject.snake.moveSnake", () =>
             .toBeDefined ();
     });
 
-    test ( "validates parameters", () =>
+    test ( "validates direction parameters", () =>
     {
         babylonProject.config.isValidDirection
             .mockReturnValueOnce ( false );
@@ -162,16 +163,61 @@ describe ( "babylonProject.snake.moveSnake", () =>
             
     });
 
-    test ( "", () =>
+    test ( "returns new array of same length and each item in the array"+
+           "has been offset according to movement dir and wrapped", () =>
     {
-    });
+        let snakeParts =  [ { x : 0, y : 0 },
+                            { x : 2, y : 1 },
+                            { x : 2, y : 2 },
+                            { x : 3, y : 3 },
+                            { x : 3, y : 4 },
+                            { x : 3, y : 5 } ];
 
-    test ( "", () =>
-    {
-    });
+        let dir = babylonProject.config.dirUp;
 
-    test ( "", () =>
-    {
+        let wrapFunc = jest.fn ();
+
+        wrapFunc.mockReturnValue ( {} );
+
+        let newSnake = babylonProject.snake
+            .moveSnake ( dir, snakeParts, wrapFunc );
+
+        expect ( newSnake )
+            .toBeInstanceOf ( Array );
+
+        expect ( newSnake )
+            .not.toBe ( snakeParts );
+
+        expect ( newSnake.length )
+            .toEqual ( snakeParts.length );
+
+        expect ( wrapFunc )
+            .toHaveBeenCalledTimes ( snakeParts.length - 1 );
+
+        newSnake.forEach ( function ( val, idx )
+        {
+            if ( idx == 0 )
+            {
+                //head should be ( 0, 0 )
+                expect ( newSnake [ idx ] )
+                    .toEqual ( { x : 0, y : 0 } );
+
+            }
+            else
+            {
+                //wrapFunc should have been called with the sum of dir
+                //and the previous snakePart
+
+                expect ( wrapFunc.mock.calls [ idx - 1 ] [ 0 ] )
+                    .toEqual ( { x : dir.x + snakeParts [ idx - 1 ].x,
+                                 y : dir.y + snakeParts [ idx - 1 ].y } );
+
+                //value in array should be result of wrapFunc
+                expect ( newSnake [ idx ] )
+                    .toEqual ( wrapFunc.mock.results [ idx - 1 ].value );
+
+            }
+        });
     });
 
 });
