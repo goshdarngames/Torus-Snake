@@ -81,8 +81,15 @@
         return newSnake;
     }
 
-    babylonProject.snake.turnSnake = 
-        function ( newDir, currentDir, snakeParts )
+    babylonProject.snake.turnSnake = function ( newDir, currentDir )
     {
+        if ( babylonProject.snake.turnAllowed ( newDir, currentDir ) )
+        {
+            return newDir;
+        } 
+        else
+        {
+            return currentDir;
+        }   
     };
 } ( window.babylonProject = window.babylonProject || {} ));

@@ -230,20 +230,44 @@ describe ( "babylonProject.snake.turnSnake", () =>
             .toBeDefined ();
     });
 
-    test ( "", () =>
+    test ( "returns newDir if turnAllowed returns true", () =>
     {
+        let oldFunc = babylonProject.snake.turnAllowed;
+
+        babylonProject.snake.turnAllowed = jest.fn ();
+
+        oneTimeCleanUp = 
+            () => { babylonProject.snake.turnAllowed = oldFunc; } 
+
+        babylonProject.snake.turnAllowed.mockReturnValueOnce ( true );
+
+        let newDir = jest.fn (); 
+
+        let currentDir = jest.fn (); 
+
+        expect ( babylonProject.snake.turnSnake ( newDir, currentDir ) )
+            .toBe ( newDir );
+
     });
 
-    test ( "", () =>
+    test ( "returns currentDir if turnAllowed returns false", () =>
     {
-    });
+        let oldFunc = babylonProject.snake.turnAllowed;
 
-    test ( "", () =>
-    {
-    });
+        babylonProject.snake.turnAllowed = jest.fn ();
 
-    test ( "", () =>
-    {
+        oneTimeCleanUp = 
+            () => { babylonProject.snake.turnAllowed = oldFunc; } 
+
+        babylonProject.snake.turnAllowed.mockReturnValueOnce ( false );
+
+        let newDir = jest.fn (); 
+
+        let currentDir = jest.fn (); 
+
+        expect ( babylonProject.snake.turnSnake ( newDir, currentDir ) )
+            .toBe ( currentDir );
+
     });
 
 });
