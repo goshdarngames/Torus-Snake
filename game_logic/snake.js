@@ -81,6 +81,16 @@
         return newSnake;
     }
 
+    /**
+     * bylonProject.snake.turnSnake ( newDir, currentDir )
+     *
+     * Checks if the snake is allowed to turn towards newDir from
+     * the currentDir.  I.e. the directions are perpendicular.
+     *
+     * If the turn is allowed then newDir will be returned.
+     *
+     * Otherwise currentDir will be returned.
+     */
     babylonProject.snake.turnSnake = function ( newDir, currentDir )
     {
         if ( babylonProject.snake.turnAllowed ( newDir, currentDir ) )
