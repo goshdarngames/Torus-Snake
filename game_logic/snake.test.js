@@ -272,3 +272,66 @@ describe ( "babylonProject.snake.turnSnake", () =>
 
 });
 
+describe ( "babylonProject.snake.growSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.snake.growSnake )
+            .toBeDefined ();
+    });
+
+    test ( "adds new head and calls moveSnaje", () =>
+    {
+        //replace moveSnake with mock function
+        
+        let oldFunc = babylonProject.snake.moveSnake;
+
+        babylonProject.snake.moveSnake = jest.fn ();
+
+        babylonProject.snake.moveSnake.mockReturnValueOnce ( jest.fn () );
+
+        oneTimeCleanUp = 
+            () => { babylonProject.snake.moveSnake = oldFunc; } 
+
+        //call function with typical data
+
+        let dir = babylonProject.config.dirUp;
+        let snakeParts = [ { x:0,y:0 }, { x:1,y:0 }, { x:1,y:1 } ];
+        let wrapFunc = jest.fn();
+
+        let retVal = 
+            babylonProject.snake.growSnake ( dir, snakeParts, wrapFunc );
+
+        //expect moveSnake function to have been called and its return to
+        //have been passed through
+
+        let moveSnake = babylonProject.snake.moveSnake; 
+
+        expect ( moveSnake ).toHaveBeenCalledTimes ( 1 );
+
+        expect ( moveSnake.mock.calls [ 0 ] [ 0 ] )
+            .toBe ( dir );
+
+        //check new head was added
+        expect ( moveSnake.mock.calls [ 0 ] [ 1 ] [ 0 ] )
+            .toEqual ( { x : 0, y : 0 } );
+
+        //check remaining snakeparts array is intact
+        expect ( moveSnake.mock.calls [ 0 ] [ 1 ].slice ( 1 )  )
+            .toEqual ( snakeParts );
+
+        expect ( moveSnake.mock.calls [ 0 ] [ 2 ] )
+            .toBe ( wrapFunc );
+
+        //expect return value passed through unchanged from moveSnake
+
+        expect ( retVal )
+            .toBe ( moveSnake.mock.results [ 0 ].value );
+
+        expect ( retVal )
+            .toEqual ( moveSnake.mock.results [ 0 ].value );
+
+    });
+
+});
+
