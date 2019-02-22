@@ -335,3 +335,83 @@ describe ( "babylonProject.snake.growSnake", () =>
 
 });
 
+describe ( "babylonProject.snake.createSnake", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.snake.createSnake )
+            .toBeDefined ();
+    });
+
+    test ( "checks length is > 0", () =>
+    {
+        expect ( () => babylonProject.snake.createSnake ( undefined, 0 ) )
+            .toThrow ( "length must be > 0" );
+
+        expect ( () => babylonProject.snake.createSnake ( undefined, -10 ) )
+            .toThrow ( "length must be > 0" );
+
+    });
+
+    test ( "calls grow snake [length] times", () =>
+    {
+        //replace growSnake with mock function
+        
+        let oldFunc = babylonProject.snake.growSnake;
+
+        babylonProject.snake.growSnake = jest.fn ();
+
+        let mockGrowSnake = babylonProject.snake.growSnake;
+
+        mockGrowSnake.mockReturnValueOnce ( jest.fn () );
+        mockGrowSnake.mockReturnValueOnce ( jest.fn () );
+        mockGrowSnake.mockReturnValueOnce ( jest.fn () );
+        mockGrowSnake.mockReturnValueOnce ( jest.fn () );
+
+        oneTimeCleanUp = 
+            () => { babylonProject.snake.growSnake = oldFunc; } 
+
+        //call create snake with len 4
+
+        let dir = jest.fn ();
+
+        babylonProject.snake.createSnake ( dir, 4 );
+
+        expect ( mockGrowSnake )
+            .toHaveBeenCalledTimes ( 4 );
+
+        //result of each growSnake call is passed to the next
+
+        mockGrowSnake.mock.calls.forEach ( function ( val, idx, array )
+        {
+            //first parameter is always dir
+
+            expect ( val [ 0 ] ).toBe ( dir );
+
+            //first call is passed [] as snakeParts
+            if ( idx == 0 )
+            {
+                expect ( val [ 1 ] ).toEqual ( [] );
+            }
+            //subsquent calls passed return value of last as snakeParts
+            else
+            {
+                expect ( val [ 1 ] )
+                    .toEqual ( 
+                            mockGrowSnake.mock.results [ idx - 1 ].value );
+            }
+
+            //third paramter is a function that returns the current snake
+            //parts ( i.e. wrap function that returns its input coord )
+
+            expect ( val [ 2 ] )
+                .toBeInstanceOf ( Function );
+            
+            expect ( val [ 2 ] ( val [ 1 ] ) )
+                .toBe ( val [ 1 ] );
+        });
+
+    });
+
+});
+
