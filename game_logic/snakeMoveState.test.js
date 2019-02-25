@@ -45,6 +45,18 @@ beforeEach ( () =>
 
         return retVal;
     });
+
+    window.babylonProject.snake = {};
+
+    window.babylonProject.snake.turnAllowed = jest.fn ();
+
+    window.babylonProject.snake.turnSnake = jest.fn ();
+
+    window.babylonProject.snake.moveSnake = jest.fn ();
+
+    window.babylonProject.snake.growSnake = jest.fn ();
+    
+    window.babylonProject.snake.createSnake = jest.fn ();
 });
 
 //Tests can assign a function here to have it called after they exit
@@ -130,7 +142,7 @@ let MockButton = jest.fn ( function ()
 
 let MockGameData = jest.fn ( function ()
 {
-    this.snakeParts = [];
+    this.snakeParts = jest.fn ();
     this.scene = new MockScene ();
     this.torusMeshes = [];
 
@@ -282,19 +294,6 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_babylon = new MockBabylon ();
         mock_gameData = new MockGameData ();
 
-        //replace turnSnake with a mock function so the button callback
-        //can be tested
-
-        let oldTurnSnake = window.babylonProject.turnSnake;
-
-        window.babylonProject.turnSnake = jest.fn ();
-
-        oneTimeCleanUp = () => 
-            window.babylonProject.turnSnake = oldTurnSnake;
-
-        //executing the function for the first time should cause the
-        //buttons to be created
-
         window.babylonProject.snakeMoveState ( mock_babylon, mock_gameData ); 
 
         expect ( mock_gameData.turnInputControls )
@@ -330,12 +329,12 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
             createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall ();
 
-            expect ( window.babylonProject.turnSnake )
+            expect ( window.babylonProject.snake.turnSnake )
                 .toHaveBeenCalledTimes ( testIdx + 1 );
 
-            expect ( window.babylonProject.turnSnake )
+            expect ( window.babylonProject.snake.turnSnake )
                 .toHaveBeenLastCalledWith ( 
-                        testData.buttonDir, mock_gameData );
+                        testData.buttonDir, mock_gameData.currentDir );
 
             //scene and babylon parameters
 
@@ -496,8 +495,8 @@ describe ( "window.babylonProject.snakeMoveState", () =>
     });
 
     test ( "scene.render is called and a function is returned every time "+
-           "but update torus meshes is only called when delta time "+
-           "causes the timer to elapse.",
+           "but update torus meshes, and move snake/apple are only " +
+           "called when delta time causes the timer to elapse.",
             () =>
     {
 
@@ -510,24 +509,18 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
         let expectedMoveCalls = 0;
 
-        //mock the movesnake function and set the function to be restored
-        //after
+        //the previous snake parts are stored so that it is possible to 
+        //assert that they were passed to the moveSnake function when the
+        //timer elapsed and that the snake parts property is not changed
+        //if the timer does not elapse
 
-        let oldMoveFunc = window.babylonProject.moveSnake 
-
-        window.babylonProject.moveSnake = jest.fn ( 
-        function ( dir, snakeParts, wrapFunc )
-        {
-            return snakeParts;
-        });
-
-        oneTimeCleanUp  = () => 
-        {
-            window.babylonProject.moveSnake = oldMoveFunc;
-        };
+        let previousSnakeParts = mock_gameData.snakeParts;
 
         timerTestData.forEach ( function ( testData, idx )
         {
+            babylonProject.snake.moveSnake.mockReturnValueOnce (
+                    jest.fn () );
+
             mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
             let retVal = window.babylonProject.snakeMoveState ( 
@@ -543,6 +536,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             if ( testData.moveFunctionsCalled )
             {
                 expectedMoveCalls += 1;
+
             } 
 
             expect ( window.babylonProject.updateTorusMeshes )
@@ -551,8 +545,20 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             expect ( window.babylonProject.updateTorusMeshes )
                 .toHaveBeenCalledWith ( mock_gameData );
 
-            expect ( window.babylonProject.moveSnake )
+            expect ( window.babylonProject.snake.moveSnake )
                 .toHaveBeenCalledTimes ( expectedMoveCalls );
+
+            expect ( window.babylonProject.snake.moveSnake )
+                .toHaveBeenCalledWith ( 
+                        mock_gameData.currentDir,
+                        previousSnakeParts,
+                        mock_gameData.wrapTorusCoord );
+
+            //snakeParts should be the last returned value from moveSnake
+
+            expect ( mock_gameData.snakeParts )
+                .toBe ( babylonProject.snake.moveSnake.mock
+                        .results [ expectedMoveCalls - 1 ].value );
 
             //the apple' y position should change each time
 
@@ -577,166 +583,6 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
     });
 
-    test ( "snakeParts is correct after move.", () =>
-    {
-        let mock_babylon = new MockBabylon ();
-
-        let mock_gameData = new MockGameData ();
-
-        mock_gameData.snakeParts = [
-            { x : 0, y : 0 },
-            { x : 0, y : 1 },
-            { x : 0, y : 2 }
-        ];
-
-        //snake parts length is unchanged
-
-        expect ( mock_gameData.snakeParts.length )
-            .toEqual ( 3 );
-
-    });
 });
 
-describe ( "window.babylonProject.moveSnake", () =>
-{
-    test ( "is defined", () =>
-    {
-        expect ( window.babylonProject.moveSnake )
-            .toBeDefined ();
-    });
 
-    test ( "updates snakePart values as expected", () =>
-    {
-        let dir = { x : 0, y : -1 };
-
-        let startSnake = [ { x : 0, y : 0 },
-                           { x : 0, y : 1 },
-                           { x : 1, y : 1 },
-                           { x : 1, y : 2 },
-                           { x : 2, y : 2 } ];
-
-        //deep copy data into snakeParts
-
-        let snakeParts = startSnake.map ( 
-                p => 
-                { 
-                    return { x : p.x, y : p.y };
-                });
-
-        //wrap function returns its param so it can be checked if this
-        //result was stored in the output
-
-        let wrapFunc = jest.fn ( function ( coord )
-        {
-            return coord;
-        });
-
-        //execute the test function
-        
-        let newSnake = 
-            window.babylonProject.moveSnake ( dir, snakeParts, wrapFunc );
-
-        //length unchanged
-        
-        expect ( newSnake.length )
-            .toEqual ( startSnake.length );
-
-        //head should be (0,0)
-
-        expect ( newSnake [ 0 ] )
-            .toEqual ( { x : 0, y : 0 } );
-
-        //subseqent snake parts should be the result of:
-        //  snakeParts [ n ] = snakeParts [ n - 1 ] + dir
-
-        newSnake.forEach ( function ( value, idx, arr )
-        {
-            if ( idx == 0 )
-            {
-                return;
-            }
-
-            let prevCoord = arr [ idx - 1 ];
-
-            let sumCoord = 
-                { x : dir.x + prevCoord.x, y : dir.y + prevCoord.y };
-        });
-    });
-});
-
-describe ( "window.babylonProject.turnSnake", () =>
-{
-    test ( "is defined", () =>
-    {
-        expect ( window.babylonProject.turnSnake )
-            .toBeDefined ();
-    });
-
-    test ( "validates parameters", () =>
-    {
-        //is valid direction returns true by default
-
-        window.babylonProject.config.isValidDirection
-            .mockReturnValueOnce ( false );
-
-        expect ( () => window.babylonProject.turnSnake () )
-            .toThrow ( "newDir is not a valid direction" );
-        
-        expect ( () => window.babylonProject.turnSnake ( ) )
-            .toThrow ( "gameData.currentDir is not defined" );
-        
-        expect ( () => window.babylonProject.turnSnake ( undefined, 123 ) )
-            .toThrow ( "gameData.currentDir is not defined" );
-        
-    });
-
-    test ( "changes direction and sets snakeMoveTimer to 0 if newDir is "+
-           "perpindicular to currentDir", 
-            () =>
-    {
-        let config = window.babylonProject.config;
-
-        let u = config.dirUp;
-        let d = config.dirDown;
-        let l = config.dirLeft;
-        let r = config.dirRight;
-
-        let perpindicular = ( a, b ) => 
-            ( ( ( a == u || a == d ) && ( b == r || b == l ) ) ||
-              ( ( a == r || a == l ) && ( b == u || b == d ) ) );
-
-        let allDirs = [ u, d, l, r ];
-
-        let mock_gameData = new MockGameData ();
-
-        //test all directions and check only perpindicular combinations
-        //cause currentDir to change
-        allDirs.forEach ( function ( a )
-        {
-            allDirs.forEach ( function ( b ) 
-            {
-                mock_gameData.currentDir = b;
-
-                //set snakeMoveTimer to non-zero value to check it is 
-                //set to zero after successful turn
-
-                mock_gameData.snakeMoveTimer = 123;
-
-                window.babylonProject.turnSnake ( a, mock_gameData );
-
-                if ( perpindicular ( a, b ) )
-                {
-                   expect ( mock_gameData.currentDir ) .toBe ( a );
-
-                   expect ( mock_gameData.snakeMoveTimer ).toEqual ( 0 );
-                }
-                else
-                {
-                   expect ( mock_gameData.currentDir ) .toBe ( b );
-
-                   expect ( mock_gameData.snakeMoveTimer ).toEqual ( 123 );
-                }
-            });
-        });
-    });
-});
