@@ -182,7 +182,8 @@
 
     let turnControlCallback = function ( newDir, gameData )
     {
-        babylonProject.snake.turnSnake ( newDir, gameData.currentDir );
+        gameData.currentDir = 
+            babylonProject.snake.turnSnake ( newDir, gameData.currentDir );
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));

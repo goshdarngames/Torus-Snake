@@ -322,19 +322,30 @@ describe ( "window.babylonProject.snakeMoveState", () =>
                 .toEqual ( testData.buttonText );
 
             //test buttonCall
+            //The function should call turn snake and store the result
+            //in gameData.currentDir
 
             expect ( 
                 createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall )
                 .toBeInstanceOf ( Function );
 
+            let previousDir = mock_gameData.currentDir;
+
+            babylonProject.snake.turnSnake
+                .mockReturnValueOnce ( jest.fn () );
+
             createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall ();
 
-            expect ( window.babylonProject.snake.turnSnake )
+            expect ( babylonProject.snake.turnSnake )
                 .toHaveBeenCalledTimes ( testIdx + 1 );
 
-            expect ( window.babylonProject.snake.turnSnake )
+            expect ( babylonProject.snake.turnSnake )
                 .toHaveBeenLastCalledWith ( 
-                        testData.buttonDir, mock_gameData.currentDir );
+                        testData.buttonDir, previousDir );
+
+            expect ( mock_gameData.currentDir )
+                .toBe ( babylonProject.snake.turnSnake.mock
+                        .results [ testIdx ].value );
 
             //scene and babylon parameters
 
