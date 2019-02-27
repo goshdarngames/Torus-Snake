@@ -1,7 +1,7 @@
-const startState = require ( "./snakeMoveState" );
+const startState = require ( "./gameplayState" );
 
 /****************************************************************************
- * snakeMoveState.test.js
+ * gameplayState.test.js
  ***************************************************************************/
 
 /****************************************************************************
@@ -178,11 +178,11 @@ let MockEngine = jest.fn ( function ()
  * TESTS
  ***************************************************************************/
 
-describe ( "window.babylonProject.snakeMoveState", () =>
+describe ( "window.babylonProject.gameplayState", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.snakeMoveState )
+        expect ( window.babylonProject.gameplayState )
             .toBeDefined ();
     });
 
@@ -192,12 +192,12 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_gameData = new MockGameData ();
 
         expect ( () => 
-                window.babylonProject.snakeMoveState ( mock_babylon ))
+                window.babylonProject.gameplayState ( mock_babylon ))
             .toThrow ( "gameData is undefined" );
 
 
         expect ( () => 
-                window.babylonProject.snakeMoveState ( 
+                window.babylonProject.gameplayState ( 
                     undefined, mock_gameData ))
             .toThrow ( "babylon is undefined" );
 
@@ -205,7 +205,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_gameData.snakeParts = undefined;
 
         expect ( () =>
-                window.babylonProject.snakeMoveState (
+                window.babylonProject.gameplayState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeParts is undefined" );
 
@@ -213,7 +213,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_gameData.snakeMoveInterval = undefined;
 
         expect ( () =>
-                window.babylonProject.snakeMoveState (
+                window.babylonProject.gameplayState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeMoveInterval is undefined" );
         
@@ -221,7 +221,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_gameData.snakeMoveTimer = undefined;
 
         expect ( () =>
-                window.babylonProject.snakeMoveState (
+                window.babylonProject.gameplayState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.snakeMoveTimer is undefined" );
         
@@ -229,7 +229,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_gameData.currentDir = undefined;
 
         expect ( () =>
-                window.babylonProject.snakeMoveState (
+                window.babylonProject.gameplayState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.currentDir is undefined" );
         
@@ -239,7 +239,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
             .mockReturnValueOnce ( false );
 
         expect ( () =>
-                window.babylonProject.snakeMoveState (
+                window.babylonProject.gameplayState (
                     mock_babylon, mock_gameData ))
             .toThrow ( "gameData.currentDir is not valid direction" );
         
@@ -294,7 +294,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         mock_babylon = new MockBabylon ();
         mock_gameData = new MockGameData ();
 
-        window.babylonProject.snakeMoveState ( mock_babylon, mock_gameData ); 
+        window.babylonProject.gameplayState ( mock_babylon, mock_gameData ); 
 
         expect ( mock_gameData.turnInputControls )
             .toBeDefined ();
@@ -407,7 +407,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
         ];
 
         let updateFunc = 
-            window.babylonProject.snakeMoveState ( 
+            window.babylonProject.gameplayState ( 
                     mock_babylon, mock_gameData );
 
         let testButtonEnabled = ( dirName, callCount, enabled ) =>
@@ -534,7 +534,7 @@ describe ( "window.babylonProject.snakeMoveState", () =>
 
             mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
-            let retVal = window.babylonProject.snakeMoveState ( 
+            let retVal = window.babylonProject.gameplayState ( 
                         mock_babylon, mock_gameData );
 
             //render should be called every time

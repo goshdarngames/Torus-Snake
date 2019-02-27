@@ -1,12 +1,12 @@
 /****************************************************************************
- * snakeMoveState.js
+ * gameplayState.js
  *
  * Checks if the snake has moved and updates the grid squares if so.
  ***************************************************************************/
 
 ( function ( babylonProject, undefined )
 {
-    babylonProject.snakeMoveState = function ( babylon, gameData )
+    babylonProject.gameplayState = function ( babylon, gameData )
     {
         if ( gameData == undefined )
         {
@@ -106,7 +106,7 @@
 
         gameData.scene.render ();
 
-        return () => babylonProject.snakeMoveState ( babylon, gameData );
+        return () => babylonProject.gameplayState ( babylon, gameData );
     }
 
     /************************************************************************
