@@ -26,11 +26,46 @@ The flow of gamestates is shown in the following diagram.
 Some details on the finite state machine used in the project can be
 found below.
 
+Config
+======
+
+A data structure that defines immutable properties explicitly.  The data
+is globally accessible and contains definitions that many system components
+may need.
+
+The data is defined in:
+
+    config.js
+
+The configuration variables defined by this game are:
+
+    * snakeMoveInitialInterval
+     - The initial delay between automatic moves of the snake.
+
+    * dirUp, dirDown, dirLeft, dirRight
+     - The 2D direction vectors used to control what direction the snake
+       is moving on the torus surface.
+
+    * isValidDirection ( d )
+     - A function that returns true or false if d is a valid direction.
+
+    * upPos, downPos, rightPos, leftPos
+     - The positions that the directional control plane buttons are placed.
+
+    * turnControlPlaneSize
+     - Value used to scale the size of the directional control plane buttons.
+
 Game Data
 =========
 
-The current state of the game is passed between functions using a data
-structure called 'gameData'.  
+A data structure holding properties that are instantiated during run-time
+and are expected to persist throughout the entire lifetime of the game.
+
+These may be properties such as the rendering engine, scenes, meshes,
+textures and sounds.  
+
+The data is expected to mostly be created by babylon library calls during
+the 'startState'.  i.e. The initial state of the system.
 
 gameData has the following properties:
 
