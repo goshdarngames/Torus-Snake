@@ -631,6 +631,9 @@ describe ( "window.babylonProject.gameplayStateData", () =>
         expect ( retVal.applePos )
             .toEqual ( { x : 2, y : 1 } );
 
+        expect ( retVal.currentDir )
+            .toEqual ( babylonProject.config.dirLeft  );
+
     });
 
 });

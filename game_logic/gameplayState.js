@@ -23,6 +23,8 @@
 
         this.applePos = { x : 2, y : 1 };
 
+        this.currentDir = babylonProject.config.dirLeft;
+
     }
 
     babylonProject.gameplayState = function ( babylon, gameData )

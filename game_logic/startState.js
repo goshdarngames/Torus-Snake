@@ -73,16 +73,6 @@
 
         createTorusIndexFunctions ( gameData );
 
-        //set apple pos to a value - this should be randomized later
-        gameData.applePos = { x : 2, y : 1 };
-
-        gameData.snakeMoveInterval = 
-            window.babylonProject.config.snakeMoveInitialInterval;
-
-        gameData.snakeMoveTimer = gameData.snakeMoveInterval;
-
-        gameData.currentDir = window.babylonProject.config.dirLeft;
-
     }
 
     let createScene = function ( babylon, gameData )
