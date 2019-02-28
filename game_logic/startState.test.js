@@ -158,6 +158,11 @@ beforeEach ( () =>
 
     window.babylonProject.gameplayState = jest.fn ();
 
+    window.babylonProject.GameplayStateData = jest.fn ( function ()
+    {
+        return jest.fn ();
+    });
+
     window.babylonProject.listIdxToCoord = jest.fn ();
 
     window.babylonProject.coordToListIdx = jest.fn ();
@@ -541,12 +546,20 @@ describe ( "window.babylonProject.startState", () =>
         expect ( window.babylonProject.gameplayState )
             .not.toHaveBeenCalled ();
 
+        expect ( babylonProject.GameplayStateData )
+            .toHaveBeenCalledTimes ( 1 );
+
         //call the returned function and check the next state was called
 
         retVal ();
 
         expect ( window.babylonProject.gameplayState )
             .toHaveBeenCalledTimes ( 1 );
+
+        expect ( window.babylonProject.gameplayState )
+            .toHaveBeenCalledWith ( mock_babylon, mock_gameData,
+                    babylonProject.GameplayStateData
+                        .mock.results [ 0 ].value );
     });
 
     test ( "creates mapping functions for torus and snake indexes", () =>

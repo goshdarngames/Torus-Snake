@@ -6,7 +6,7 @@
 
 ( function ( babylonProject, undefined )
 {
-    babylonProject.gameplayStateData = function ()
+    babylonProject.GameplayStateData = function ()
     {
         this.snakeParts = babylonProject.snake
             .createSnake ( babylonProject.config.dirLeft, 3);
@@ -23,42 +23,23 @@
 
     }
 
-    babylonProject.gameplayState = function ( babylon, gameData )
+    babylonProject.gameplayState = 
+        function ( babylon, gameData, stateData )
     {
-        if ( gameData == undefined )
-        {
-            throw new Error ( "gameData is undefined." );
-        }
 
         if ( babylon == undefined )
         {
             throw new Error ( "babylon is undefined." );
         }
 
-        if ( gameData.snakeParts == undefined )
+        if ( gameData == undefined )
         {
-            throw new Error ( "gameData.snakeParts is undefined." );
+            throw new Error ( "gameData is undefined." );
         }
 
-        if ( gameData.snakeMoveInterval == undefined )
+        if ( stateData == undefined )
         {
-            throw new Error ( "gameData.snakeMoveInterval is undefined." );
-        }
-
-        if ( gameData.snakeMoveTimer  == undefined )
-        {
-            throw new Error ( "gameData.snakeMoveTimer is undefined." );
-        }
-
-        if ( gameData.currentDir  == undefined )
-        {
-            throw new Error ( "gameData.currentDir is undefined." );
-        }
-
-        if ( !window.babylonProject.config
-                .isValidDirection ( gameData.currentDir ) )
-        {
-            throw new Error ( "gameData.currentDir is not valid direction" );
+            throw new Error ( "stateData is undefined." );
         }
 
         if ( gameData.turnInputControls  == undefined )
@@ -123,7 +104,8 @@
 
         gameData.scene.render ();
 
-        return () => babylonProject.gameplayState ( babylon, gameData );
+        return () => babylonProject
+            .gameplayState ( babylon, gameData, stateData );
     }
 
     /************************************************************************

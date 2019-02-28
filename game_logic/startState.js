@@ -54,7 +54,10 @@
         //private procedure used to initialize all the game objects
         initializeGameData ( babylon, gameData );
 
-        return () => babylonProject.gameplayState ( babylon, gameData );
+        let gameplayStateData = new babylonProject.GameplayStateData ();
+
+        return () => babylonProject
+            .gameplayState ( babylon, gameData, gameplayStateData );
     }; 
 
     /************************************************************************

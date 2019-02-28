@@ -117,6 +117,20 @@ let timerTestData = [
  * MOCK DATA
  ***************************************************************************/
 
+let MockStateData = jest.fn ( function ()
+{
+    this.snakeParts = jest.fn ();
+
+    this.snakeMoveInterval = jest.fn ();
+
+    this.snakeMoveTimer = jest.fn ();
+
+    this.applePos = jest.fn ();
+
+    this.currentDir = jest.fn ();
+
+});
+
 let MockBabylon = jest.fn ( function ()
 {
     this.Mesh = new MockMesh ();
@@ -194,56 +208,17 @@ describe ( "window.babylonProject.gameplayState", () =>
         mock_gameData = new MockGameData ();
 
         expect ( () => 
+                window.babylonProject.gameplayState ( ))
+            .toThrow ( "babylon is undefined" );
+        
+        expect ( () => 
                 window.babylonProject.gameplayState ( mock_babylon ))
             .toThrow ( "gameData is undefined" );
 
-
         expect ( () => 
                 window.babylonProject.gameplayState ( 
-                    undefined, mock_gameData ))
-            .toThrow ( "babylon is undefined" );
-
-        mock_gameData = new MockGameData ();
-        mock_gameData.snakeParts = undefined;
-
-        expect ( () =>
-                window.babylonProject.gameplayState (
-                    mock_babylon, mock_gameData ))
-            .toThrow ( "gameData.snakeParts is undefined" );
-
-        mock_gameData = new MockGameData ();
-        mock_gameData.snakeMoveInterval = undefined;
-
-        expect ( () =>
-                window.babylonProject.gameplayState (
-                    mock_babylon, mock_gameData ))
-            .toThrow ( "gameData.snakeMoveInterval is undefined" );
-        
-        mock_gameData = new MockGameData ();
-        mock_gameData.snakeMoveTimer = undefined;
-
-        expect ( () =>
-                window.babylonProject.gameplayState (
-                    mock_babylon, mock_gameData ))
-            .toThrow ( "gameData.snakeMoveTimer is undefined" );
-        
-        mock_gameData = new MockGameData ();
-        mock_gameData.currentDir = undefined;
-
-        expect ( () =>
-                window.babylonProject.gameplayState (
-                    mock_babylon, mock_gameData ))
-            .toThrow ( "gameData.currentDir is undefined" );
-        
-        mock_gameData = new MockGameData ();
-        
-        window.babylonProject.config.isValidDirection
-            .mockReturnValueOnce ( false );
-
-        expect ( () =>
-                window.babylonProject.gameplayState (
-                    mock_babylon, mock_gameData ))
-            .toThrow ( "gameData.currentDir is not valid direction" );
+                    mock_babylon, mock_gameData, undefined ))
+            .toThrow ( "stateData is undefined" );
         
     });
 
@@ -295,8 +270,10 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         mock_babylon = new MockBabylon ();
         mock_gameData = new MockGameData ();
+        mock_stateData = new MockStateData ();
 
-        window.babylonProject.gameplayState ( mock_babylon, mock_gameData ); 
+        window.babylonProject
+            .gameplayState ( mock_babylon, mock_gameData, mock_stateData ); 
 
         expect ( mock_gameData.turnInputControls )
             .toBeDefined ();
@@ -384,6 +361,8 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         let mock_gameData = new MockGameData ();
 
+        let mock_stateData = new MockStateData ();
+
         let config = window.babylonProject.config;
 
         let u = config.dirUp;
@@ -410,7 +389,7 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         let updateFunc = 
             window.babylonProject.gameplayState ( 
-                    mock_babylon, mock_gameData );
+                    mock_babylon, mock_gameData, mock_stateData );
 
         let testButtonEnabled = ( dirName, callCount, enabled ) =>
         {
@@ -517,6 +496,8 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         let mock_gameData = new MockGameData ();
 
+        let mock_stateData = new MockStateData ();
+
         //keep a count of how many times the move functions should have
         //been called during the test execution
 
@@ -537,7 +518,7 @@ describe ( "window.babylonProject.gameplayState", () =>
             mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
             let retVal = window.babylonProject.gameplayState ( 
-                        mock_babylon, mock_gameData );
+                        mock_babylon, mock_gameData, mock_stateData );
 
             //render should be called every time
             expect ( mock_gameData.scene.render )
@@ -598,17 +579,17 @@ describe ( "window.babylonProject.gameplayState", () =>
 
 });
 
-describe ( "window.babylonProject.gameplayStateData", () =>
+describe ( "window.babylonProject.GameplayStateData", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.gameplayStateData )
+        expect ( window.babylonProject.GameplayStateData )
             .toBeDefined ();
     });
 
     test ( "returns an object with expected properties", () =>
     {
-        let retVal = new babylonProject.gameplayStateData ();
+        let retVal = new babylonProject.GameplayStateData ();
 
         expect ( babylonProject.snake.createSnake )
             .toHaveBeenCalledTimes ( 1 );
