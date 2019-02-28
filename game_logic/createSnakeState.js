@@ -34,7 +34,7 @@
         }
 
         //create an empty list to hold the snake's body positions
-        gameData.snakeParts = [];
+        let snakeParts = [];
 
         //create the snake as a line of 3 pieces along the y axis.
         // - Note:  The y axis describes the long torus rings that 
@@ -44,7 +44,7 @@
 
         for ( let i=0; i<3; i++ )
         {
-            gameData.snakeParts.push ( { x : 0, y : i } );
+            snakeParts.push ( { x : 0, y : i } );
         }
 
         //return the snake move state as the next state
