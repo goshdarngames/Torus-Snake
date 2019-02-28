@@ -28,7 +28,9 @@ beforeEach ( () =>
 
         upPos : { x : 1, y : 1, z : 1 },
 
-        turnControlPlaneSize : 5
+        turnControlPlaneSize : 5,
+
+        snakeMoveInitialInterval : 4
     };
 
     window.babylonProject.config.isValidDirection
@@ -591,6 +593,43 @@ describe ( "window.babylonProject.gameplayState", () =>
             expect ( mock_gameData.snakeMoveInterval )
                 .toBeCloseTo ( 0.5 );
         });
+
+    });
+
+});
+
+describe ( "window.babylonProject.gameplayStateData", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( window.babylonProject.gameplayStateData )
+            .toBeDefined ();
+    });
+
+    test ( "validates snakeParts paramter", () =>
+    {
+        expect ( () => window.babylonProject.gameplayStateData () )
+            .toThrow ( "snakeParts is not defined" );
+
+    });
+
+    test ( "returns an object with expected properties", () =>
+    {
+        let snakeParts = jest.fn ();
+
+        let retVal = new babylonProject.gameplayStateData ( snakeParts );
+
+        expect ( retVal.snakeParts )
+            .toBe ( snakeParts );
+
+        expect ( retVal.snakeMoveInterval )
+            .toEqual ( babylonProject.config.snakeMoveInitialInterval );
+
+        expect ( retVal.snakeMoveTimer )
+            .toEqual ( babylonProject.config.snakeMoveInitialInterval );
+
+        expect ( retVal.applePos )
+            .toEqual ( { x : 2, y : 1 } );
 
     });
 
