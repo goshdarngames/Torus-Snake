@@ -156,7 +156,7 @@ beforeEach ( () =>
         return retVal;
     });
 
-    window.babylonProject.createSnakeState = jest.fn ();
+    window.babylonProject.gameplayState = jest.fn ();
 
     window.babylonProject.listIdxToCoord = jest.fn ();
 
@@ -521,7 +521,7 @@ describe ( "window.babylonProject.startState", () =>
 
     });
 
-    test ( "returns a function that calls createSnakeState", () =>
+    test ( "returns a function that calls gameplayState", () =>
     {
         let mock_babylon = new MockBabylon ();
         let mock_gameData = new MockGameData ();
@@ -538,14 +538,14 @@ describe ( "window.babylonProject.startState", () =>
         //check the next state function was not called during the current
         //state function
 
-        expect ( window.babylonProject.createSnakeState )
+        expect ( window.babylonProject.gameplayState )
             .not.toHaveBeenCalled ();
 
         //call the returned function and check the next state was called
 
         retVal ();
 
-        expect ( window.babylonProject.createSnakeState )
+        expect ( window.babylonProject.gameplayState )
             .toHaveBeenCalledTimes ( 1 );
     });
 

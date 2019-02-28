@@ -6,14 +6,10 @@
 
 ( function ( babylonProject, undefined )
 {
-    babylonProject.gameplayStateData = function ( snakeParts )
+    babylonProject.gameplayStateData = function ()
     {
-        if ( snakeParts == undefined )
-        {
-            throw ( "snakeParts is not defined" );
-        }
-
-        this.snakeParts = snakeParts;
+        this.snakeParts = babylonProject.snake
+            .createSnake ( babylonProject.config.dirLeft, 3);
 
         this.snakeMoveInterval =
             babylonProject.config.snakeMoveInitialInterval;

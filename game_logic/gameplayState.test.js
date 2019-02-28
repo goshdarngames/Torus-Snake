@@ -606,21 +606,19 @@ describe ( "window.babylonProject.gameplayStateData", () =>
             .toBeDefined ();
     });
 
-    test ( "validates snakeParts paramter", () =>
-    {
-        expect ( () => window.babylonProject.gameplayStateData () )
-            .toThrow ( "snakeParts is not defined" );
-
-    });
-
     test ( "returns an object with expected properties", () =>
     {
-        let snakeParts = jest.fn ();
+        let retVal = new babylonProject.gameplayStateData ();
 
-        let retVal = new babylonProject.gameplayStateData ( snakeParts );
+        expect ( babylonProject.snake.createSnake )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( babylonProject.snake.createSnake )
+            .toHaveBeenCalledWith ( babylonProject.config.dirLeft, 3 );
 
         expect ( retVal.snakeParts )
-            .toBe ( snakeParts );
+            .toBe ( babylonProject.snake.createSnake
+                    .mock.results [ 0 ].value );
 
         expect ( retVal.snakeMoveInterval )
             .toEqual ( babylonProject.config.snakeMoveInitialInterval );

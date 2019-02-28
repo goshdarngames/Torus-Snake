@@ -54,7 +54,7 @@
         //private procedure used to initialize all the game objects
         initializeGameData ( babylon, gameData );
 
-        return () => babylonProject.createSnakeState ( babylon, gameData );
+        return () => babylonProject.gameplayState ( babylon, gameData );
     }; 
 
     /************************************************************************
