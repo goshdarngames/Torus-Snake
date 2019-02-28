@@ -625,49 +625,4 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledWith ( testCoord, 9, 9 ); 
     });
 
-    test ( "initializes applePos as { x:2, y:1 }", () =>
-    {
-
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
-
-        window.babylonProject.startState ( mock_babylon, mock_gameData );
-
-        expect ( mock_gameData.applePos ).toBeDefined ();
-
-        expect ( mock_gameData.applePos.x ).toBe ( 2 );
-        expect ( mock_gameData.applePos.y ).toBe ( 1 );
-
-    });
-
-    test ( "initializes snakeMoveInterval and snakeMoveTimer", () =>
-    {
-
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
-
-        window.babylonProject.startState ( mock_babylon, mock_gameData );
-
-        expect ( mock_gameData.snakeMoveInterval )
-            .toEqual ( 
-                window.babylonProject.config.snakeMoveInitialInterval );
-
-        expect ( mock_gameData.snakeMoveTimer )
-            .toEqual ( mock_gameData.snakeMoveInterval );
-
-    });
-
-    test ( "initializes current direction", () =>
-    {
-
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
-
-        window.babylonProject.startState ( mock_babylon, mock_gameData );
-
-        expect ( mock_gameData.currentDir )
-            .toEqual ( window.babylonProject.config.dirLeft );
-
-    });
-
 });
