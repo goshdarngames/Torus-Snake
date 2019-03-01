@@ -640,11 +640,28 @@ describe ( "window.babylonProject.GameplayStateData", () =>
         expect ( retVal.turnInputControls )
             .toBeDefined ();
 
-    });
+        //turn button callback
+        // - should call turnSnake and store its return as currentDir
 
-    test ( "defines turnInputContols correctly", () =>
-    {
+        expect ( retVal.turnButtonCallback )
+            .toBeInstanceOf ( Function );
 
+        let prevDir = retVal.currentDir;
+        let buttonDir = jest.fn ();
+        let turnSnakeRet = jest.fn ();
+
+        babylonProject.snake.turnSnake.mockReturnValueOnce ( turnSnakeRet );
+
+        retVal.turnButtonCallback ( buttonDir );
+
+        expect ( babylonProject.snake.turnSnake )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( babylonProject.snake.turnSnake )
+            .toHaveBeenLastCalledWith ( buttonDir, prevDir );
+
+        expect ( retVal.currentDir )
+            .toBe ( turnSnakeRet );
     });
 
 });

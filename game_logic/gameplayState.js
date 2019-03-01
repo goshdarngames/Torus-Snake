@@ -31,6 +31,15 @@
         //turn input controls
 
         this.turnInputControls = 1;
+
+        //turn button callback
+        
+        this.turnButtonCallback = function ( buttonDir )
+        {
+            this.currentDir = 
+                babylonProject.snake.turnSnake ( 
+                        buttonDir, this.currentDir );
+        };
     }
 
     babylonProject.gameplayState = 
