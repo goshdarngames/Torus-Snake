@@ -8,8 +8,11 @@
 {
     babylonProject.GameplayStateData = function ()
     {
+        //create snake
         this.snakeParts = babylonProject.snake
             .createSnake ( babylonProject.config.dirLeft, 3);
+
+        //snake move timer and interval
 
         this.snakeMoveInterval =
             babylonProject.config.snakeMoveInitialInterval;
@@ -17,10 +20,17 @@
         this.snakeMoveTimer =
             babylonProject.config.snakeMoveInitialInterval;
 
+        //apple position
+
         this.applePos = { x : 2, y : 1 };
+
+        //current direction
 
         this.currentDir = babylonProject.config.dirLeft;
 
+        //turn input controls
+
+        this.turnInputControls = 1;
     }
 
     babylonProject.gameplayState = 
@@ -39,7 +49,7 @@
 
         if ( stateData == undefined )
         {
-            throw new Error ( "stateData is undefined." );
+            stateData = new babylonProject.GameplayStateData ();
         }
 
         if ( gameData.turnInputControls  == undefined )

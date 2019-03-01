@@ -215,11 +215,25 @@ describe ( "window.babylonProject.gameplayState", () =>
                 window.babylonProject.gameplayState ( mock_babylon ))
             .toThrow ( "gameData is undefined" );
 
-        expect ( () => 
-                window.babylonProject.gameplayState ( 
-                    mock_babylon, mock_gameData, undefined ))
-            .toThrow ( "stateData is undefined" );
-        
+    });
+
+    test ( "creates stateData if it is undefined", () =>
+    {
+        mock_babylon = new MockBabylon ();
+        mock_gameData = new MockGameData ();
+
+        let oldFunc = babylonProject.GameplayStateData;
+
+        babylonProject.GameplayStateData = jest.fn ();
+
+        oneTimeCleanUp = 
+            () => { babylonProject.GameplayStateData = oldFunc; }
+
+        babylonProject.gameplayState ( mock_babylon, mock_gameData );
+
+        expect ( babylonProject.GameplayStateData )
+            .toHaveBeenCalledTimes ( 1 );
+
     });
 
     test ( "defines turnInputControls if it is undefined", () =>
@@ -591,6 +605,8 @@ describe ( "window.babylonProject.GameplayStateData", () =>
     {
         let retVal = new babylonProject.GameplayStateData ();
 
+        // snake was created
+
         expect ( babylonProject.snake.createSnake )
             .toHaveBeenCalledTimes ( 1 );
 
@@ -601,17 +617,33 @@ describe ( "window.babylonProject.GameplayStateData", () =>
             .toBe ( babylonProject.snake.createSnake
                     .mock.results [ 0 ].value );
 
+        //snake move timer and interval
+
         expect ( retVal.snakeMoveInterval )
             .toEqual ( babylonProject.config.snakeMoveInitialInterval );
 
         expect ( retVal.snakeMoveTimer )
             .toEqual ( babylonProject.config.snakeMoveInitialInterval );
 
+        //apple position
+
         expect ( retVal.applePos )
             .toEqual ( { x : 2, y : 1 } );
 
+        //current direction
+
         expect ( retVal.currentDir )
             .toEqual ( babylonProject.config.dirLeft  );
+
+        //turn input controls
+
+        expect ( retVal.turnInputControls )
+            .toBeDefined ();
+
+    });
+
+    test ( "defines turnInputContols correctly", () =>
+    {
 
     });
 
