@@ -18,47 +18,37 @@
      * torus this function will toggle isVisible on each according
      * to the current position of the snake.
      */  
-    babylonProject.updateTorusMeshes = function ( gameData )
+    babylonProject.updateTorusMeshes = 
+        function ( snakeParts, applePos, torusMeshes, torusCoordToMeshIdx  )
     {
 
-        if ( gameData == undefined )
+        if ( snakeParts == undefined )
         {
-            throw ( "gameData parameter is undefined" );
+            throw ( "snakeParts parameter is undefined" );
         }
         
-        if ( gameData.snakeParts == undefined )
+        if ( applePos == undefined )
         {
-            throw (  "gameData.snakeParts should be a list of tuples" );
+            throw ( "applePos parameter is undefined" );
         }
         
-        if ( gameData.torusMeshes == undefined )
+        if ( torusMeshes == undefined )
         {
-            throw ( "gameData.torusMeshes should be a list of "+
-                    "meshes with length >= gameData.snakeParts" );
+            throw ( "torusMeshes parameter is undefined" );
         }
-
-        if ( gameData.torusMeshes.length < gameData.snakeParts.length )
+        
+        if ( torusCoordToMeshIdx == undefined )
         {
-            throw ( "gameData.torusMeshes.length should be >= "+
-                    "gameData.snakeParts.length" );
+            throw ( "torusCoordToMeshIdx parameter is undefined" );
         }
-
-        gridSize = Math.sqrt ( gameData.torusMeshes.length );
-
-        if ( !Number.isInteger ( gridSize ) )
-        {
-            throw  ( "gameData.torusMeshes.length should be square number" );
-        }
-
-        let torusMeshes = gameData.torusMeshes;
 
         //set all torusMeshes to be invisble
         torusMeshes.forEach ( 
-        function ( mesh, idx )
+        function ( torusMesh )
         {
-            babylonProject.disableTorusMesh ( idx, gameData );
+            torusMesh.isVisible = false;
         });
-
+/*
         //set the snake torusMeshes to be visible
         gameData.snakeParts.forEach (
         function ( s )
@@ -75,54 +65,8 @@
 
         babylonProject.enableTorusMesh ( 
             appleIdx, gameData.appleMat, gameData );
+*/
     }
 
-    babylonProject.disableTorusMesh = function ( meshIdx, gameData )
-    {
-        if ( gameData == undefined )
-        {
-            throw ( "gameData is undefined" );
-        }
-
-        if ( gameData.torusMeshes == undefined )
-        {
-            throw ( "gameData.torusMeshes is undefined" );
-        }
-
-        if ( meshIdx < 0 || meshIdx > gameData.torusMeshes.length )
-        {
-            throw ( "meshIdx outside torus mesh list range" );
-        }
-
-        gameData.torusMeshes [ meshIdx ].isVisible = false;
-
-    }
-
-    babylonProject.enableTorusMesh = function ( meshIdx, material, gameData )
-    {
-        if ( gameData == undefined )
-        {
-            throw ( "gameData is undefined" );
-        }
-
-        if ( gameData.torusMeshes == undefined )
-        {
-            throw ( "gameData.torusMeshes is undefined" );
-        }
-
-        if ( meshIdx < 0 || meshIdx > gameData.torusMeshes.length )
-        {
-            throw ( "meshIdx outside torus mesh list range" );
-        }
-
-        if ( material == undefined )
-        {
-            throw ( "material undefined" );
-        }
-
-        gameData.torusMeshes [ meshIdx ].isVisible = true;
-
-        gameData.torusMeshes [ meshIdx ].material = material;
-    }
 
 } ( window.babylonProject = window.babylonProject || {} ));
