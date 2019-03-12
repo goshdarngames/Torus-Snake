@@ -353,7 +353,7 @@ describe ( "babylonProject.snake.createSnake", () =>
 
     });
 
-    test ( "calls grow snake [length] times", () =>
+    test ( "calls grow snake [length] times and returns final call", () =>
     {
         //replace growSnake with mock function
         
@@ -375,7 +375,7 @@ describe ( "babylonProject.snake.createSnake", () =>
 
         let dir = jest.fn ();
 
-        babylonProject.snake.createSnake ( dir, 4 );
+        let retVal = babylonProject.snake.createSnake ( dir, 4 );
 
         expect ( mockGrowSnake )
             .toHaveBeenCalledTimes ( 4 );
@@ -411,6 +411,10 @@ describe ( "babylonProject.snake.createSnake", () =>
                 .toBe ( val [ 1 ] );
         });
 
+        //returns the final result of growSnake
+
+        expect ( retVal )
+            .toBe ( mockGrowSnake.mock.results [ 3 ].value );
     });
 
 });

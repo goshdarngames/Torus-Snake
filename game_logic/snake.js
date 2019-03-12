@@ -155,6 +155,8 @@
             snakeParts = babylonProject.snake.growSnake (
                     dir, snakeParts, wrapFunc );
         }
+
+        return snakeParts;
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
