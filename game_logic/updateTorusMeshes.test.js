@@ -103,5 +103,46 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         });
 
     });
+
+    test ( "The torusCoordToMeshIdx function is called once for each "+
+           "member of snakeParts and the corresponding torusMesh isVisible "+
+           "property is set to false.", () =>
+    {
+        let snakeParts = mockList ( 5 );
+        let applePos = jest.fn ();
+        let torusMeshes = mockList ( 10 );
+        let torusCoordToMeshIdx = jest.fn ();
+
+        //have torusCoordToMeshIdx return a different index for each
+        //snakePart
+
+        snakeParts.forEach ( function ( val, idx )
+        {
+            torusCoordToMeshIdx.mockReturnValueOnce ( idx );
+        });
+
+        babylonProject.updateTorusMeshes ( 
+                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx ); 
+
+        expect ( torusCoordToMeshIdx )
+            .toHaveBeenCalledTimes ( snakeParts.length );
+
+        torusCoordToMeshIdx.mock.calls.forEach ( function ( call, idx )
+        {
+            expect ( call [ 0 ] )
+                .toBe ( snakeParts [ idx ] );
+        });
+
+        torusMeshes.forEach ( function ( torusMesh, idx )
+        {
+            let expectVisible = ( idx < snakeParts.length ); 
+
+            expect ( torusMesh.isVisible )
+                .toEqual ( expectVisible );
+
+        });
+
+    });
+
 });
 

@@ -48,17 +48,17 @@
         {
             torusMesh.isVisible = false;
         });
-/*
+
         //set the snake torusMeshes to be visible
-        gameData.snakeParts.forEach (
+        snakeParts.forEach (
         function ( s )
         {
-            let meshIdx = gameData.torusCoordToMeshIdx ( s );
+            let meshIdx = torusCoordToMeshIdx ( s );
 
-            babylonProject.enableTorusMesh ( 
-                    meshIdx, gameData.snakeMat, gameData );
+            torusMeshes [ meshIdx ].isVisible = true;
         });
 
+/*
         //set the apple mesh to be visible
 
         let appleIdx = gameData.torusCoordToMeshIdx ( gameData.applePos );
