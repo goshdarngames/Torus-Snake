@@ -175,6 +175,11 @@ let MockGameData = jest.fn ( function ()
     });
 
     this.currentDir = window.babylonProject.config.dirUp;
+
+    this.appleMat = jest.fn ();
+
+    this.snakeMat = jest.fn ();
+
 });
 
 let MockScene = jest.fn ( function ()
@@ -204,23 +209,23 @@ describe ( "window.babylonProject.gameplayState", () =>
 
     test ( "expects game data and babylon args to be defined", () =>
     {
-        mock_babylon = new MockBabylon ();
-        mock_gameData = new MockGameData ();
+        babylon = new MockBabylon ();
+        gameData = new MockGameData ();
 
         expect ( () => 
                 window.babylonProject.gameplayState ( ))
             .toThrow ( "babylon is undefined" );
         
         expect ( () => 
-                window.babylonProject.gameplayState ( mock_babylon ))
+                window.babylonProject.gameplayState ( babylon ))
             .toThrow ( "gameData is undefined" );
 
     });
 
     test ( "creates stateData if it is undefined", () =>
     {
-        mock_babylon = new MockBabylon ();
-        mock_gameData = new MockGameData ();
+        babylon = new MockBabylon ();
+        gameData = new MockGameData ();
 
         let oldFunc = babylonProject.GameplayStateData;
 
@@ -229,7 +234,7 @@ describe ( "window.babylonProject.gameplayState", () =>
         oneTimeCleanUp = 
             () => { babylonProject.GameplayStateData = oldFunc; }
 
-        babylonProject.gameplayState ( mock_babylon, mock_gameData );
+        babylonProject.gameplayState ( babylon, gameData );
 
         expect ( babylonProject.GameplayStateData )
             .toHaveBeenCalledTimes ( 1 );
@@ -282,14 +287,14 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         //mock data
 
-        mock_babylon = new MockBabylon ();
-        mock_gameData = new MockGameData ();
-        mock_stateData = new MockStateData ();
+        babylon = new MockBabylon ();
+        gameData = new MockGameData ();
+        stateData = new MockStateData ();
 
         window.babylonProject
-            .gameplayState ( mock_babylon, mock_gameData, mock_stateData ); 
+            .gameplayState ( babylon, gameData, stateData ); 
 
-        expect ( mock_gameData.turnInputControls )
+        expect ( gameData.turnInputControls )
             .toBeDefined ();
 
         expect ( window.babylonProject.createButtonPlane )
@@ -322,7 +327,7 @@ describe ( "window.babylonProject.gameplayState", () =>
                 createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall )
                 .toBeInstanceOf ( Function );
 
-            let previousDir = mock_gameData.currentDir;
+            let previousDir = gameData.currentDir;
 
             babylonProject.snake.turnSnake
                 .mockReturnValueOnce ( jest.fn () );
@@ -336,32 +341,32 @@ describe ( "window.babylonProject.gameplayState", () =>
                 .toHaveBeenLastCalledWith ( 
                         testData.buttonDir, previousDir );
 
-            expect ( mock_gameData.currentDir )
+            expect ( gameData.currentDir )
                 .toBe ( babylonProject.snake.turnSnake.mock
                         .results [ testIdx ].value );
 
             //scene and babylon parameters
 
             expect ( createButtonPlaneMock.calls [ testIdx ] [ 3 ] )
-                .toBe ( mock_gameData.scene );
+                .toBe ( gameData.scene );
 
             expect ( createButtonPlaneMock.calls [ testIdx ] [ 4 ] )
-                .toBe ( mock_babylon );
+                .toBe ( babylon );
 
             //check input controls were stored in gamedata
 
             expect ( 
-                 mock_gameData.turnInputControls [ testData.controlName ] )
+                 gameData.turnInputControls [ testData.controlName ] )
                 .toBeDefined ();
 
             expect ( 
-                 mock_gameData.turnInputControls [ testData.controlName ] )
+                 gameData.turnInputControls [ testData.controlName ] )
                 .toEqual ( createButtonPlaneMock.results [ testIdx ].value );
 
             //check position was set
 
             expect ( 
-                 mock_gameData.turnInputControls [ testData.controlName ]
+                 gameData.turnInputControls [ testData.controlName ]
                     .buttonPlane.position )
                 .toEqual ( testData.buttonPos );
 
@@ -371,11 +376,11 @@ describe ( "window.babylonProject.gameplayState", () =>
 
     test ( "disables perpindicular move arrows", () =>
     {
-        let mock_babylon = new MockBabylon ();
+        let babylon = new MockBabylon ();
 
-        let mock_gameData = new MockGameData ();
+        let gameData = new MockGameData ();
 
-        let mock_stateData = new MockStateData ();
+        let stateData = new MockStateData ();
 
         let config = window.babylonProject.config;
 
@@ -403,7 +408,7 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         let updateFunc = 
             window.babylonProject.gameplayState ( 
-                    mock_babylon, mock_gameData, mock_stateData );
+                    babylon, gameData, stateData );
 
         let testButtonEnabled = ( dirName, callCount, enabled ) =>
         {
@@ -411,21 +416,21 @@ describe ( "window.babylonProject.gameplayState", () =>
 
             //plane isEnabled () function should be called
 
-            expect ( mock_gameData.turnInputControls
+            expect ( gameData.turnInputControls
                    [ controlName ].buttonPlane.isEnabled )
                .toHaveBeenCalledTimes ( callCount );
 
-            expect ( mock_gameData.turnInputControls
+            expect ( gameData.turnInputControls
                    [ controlName ].buttonPlane.isEnabled )
                .toHaveBeenLastCalledWith ( enabled );
 
             //button isEnabled and isVisible property should be set
 
-            expect ( mock_gameData.turnInputControls
+            expect ( gameData.turnInputControls
                    [ controlName ].button.isEnabled )
                .toBe ( enabled );
 
-            expect ( mock_gameData.turnInputControls
+            expect ( gameData.turnInputControls
                    [ controlName ].button.isVisible )
                .toBe ( enabled );
 
@@ -434,28 +439,28 @@ describe ( "window.babylonProject.gameplayState", () =>
         //These properties should be reset between each test case
         let resetButtonProperties = () =>
         {
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .upControl.button.isEnabled = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .downControl.button.isEnabled = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .leftControl.button.isEnabled = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .rightControl.button.isEnabled = undefined;
 
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .upControl.button.isVisble = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .downControl.button.isVisble = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .leftControl.button.isVisble = undefined;
             
-            mock_gameData.turnInputControls
+            gameData.turnInputControls
                 .rightControl.button.isVisble = undefined;
 
         };
@@ -472,7 +477,7 @@ describe ( "window.babylonProject.gameplayState", () =>
             testData.currentDir.forEach ( function ( cd )
             {
                 //set the current direction
-                mock_gameData.currentDir = cd;
+                gameData.currentDir = cd;
 
                 resetButtonProperties ();
 
@@ -506,11 +511,11 @@ describe ( "window.babylonProject.gameplayState", () =>
             () =>
     {
 
-        let mock_babylon = new MockBabylon ();
+        let babylon = new MockBabylon ();
 
-        let mock_gameData = new MockGameData ();
+        let gameData = new MockGameData ();
 
-        let mock_stateData = new MockStateData ();
+        let stateData = new MockStateData ();
 
         //keep a count of how many times the move functions should have
         //been called during the test execution
@@ -522,20 +527,20 @@ describe ( "window.babylonProject.gameplayState", () =>
         //timer elapsed and that the snake parts property is not changed
         //if the timer does not elapse
 
-        let previousSnakeParts = mock_gameData.snakeParts;
+        let previousSnakeParts = gameData.snakeParts;
 
         timerTestData.forEach ( function ( testData, idx )
         {
             babylonProject.snake.moveSnake.mockReturnValueOnce (
                     jest.fn () );
 
-            mock_gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
+            gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
             let retVal = window.babylonProject.gameplayState ( 
-                        mock_babylon, mock_gameData, mock_stateData );
+                        babylon, gameData, stateData );
 
             //render should be called every time
-            expect ( mock_gameData.scene.render )
+            expect ( gameData.scene.render )
                 .toHaveBeenCalledTimes ( idx + 1 );
 
             //these functions should only be called when the snake move 
@@ -551,27 +556,33 @@ describe ( "window.babylonProject.gameplayState", () =>
                 .toHaveBeenCalledTimes ( expectedMoveCalls );
 
             expect ( window.babylonProject.updateTorusMeshes )
-                .toHaveBeenCalledWith ( mock_gameData );
+                .toHaveBeenCalledWith (
+                      stateData.snakeParts,
+                      stateData.applePos,
+                      gameData.torusMeshes,
+                      gameData.torusCoordToMeshIdx,
+                      gameData.snakeMat,
+                      gameData.appleMat  );
 
             expect ( window.babylonProject.snake.moveSnake )
                 .toHaveBeenCalledTimes ( expectedMoveCalls );
 
             expect ( window.babylonProject.snake.moveSnake )
                 .toHaveBeenCalledWith ( 
-                        mock_gameData.currentDir,
+                        gameData.currentDir,
                         previousSnakeParts,
-                        mock_gameData.wrapTorusCoord );
+                        gameData.wrapTorusCoord );
 
             //snakeParts should be the last returned value from moveSnake
 
-            expect ( mock_gameData.snakeParts )
+            expect ( gameData.snakeParts )
                 .toBe ( babylonProject.snake.moveSnake.mock
                         .results [ expectedMoveCalls - 1 ].value );
 
             //the apple' y position should change each time
 
-            expect ( mock_gameData.applePos.y )
-                .toEqual ( expectedMoveCalls * mock_gameData.currentDir.y );
+            expect ( gameData.applePos.y )
+                .toEqual ( expectedMoveCalls * gameData.currentDir.y );
 
             //the return of the state function should be another function
 
@@ -580,12 +591,12 @@ describe ( "window.babylonProject.gameplayState", () =>
             
             //the move timer should have decreased by 0.1
 
-            expect ( mock_gameData.snakeMoveTimer )
+            expect ( gameData.snakeMoveTimer )
                 .toBeCloseTo ( testData.snakeMoveTimerAfter );
 
             //the move interval should be unchanged
 
-            expect ( mock_gameData.snakeMoveInterval )
+            expect ( gameData.snakeMoveInterval )
                 .toBeCloseTo ( 0.5 );
         });
 
