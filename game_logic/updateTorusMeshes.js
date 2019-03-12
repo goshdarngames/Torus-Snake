@@ -19,7 +19,8 @@
      * to the current position of the snake.
      */  
     babylonProject.updateTorusMeshes = 
-        function ( snakeParts, applePos, torusMeshes, torusCoordToMeshIdx  )
+        function ( snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
+                   snakeMat, appleMat  )
     {
 
         if ( snakeParts == undefined )
@@ -40,6 +41,16 @@
         if ( torusCoordToMeshIdx == undefined )
         {
             throw ( "torusCoordToMeshIdx parameter is undefined" );
+        }
+
+        if ( snakeMat == undefined )
+        {
+            throw ( "snakeMat parameter is undefined" );
+        }
+
+        if ( appleMat == undefined )
+        {
+            throw ( "appleMat parameter is undefined" );
         }
 
         //set all torusMeshes to be invisble

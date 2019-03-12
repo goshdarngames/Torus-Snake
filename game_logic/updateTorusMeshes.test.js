@@ -63,6 +63,8 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         let applePos = jest.fn ();
         let torusMeshes = mockList ( 10 );
         let torusCoordToMeshIdx = jest.fn ();
+        let snakeMat = jest.fn ();
+        let appleMat = jest.fn ();
 
         expect ( () => 
             window.babylonProject.updateTorusMeshes () )
@@ -82,6 +84,17 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
                 snakeParts, applePos, torusMeshes ))
             .toThrow ( "torusCoordToMeshIdx parameter is undefined" );
 
+        expect ( () => 
+            window.babylonProject.updateTorusMeshes ( 
+                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx  ))
+            .toThrow ( "snakeMat parameter is undefined" );
+
+        expect ( () => 
+            window.babylonProject.updateTorusMeshes ( 
+                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
+                snakeMat  ))
+            .toThrow ( "appleMat parameter is undefined" );
+
 
     });
 
@@ -92,9 +105,13 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         let applePos = jest.fn ();
         let torusMeshes = mockList ( 10 );
         let torusCoordToMeshIdx = jest.fn ();
+        let snakeMat = jest.fn ();
+        let appleMat = jest.fn ();
+
 
         babylonProject.updateTorusMeshes ( 
-                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx ); 
+                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
+                snakeMat, appleMat ); 
 
         torusMeshes.forEach ( function ( torusMesh )
         {
@@ -112,6 +129,9 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         let applePos = jest.fn ();
         let torusMeshes = mockList ( 10 );
         let torusCoordToMeshIdx = jest.fn ();
+        let snakeMat = jest.fn ();
+        let appleMat = jest.fn ();
+
 
         //have torusCoordToMeshIdx return a different index for each
         //snakePart
@@ -122,7 +142,8 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
         });
 
         babylonProject.updateTorusMeshes ( 
-                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx ); 
+                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
+                snakeMat, appleMat ); 
 
         expect ( torusCoordToMeshIdx )
             .toHaveBeenCalledTimes ( snakeParts.length );
