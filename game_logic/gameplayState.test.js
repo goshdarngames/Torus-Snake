@@ -125,7 +125,13 @@ let MockStateData = jest.fn ( function ()
 
     this.snakeMoveTimer = jest.fn ();
 
-    this.applePos = jest.fn ();
+    this.applePos = jest.fn();
+    this.applePos.x = 1;
+    this.applePos.y = 2;
+
+    this.snakeMoveInterval = 0.5;
+    this.snakeMoveTimer = 0.5;
+
 
     this.currentDir = jest.fn ();
 
@@ -162,19 +168,10 @@ let MockGameData = jest.fn ( function ()
     this.scene = new MockScene ();
     this.torusMeshes = [];
 
-    this.applePos = { x : 1, y : 0 };
-
-    this.snakeMoveInterval = 0.5;
-    this.snakeMoveTimer = 0.5;
-
     this.engine = new MockEngine ();
 
-    this.wrapTorusCoord = jest.fn ( function ( coord )
-    {
-        return coord;
-    });
-
-    this.currentDir = window.babylonProject.config.dirUp;
+    this.wrapTorusCoord = jest.fn ();
+    this.wrapTorusCoord.mockReturnValue ( jest.fn () );
 
     this.appleMat = jest.fn ();
 
@@ -527,16 +524,18 @@ describe ( "window.babylonProject.gameplayState", () =>
         //timer elapsed and that the snake parts property is not changed
         //if the timer does not elapse
 
-        let previousSnakeParts = gameData.snakeParts;
+        let previousSnakeParts = stateData.snakeParts;
 
         timerTestData.forEach ( function ( testData, idx )
         {
             babylonProject.snake.moveSnake.mockReturnValueOnce (
                     jest.fn () );
 
-            gameData.snakeMoveTimer = testData.snakeMoveTimerBefore;
+            stateData.snakeMoveTimer = testData.snakeMoveTimerBefore;
 
-            let retVal = window.babylonProject.gameplayState ( 
+            //call the state function
+
+            let retVal = babylonProject.gameplayState ( 
                         babylon, gameData, stateData );
 
             //render should be called every time
@@ -549,40 +548,56 @@ describe ( "window.babylonProject.gameplayState", () =>
             if ( testData.moveFunctionsCalled )
             {
                 expectedMoveCalls += 1;
-
             } 
 
-            expect ( window.babylonProject.updateTorusMeshes )
+            //check the snake was moved
+
+            expect ( babylonProject.snake.moveSnake )
                 .toHaveBeenCalledTimes ( expectedMoveCalls );
 
-            expect ( window.babylonProject.updateTorusMeshes )
-                .toHaveBeenCalledWith (
+            expect ( babylonProject.snake.moveSnake )
+                .toHaveBeenCalledWith ( 
+                        stateData.currentDir,
+                        previousSnakeParts,
+                        gameData.wrapTorusCoord );
+            
+            //check the apple was moved
+
+            expect ( gameData.wrapTorusCoord )
+                .toHaveBeenCalledTimes ( expectedMoveCalls );
+
+            expect ( gameData.wrapTorusCoord.mock
+                .calls [ expectedMoveCalls -1 ] [ 0 ] )
+                    .toEqual (   
+                    {
+                        x : stateData.applePos.x + stateData.currentDir.x,
+                        y : stateData.applePos.y + stateData.currentDir.y
+                    });
+
+            let wrappedApplePos =
+                gameData.wrapTorusCoord.mock
+                    .results [ expectedMoveCalls -1 ].value;
+
+            //check the torus meshes were updated
+
+            expect ( babylonProject.updateTorusMeshes )
+                .toHaveBeenCalledTimes ( expectedMoveCalls );
+
+            expect ( babylonProject.updateTorusMeshes )
+                .toHaveBeenLastCalledWith (
                       stateData.snakeParts,
-                      stateData.applePos,
+                      wrappedApplePos,
                       gameData.torusMeshes,
                       gameData.torusCoordToMeshIdx,
                       gameData.snakeMat,
-                      gameData.appleMat  );
-
-            expect ( window.babylonProject.snake.moveSnake )
-                .toHaveBeenCalledTimes ( expectedMoveCalls );
-
-            expect ( window.babylonProject.snake.moveSnake )
-                .toHaveBeenCalledWith ( 
-                        gameData.currentDir,
-                        previousSnakeParts,
-                        gameData.wrapTorusCoord );
+                      gameData.appleMat  
+                      );
 
             //snakeParts should be the last returned value from moveSnake
 
-            expect ( gameData.snakeParts )
+            expect ( stateData.snakeParts )
                 .toBe ( babylonProject.snake.moveSnake.mock
                         .results [ expectedMoveCalls - 1 ].value );
-
-            //the apple' y position should change each time
-
-            expect ( gameData.applePos.y )
-                .toEqual ( expectedMoveCalls * gameData.currentDir.y );
 
             //the return of the state function should be another function
 
@@ -591,12 +606,12 @@ describe ( "window.babylonProject.gameplayState", () =>
             
             //the move timer should have decreased by 0.1
 
-            expect ( gameData.snakeMoveTimer )
+            expect ( stateData.snakeMoveTimer )
                 .toBeCloseTo ( testData.snakeMoveTimerAfter );
 
             //the move interval should be unchanged
 
-            expect ( gameData.snakeMoveInterval )
+            expect ( stateData.snakeMoveInterval )
                 .toBeCloseTo ( 0.5 );
         });
 
