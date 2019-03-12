@@ -98,36 +98,13 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
 
     });
 
-    test ( "If there are no snakeParts then all torusMeshes have their" +
-           "isVisible property set to false.", () =>
-    {
-        let snakeParts = [];
-        let applePos = jest.fn ();
-        let torusMeshes = mockList ( 10 );
-        let torusCoordToMeshIdx = jest.fn ();
-        let snakeMat = jest.fn ();
-        let appleMat = jest.fn ();
-
-
-        babylonProject.updateTorusMeshes ( 
-                snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
-                snakeMat, appleMat ); 
-
-        torusMeshes.forEach ( function ( torusMesh )
-        {
-            expect ( torusMesh.isVisible )
-                .toEqual ( false );
-        });
-
-    });
-
     test ( "The torusCoordToMeshIdx function is called once for each "+
            "member of snakeParts and the corresponding torusMesh isVisible "+
            "property is set to false.", () =>
     {
         let snakeParts = mockList ( 5 );
         let applePos = jest.fn ();
-        let torusMeshes = mockList ( 10 );
+        let torusMeshes = mockList ( 15 );
         let torusCoordToMeshIdx = jest.fn ();
         let snakeMat = jest.fn ();
         let appleMat = jest.fn ();
@@ -141,25 +118,68 @@ describe ( "window.babylonProject.updateTorusMeshes", () =>
             torusCoordToMeshIdx.mockReturnValueOnce ( idx );
         });
 
+        //add a return value for the apple pos
+        
+        let appleIdx = 8;
+
+        torusCoordToMeshIdx.mockReturnValueOnce ( appleIdx );
+
         babylonProject.updateTorusMeshes ( 
                 snakeParts, applePos, torusMeshes, torusCoordToMeshIdx,
                 snakeMat, appleMat ); 
 
+        //expect the coordinate conversion function to have been called
+        //once for each snakePart and once for the apple
+
         expect ( torusCoordToMeshIdx )
-            .toHaveBeenCalledTimes ( snakeParts.length );
+            .toHaveBeenCalledTimes ( snakeParts.length + 1);
 
         torusCoordToMeshIdx.mock.calls.forEach ( function ( call, idx )
         {
-            expect ( call [ 0 ] )
-                .toBe ( snakeParts [ idx ] );
+            if ( idx < snakeParts.length )
+            {
+                expect ( call [ 0 ] )
+                    .toBe ( snakeParts [ idx ] );
+            }
+            else
+            {
+                expect ( call [ 0 ] )
+                    .toBe ( applePos );
+            }
         });
 
         torusMeshes.forEach ( function ( torusMesh, idx )
         {
-            let expectVisible = ( idx < snakeParts.length ); 
+            //some boolean logic to check if the meshIdx matches a snakePart
+            //or appleIdx and should therefore be visible.
+
+            let snakePart = ( idx < snakeParts.length ); 
+            let applePos  = ( idx == appleIdx );
+
+            let expectVisible = ( snakePart || applePos );
 
             expect ( torusMesh.isVisible )
                 .toEqual ( expectVisible );
+
+            if ( snakePart )
+            {
+                expect ( torusMesh.material )
+                    .toBe ( snakeMat ); 
+            }
+            else if ( applePos )
+            {
+                expect ( torusMesh.material )
+                    .toBe ( appleMat ); 
+            }
+            else
+            {
+                expect ( torusMesh.isVisible )
+                    .toEqual ( false ); 
+
+                expect ( torusMesh.material )
+                    .toBeUndefined (); 
+
+            }
 
         });
 

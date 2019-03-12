@@ -67,16 +67,19 @@
             let meshIdx = torusCoordToMeshIdx ( s );
 
             torusMeshes [ meshIdx ].isVisible = true;
+
+            torusMeshes [ meshIdx ].material = snakeMat;
+
         });
 
-/*
         //set the apple mesh to be visible
 
-        let appleIdx = gameData.torusCoordToMeshIdx ( gameData.applePos );
+        let appleIdx = torusCoordToMeshIdx ( applePos );
 
-        babylonProject.enableTorusMesh ( 
-            appleIdx, gameData.appleMat, gameData );
-*/
+        torusMeshes [ appleIdx ].isVisible = true;
+
+        torusMeshes [ appleIdx ].material = appleMat;
+
     }
 
 
