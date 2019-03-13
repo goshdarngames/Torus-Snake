@@ -181,60 +181,60 @@ describe ( "window.babylonProject.startState", () =>
     test ( "error is thrown if babylon, gamedata or engine is undefined",
             () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
          
         expect (() =>
                 {
                     window.babylonProject.startState (
-                            mock_babylon, undefined )
+                            babylon, undefined )
                 })
             .toThrow ("GameData is undefined.");
 
         expect (() =>
                 {
                     window.babylonProject.startState (
-                            undefined, mock_gameData )
+                            undefined, gameData )
                 })
             .toThrow ("Babylon is undefined.");
         expect (() =>
                 {
                     window.babylonProject
-                        .startState (mock_babylon, jest.fn())
+                        .startState (babylon, jest.fn())
                 })
             .toThrow ("Engine is undefined.");
     });
 
     test ( "scene is created ", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
  
-        mock_gameData.scene = undefined;
-        mock_gameData.vrHelper = undefined;
+        gameData.scene = undefined;
+        gameData.vrHelper = undefined;
 
         window.babylonProject.startState ( 
-                     mock_babylon, mock_gameData );
+                     babylon, gameData );
  
         expect ( window.babylonProject.createVRScene )
             .toHaveBeenCalledTimes ( 1 );
  
         expect ( window.babylonProject.createVRScene )
-            .toHaveBeenCalledWith ( mock_babylon, mock_gameData.engine );
+            .toHaveBeenCalledWith ( babylon, gameData.engine );
  
         let createVRSceneResult = 
             window.babylonProject.createVRScene.mock.results [ 0 ].value;
 
         //expect scene to be stored in gameData
-        expect ( mock_gameData.scene )
+        expect ( gameData.scene )
             .toBe ( createVRSceneResult.scene ); 
         
         //expect vrHelper to be stored in gameData
-        expect ( mock_gameData.vrHelper )
+        expect ( gameData.vrHelper )
             .toBe ( createVRSceneResult.vrHelper ); 
         
         //expect enable interactions to have been called on vrHelper
-        expect ( mock_gameData.vrHelper.enableInteractions )
+        expect ( gameData.vrHelper.enableInteractions )
             .toHaveBeenCalledTimes ( 1 );
  
     });
@@ -242,23 +242,23 @@ describe ( "window.babylonProject.startState", () =>
     test ( "creates instance of Directional Light "+
            "and sets its position.", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        mock_gameData.scene = undefined;
+        gameData.scene = undefined;
 
         window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
-        expect ( mock_babylon.DirectionalLight )
+        expect ( babylon.DirectionalLight )
           .toHaveBeenCalledTimes ( 1 ); 
 
         //check ID was first parameter
-        expect ( mock_babylon.DirectionalLight.mock.calls[0][0] )
+        expect ( babylon.DirectionalLight.mock.calls[0][0] )
             .toBe ( "light" );
 
         //check the position value was set
-        let light = mock_babylon.DirectionalLight.mock.instances [0];
+        let light = babylon.DirectionalLight.mock.instances [0];
 
         expect ( light.position )
             .toBeInstanceOf ( MockVector3 );
@@ -269,25 +269,25 @@ describe ( "window.babylonProject.startState", () =>
     test ( "creates instance of Torus mesh"+
            "and sets its position and material.", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        mock_gameData.scene = undefined;
+        gameData.scene = undefined;
 
         window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
-        expect ( mock_babylon.MeshBuilder.CreateTorus )
+        expect ( babylon.MeshBuilder.CreateTorus )
             .toHaveBeenCalledTimes ( 1 ); 
 
         //check ID was first parameter
-        expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][0] )
+        expect ( babylon.MeshBuilder.CreateTorus.mock.calls [0][0] )
             .toBe ( "torus" );
 
         //check the expected options were the second paramter
 
         torusOptionsCall =
-            mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][1];
+            babylon.MeshBuilder.CreateTorus.mock.calls [0][1];
         
         expect ( torusOptionsCall.diameter )
             .toBe ( expectedTorusOptions.diameter );
@@ -299,11 +299,11 @@ describe ( "window.babylonProject.startState", () =>
             .toBe ( expectedTorusOptions.tessellation );
 
         //check the scene was the third paramter
-        expect ( mock_babylon.MeshBuilder.CreateTorus.mock.calls [0][2] )
-            .toBe ( mock_gameData.scene );
+        expect ( babylon.MeshBuilder.CreateTorus.mock.calls [0][2] )
+            .toBe ( gameData.scene );
 
         //check the position value was set
-        let torus = mock_babylon.MeshBuilder.CreateTorus.mock.results [0]
+        let torus = babylon.MeshBuilder.CreateTorus.mock.results [0]
             .value;
 
         expect ( torus.position )
@@ -314,11 +314,11 @@ describe ( "window.babylonProject.startState", () =>
         expect ( torus.position.z ).toBe ( expectedTorusPosition.z );
 
         //check the material was set
-        expect ( mock_babylon.StandardMaterial )
+        expect ( babylon.StandardMaterial )
             .toHaveBeenCalled ();
 
         expect ( torus.material )
-            .toBe ( mock_gameData.torusMat );
+            .toBe ( gameData.torusMat );
 
         expect ( torus.material.wireframe )
             .toBe ( true );
@@ -329,39 +329,39 @@ describe ( "window.babylonProject.startState", () =>
     test ( "creates a mesh for each torus vertex excluding "+
            "the duplicate vertices where the mesh wraps.", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        mock_gameData.scene = undefined;
+        gameData.scene = undefined;
 
         window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
         //the torus mesh with have 100 vertices ( 10 ^ 2 )
         //there will be duplicate meshes along each axis so the 
         //torusMeshes list should have ( 9 ^ 2 ) elements
 
-        expect ( mock_babylon.MeshBuilder.CreateSphere )
+        expect ( babylon.MeshBuilder.CreateSphere )
             .toHaveBeenCalledTimes ( 81 );
 
-        expect ( mock_gameData.torusMeshes )
+        expect ( gameData.torusMeshes )
             .toBeDefined ();
 
         //check that the meshes were returned by create sphere
         //note:  assumes that the torus meshes are the first objects 
         //       created with the CreateSphere method
 
-        mock_babylon.MeshBuilder.CreateSphere.mock.results.forEach(
+        babylon.MeshBuilder.CreateSphere.mock.results.forEach(
             function ( result, index )
             {
                 expect ( result.value )
-                    .toBe ( mock_gameData.torusMeshes [ index ] );
+                    .toBe ( gameData.torusMeshes [ index ] );
             }
         );
 
         //check the parameters that create box was called with
 
-        mock_babylon.MeshBuilder.CreateSphere.mock.calls.forEach(
+        babylon.MeshBuilder.CreateSphere.mock.calls.forEach(
             function ( call, index )
             {
                 expect ( call [0] ).toBe ( "TorusMesh"+index );
@@ -369,7 +369,7 @@ describe ( "window.babylonProject.startState", () =>
                 expect ( call [1].diameter  )
                     .toBeCloseTo ( 0.1 );
 
-                expect ( call [2] ).toBe ( mock_gameData.scene );
+                expect ( call [2] ).toBe ( gameData.scene );
 
             }
         );
@@ -378,15 +378,15 @@ describe ( "window.babylonProject.startState", () =>
 
     test ( "sets positions of torus meshes correctly", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        mock_gameData.scene = undefined;
+        gameData.scene = undefined;
 
         window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
-        expect ( mock_gameData.torusMeshes.length )
+        expect ( gameData.torusMeshes.length )
             .toEqual ( 81 );
 
         //The mock torus mesh is composed of values 0..99 in a 1D list
@@ -402,7 +402,7 @@ describe ( "window.babylonProject.startState", () =>
         //Start at -6 because it would be the prevX for 0
         let prevX = -6;
 
-        mock_gameData.torusMeshes.forEach (
+        gameData.torusMeshes.forEach (
         function ( mesh, idx )
         {
             //There should be no multiples of 10 as first vector value
@@ -453,84 +453,84 @@ describe ( "window.babylonProject.startState", () =>
 
     test ( "initializes material data", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        mock_gameData.scene = undefined;
+        gameData.scene = undefined;
 
         window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
         //expected number of materials
-        expect ( mock_babylon.StandardMaterial )
+        expect ( babylon.StandardMaterial )
             .toHaveBeenCalledTimes ( 3 );
 
         //torus material
-        expect ( mock_gameData.torusMat )
+        expect ( gameData.torusMat )
             .toBeDefined ();
 
-        expect ( mock_gameData.torusMat )
-            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+        expect ( gameData.torusMat )
+            .toBeInstanceOf ( babylon.StandardMaterial );
 
-        expect ( mock_gameData.torusMat.name )
+        expect ( gameData.torusMat.name )
             .toBe ( "torusMat" );
 
         //snake material
-        expect ( mock_gameData.snakeMat )
+        expect ( gameData.snakeMat )
             .toBeDefined ();
 
-        expect ( mock_gameData.snakeMat )
-            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+        expect ( gameData.snakeMat )
+            .toBeInstanceOf ( babylon.StandardMaterial );
 
-        expect ( mock_gameData.snakeMat.name )
+        expect ( gameData.snakeMat.name )
             .toBe ( "snakeMat" );
 
-        expect ( mock_gameData.snakeMat.diffuseColor )
-            .toBeInstanceOf ( mock_babylon.Color3 );
+        expect ( gameData.snakeMat.diffuseColor )
+            .toBeInstanceOf ( babylon.Color3 );
 
-        expect ( mock_gameData.snakeMat.diffuseColor.r )
+        expect ( gameData.snakeMat.diffuseColor.r )
             .toBe ( 0 );
 
-        expect ( mock_gameData.snakeMat.diffuseColor.g )
+        expect ( gameData.snakeMat.diffuseColor.g )
             .toBe ( 255 );
 
-        expect ( mock_gameData.snakeMat.diffuseColor.b )
+        expect ( gameData.snakeMat.diffuseColor.b )
             .toBe ( 0 );
 
         //apple material
-        expect ( mock_gameData.appleMat )
+        expect ( gameData.appleMat )
             .toBeDefined ();
 
-        expect ( mock_gameData.appleMat )
-            .toBeInstanceOf ( mock_babylon.StandardMaterial );
+        expect ( gameData.appleMat )
+            .toBeInstanceOf ( babylon.StandardMaterial );
 
-        expect ( mock_gameData.appleMat.name )
+        expect ( gameData.appleMat.name )
             .toBe ( "appleMat" );
 
-        expect ( mock_gameData.appleMat.diffuseColor )
-            .toBeInstanceOf ( mock_babylon.Color3 );
+        expect ( gameData.appleMat.diffuseColor )
+            .toBeInstanceOf ( babylon.Color3 );
 
-        expect ( mock_gameData.appleMat.diffuseColor.r )
+        expect ( gameData.appleMat.diffuseColor.r )
             .toBe ( 255 );
 
-        expect ( mock_gameData.appleMat.diffuseColor.g )
+        expect ( gameData.appleMat.diffuseColor.g )
             .toBe ( 0 );
 
-        expect ( mock_gameData.appleMat.diffuseColor.b )
+        expect ( gameData.appleMat.diffuseColor.b )
             .toBe ( 0 );
 
     });
 
     test ( "returns a function that calls gameplayState", () =>
     {
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
         //when the current state is called it should return a function
         //that calls the next state function
 
         let retVal = window.babylonProject.startState ( 
-                    mock_babylon, mock_gameData );
+                    babylon, gameData );
 
         expect ( retVal )
             .toBeInstanceOf ( Function );
@@ -549,34 +549,34 @@ describe ( "window.babylonProject.startState", () =>
             .toHaveBeenCalledTimes ( 1 );
 
         expect ( window.babylonProject.gameplayState )
-            .toHaveBeenCalledWith ( mock_babylon, mock_gameData );
+            .toHaveBeenCalledWith ( babylon, gameData );
 
     });
 
     test ( "creates mapping functions for torus and snake indexes", () =>
     {
 
-        let mock_babylon = new MockBabylon ();
-        let mock_gameData = new MockGameData ();
+        let babylon = new MockBabylon ();
+        let gameData = new MockGameData ();
 
-        window.babylonProject.startState ( mock_babylon, mock_gameData );
+        window.babylonProject.startState ( babylon, gameData );
 
         //mesh list idx -> coordinates
        
-        expect ( mock_gameData.meshIdxToTorusCoord )
+        expect ( gameData.meshIdxToTorusCoord )
             .toBeDefined ();
 
-        expect ( mock_gameData.meshIdxToTorusCoord )
+        expect ( gameData.meshIdxToTorusCoord )
             .toBeInstanceOf ( Function );
 
         //call the stored function 
-        mock_gameData.meshIdxToTorusCoord ( 0 );
+        gameData.meshIdxToTorusCoord ( 0 );
         
         expect ( window.babylonProject.listIdxToCoord )
             .toHaveBeenCalledTimes ( 1 );
 
         //check correct parameters are passed to the function 
-        mock_gameData.meshIdxToTorusCoord ( 5 );
+        gameData.meshIdxToTorusCoord ( 5 );
         
         expect ( window.babylonProject.listIdxToCoord )
             .toHaveBeenCalledTimes ( 2 );
@@ -586,14 +586,14 @@ describe ( "window.babylonProject.startState", () =>
 
         //coordinates -> mesh list idx
        
-        expect ( mock_gameData.torusCoordToMeshIdx )
+        expect ( gameData.torusCoordToMeshIdx )
             .toBeDefined ();
 
-        expect ( mock_gameData.torusCoordToMeshIdx )
+        expect ( gameData.torusCoordToMeshIdx )
             .toBeInstanceOf ( Function );
 
         //call the stored function 
-        mock_gameData.torusCoordToMeshIdx ( 0 );
+        gameData.torusCoordToMeshIdx ( 0 );
         
         expect ( window.babylonProject.coordToListIdx )
             .toHaveBeenCalledTimes ( 1 );
@@ -602,7 +602,7 @@ describe ( "window.babylonProject.startState", () =>
 
         let testCoord = { x : 1, y : 1 };
 
-        mock_gameData.torusCoordToMeshIdx ( testCoord );
+        gameData.torusCoordToMeshIdx ( testCoord );
         
         expect ( window.babylonProject.coordToListIdx )
             .toHaveBeenCalledTimes ( 2 );
@@ -612,15 +612,15 @@ describe ( "window.babylonProject.startState", () =>
 
         //wrap coordinates function
 
-        expect ( mock_gameData.wrapTorusCoord )
+        expect ( gameData.wrapTorusCoord )
             .toBeDefined ();
 
-        expect ( mock_gameData.wrapTorusCoord )
+        expect ( gameData.wrapTorusCoord )
             .toBeInstanceOf ( Function );
 
         //call the stored function
 
-        mock_gameData.wrapTorusCoord ( testCoord );
+        gameData.wrapTorusCoord ( testCoord );
 
         expect ( window.babylonProject.wrapCoordinate )
             .toHaveBeenCalledTimes ( 1 );
