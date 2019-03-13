@@ -54,7 +54,13 @@
         //private procedure used to initialize all the game objects
         initializeGameData ( babylon, gameData );
 
-        return () => babylonProject.gameplayState ( babylon, gameData );
+        //create the data for the next state
+
+        let stateData = 
+            new babylonProject.GameplayStateData ( babylon, gameData.scene );
+
+        return () => 
+            babylonProject.gameplayState ( babylon, gameData, stateData );
     }; 
 
     /************************************************************************

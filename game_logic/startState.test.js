@@ -158,6 +158,8 @@ beforeEach ( () =>
 
     window.babylonProject.gameplayState = jest.fn ();
 
+    window.babylonProject.GameplayStateData = jest.fn ();
+
     window.babylonProject.listIdxToCoord = jest.fn ();
 
     window.babylonProject.coordToListIdx = jest.fn ();
@@ -529,8 +531,7 @@ describe ( "window.babylonProject.startState", () =>
         //when the current state is called it should return a function
         //that calls the next state function
 
-        let retVal = window.babylonProject.startState ( 
-                    babylon, gameData );
+        let retVal = babylonProject.startState ( babylon, gameData );
 
         expect ( retVal )
             .toBeInstanceOf ( Function );
@@ -538,18 +539,30 @@ describe ( "window.babylonProject.startState", () =>
         //check the next state function was not called during the current
         //state function
 
-        expect ( window.babylonProject.gameplayState )
+        expect ( babylonProject.gameplayState )
             .not.toHaveBeenCalled ();
 
         //call the returned function and check the next state was called
 
         retVal ();
 
-        expect ( window.babylonProject.gameplayState )
+        expect ( babylonProject.gameplayState )
             .toHaveBeenCalledTimes ( 1 );
 
-        expect ( window.babylonProject.gameplayState )
-            .toHaveBeenCalledWith ( babylon, gameData );
+        expect ( babylonProject.GameplayStateData )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( babylonProject.GameplayStateData )
+            .toHaveBeenCalledWith ( babylon, gameData.scene );
+
+        expect ( babylonProject.gameplayState.mock.calls [ 0 ][ 0 ] )
+            .toBe ( babylon );
+
+        expect ( babylonProject.gameplayState.mock.calls [ 0 ][ 1 ] )
+            .toBe ( gameData );
+
+        expect ( babylonProject.gameplayState.mock.calls [ 0 ][ 2 ] )
+            .toBeInstanceOf ( babylonProject.GameplayStateData );
 
     });
 
