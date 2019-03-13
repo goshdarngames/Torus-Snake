@@ -38,14 +38,7 @@ beforeEach ( () =>
 
     window.babylonProject.createButtonPlane = jest.fn ( function ()
     {
-        retVal = 
-        {
-            buttonPlane   : new MockMesh (),
-            button        : new MockButton (),
-            buttonTexture : jest.fn ()
-        };
-
-        return retVal;
+        return new MockControl ();
     });
 
     window.babylonProject.snake = {};
@@ -132,6 +125,11 @@ let MockStateData = jest.fn ( function ()
     this.snakeMoveInterval = 0.5;
     this.snakeMoveTimer = 0.5;
 
+    this.turnInputControls = jest.fn ();
+    this.turnInputControls.upControl = new MockControl ();
+    this.turnInputControls.downControl = new MockControl ();
+    this.turnInputControls.rightControl = new MockControl ();
+    this.turnInputControls.leftControl = new MockControl ();
 
     this.currentDir = jest.fn ();
 
@@ -156,10 +154,16 @@ let MockMesh = jest.fn ( function ()
     this.isEnabled = jest.fn ();
 });
 
-let MockButton = jest.fn ( function ()
+let MockControl = jest.fn ( function ()
 {
-    this.isEnabled = true;
-    this.isVisible = true;
+    this.buttonPlane = jest.fn ();
+    this.buttonPlane.isEnabled = jest.fn ();
+
+    this.button = jest.fn ();
+    this.button.isEnabled = true;
+    this.button.isVisible = true;
+
+    this.buttonTexture = jest.fn ();
 });
 
 let MockGameData = jest.fn ( function ()
@@ -217,157 +221,9 @@ describe ( "window.babylonProject.gameplayState", () =>
                 window.babylonProject.gameplayState ( babylon ))
             .toThrow ( "gameData is undefined" );
 
-    });
-
-    test ( "creates stateData if it is undefined", () =>
-    {
-        babylon = new MockBabylon ();
-        gameData = new MockGameData ();
-
-        let oldFunc = babylonProject.GameplayStateData;
-
-        babylonProject.GameplayStateData = jest.fn ();
-
-        oneTimeCleanUp = 
-            () => { babylonProject.GameplayStateData = oldFunc; }
-
-        babylonProject.gameplayState ( babylon, gameData );
-
-        expect ( babylonProject.GameplayStateData )
-            .toHaveBeenCalledTimes ( 1 );
-
-    });
-
-    test ( "defines turnInputControls if it is undefined", () =>
-    {
-        //shorter name for config
-
-        let config = window.babylonProject.config;
-        
-        //test cases
-
-        let testCases = 
-        [
-            { 
-                buttonDir   : config.dirUp,
-                buttonName  : "up",
-                buttonText  : "U",
-                controlName : "upControl",
-                buttonPos   : config.upPos
-            },
-
-            { 
-                buttonDir   : config.dirDown,
-                buttonName  : "down",
-                buttonText  : "D",
-                controlName : "downControl",
-                buttonPos   : config.downPos
-            },
-
-
-            { 
-                buttonDir   : config.dirLeft,
-                buttonName  : "left",
-                buttonText  : "L",
-                controlName : "leftControl",
-                buttonPos   : config.leftPos
-            },
-
-            { 
-                buttonDir   : config.dirRight,
-                buttonName  : "right",
-                buttonText  : "R",
-                controlName : "rightControl",
-                buttonPos   : config.rightPos
-            }
-        ];
-
-        //mock data
-
-        babylon = new MockBabylon ();
-        gameData = new MockGameData ();
-        stateData = new MockStateData ();
-
-        window.babylonProject
-            .gameplayState ( babylon, gameData, stateData ); 
-
-        expect ( gameData.turnInputControls )
-            .toBeDefined ();
-
-        expect ( window.babylonProject.createButtonPlane )
-            .toHaveBeenCalledTimes ( 4 );
-
-        let createButtonPlaneMock = 
-            window.babylonProject.createButtonPlane.mock;
-
-        testCases.forEach ( function ( testData, testIdx )
-        {
-
-            expect ( createButtonPlaneMock.calls [ testIdx ] [ 0 ] )
-                .toBe ( testData.buttonName ); 
-
-            expect ( createButtonPlaneMock.calls [ testIdx ] [ 1 ] )
-                .toEqual ( 
-                {
-                    size : config.turnControlPlaneSize
-                } );
-
-            expect ( 
-                createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonText )
-                .toEqual ( testData.buttonText );
-
-            //test buttonCall
-            //The function should call turn snake and store the result
-            //in gameData.currentDir
-
-            expect ( 
-                createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall )
-                .toBeInstanceOf ( Function );
-
-            let previousDir = gameData.currentDir;
-
-            babylonProject.snake.turnSnake
-                .mockReturnValueOnce ( jest.fn () );
-
-            createButtonPlaneMock.calls [ testIdx ] [ 2 ].buttonCall ();
-
-            expect ( babylonProject.snake.turnSnake )
-                .toHaveBeenCalledTimes ( testIdx + 1 );
-
-            expect ( babylonProject.snake.turnSnake )
-                .toHaveBeenLastCalledWith ( 
-                        testData.buttonDir, previousDir );
-
-            expect ( gameData.currentDir )
-                .toBe ( babylonProject.snake.turnSnake.mock
-                        .results [ testIdx ].value );
-
-            //scene and babylon parameters
-
-            expect ( createButtonPlaneMock.calls [ testIdx ] [ 3 ] )
-                .toBe ( gameData.scene );
-
-            expect ( createButtonPlaneMock.calls [ testIdx ] [ 4 ] )
-                .toBe ( babylon );
-
-            //check input controls were stored in gamedata
-
-            expect ( 
-                 gameData.turnInputControls [ testData.controlName ] )
-                .toBeDefined ();
-
-            expect ( 
-                 gameData.turnInputControls [ testData.controlName ] )
-                .toEqual ( createButtonPlaneMock.results [ testIdx ].value );
-
-            //check position was set
-
-            expect ( 
-                 gameData.turnInputControls [ testData.controlName ]
-                    .buttonPlane.position )
-                .toEqual ( testData.buttonPos );
-
-        });
+        expect ( () => 
+                window.babylonProject.gameplayState ( babylon, gameData  ))
+            .toThrow ( "stateData is undefined" );
 
     });
 
@@ -413,21 +269,21 @@ describe ( "window.babylonProject.gameplayState", () =>
 
             //plane isEnabled () function should be called
 
-            expect ( gameData.turnInputControls
+            expect ( stateData.turnInputControls
                    [ controlName ].buttonPlane.isEnabled )
                .toHaveBeenCalledTimes ( callCount );
 
-            expect ( gameData.turnInputControls
+            expect ( stateData.turnInputControls
                    [ controlName ].buttonPlane.isEnabled )
                .toHaveBeenLastCalledWith ( enabled );
 
             //button isEnabled and isVisible property should be set
 
-            expect ( gameData.turnInputControls
+            expect ( stateData.turnInputControls
                    [ controlName ].button.isEnabled )
                .toBe ( enabled );
 
-            expect ( gameData.turnInputControls
+            expect ( stateData.turnInputControls
                    [ controlName ].button.isVisible )
                .toBe ( enabled );
 
@@ -436,28 +292,28 @@ describe ( "window.babylonProject.gameplayState", () =>
         //These properties should be reset between each test case
         let resetButtonProperties = () =>
         {
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .upControl.button.isEnabled = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .downControl.button.isEnabled = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .leftControl.button.isEnabled = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .rightControl.button.isEnabled = undefined;
 
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .upControl.button.isVisble = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .downControl.button.isVisble = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .leftControl.button.isVisble = undefined;
             
-            gameData.turnInputControls
+            stateData.turnInputControls
                 .rightControl.button.isVisble = undefined;
 
         };
@@ -474,7 +330,7 @@ describe ( "window.babylonProject.gameplayState", () =>
             testData.currentDir.forEach ( function ( cd )
             {
                 //set the current direction
-                gameData.currentDir = cd;
+                stateData.currentDir = cd;
 
                 resetButtonProperties ();
 
@@ -623,13 +479,30 @@ describe ( "window.babylonProject.GameplayStateData", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.GameplayStateData )
+        expect ( babylonProject.GameplayStateData )
             .toBeDefined ();
+    });
+
+    test ( "validates parameters", () =>
+    {
+        let babylon = jest.fn ();
+        let scene = jest.fn ();
+
+        expect ( () => babylonProject.GameplayStateData () )
+            .toThrow ( "babylon is undefined." );
+
+        expect ( () => babylonProject.GameplayStateData ( babylon ) )
+            .toThrow ( "scene is undefined." );
+
     });
 
     test ( "returns an object with expected properties", () =>
     {
-        let retVal = new babylonProject.GameplayStateData ();
+        let babylon = jest.fn ();
+        let scene = jest.fn ();
+
+        let retVal = 
+            new babylonProject.GameplayStateData ( babylon, scene );
 
         // snake was created
 
@@ -663,13 +536,22 @@ describe ( "window.babylonProject.GameplayStateData", () =>
 
         //turn input controls
 
-        expect ( retVal.turnInputControls )
+        expect ( retVal.turnInputControls.upControl )
             .toBeDefined ();
 
-        //turn button callback
+        expect ( retVal.turnInputControls.downControl )
+            .toBeDefined ();
+
+        expect ( retVal.turnInputControls.rightControl )
+            .toBeDefined ();
+
+        expect ( retVal.turnInputControls.leftControl )
+            .toBeDefined ();
+
+        //turn control callback
         // - should call turnSnake and store its return as currentDir
 
-        expect ( retVal.turnButtonCallback )
+        expect ( retVal.turnControlCallback )
             .toBeInstanceOf ( Function );
 
         let prevDir = retVal.currentDir;
@@ -678,7 +560,7 @@ describe ( "window.babylonProject.GameplayStateData", () =>
 
         babylonProject.snake.turnSnake.mockReturnValueOnce ( turnSnakeRet );
 
-        retVal.turnButtonCallback ( buttonDir );
+        retVal.turnControlCallback ( buttonDir );
 
         expect ( babylonProject.snake.turnSnake )
             .toHaveBeenCalledTimes ( 1 );
