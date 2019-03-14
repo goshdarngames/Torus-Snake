@@ -501,7 +501,7 @@ describe ( "window.babylonProject.GameplayStateData", () =>
         let babylon = jest.fn ();
         let scene = jest.fn ();
 
-        let retVal = 
+        let stateData = 
             new babylonProject.GameplayStateData ( babylon, scene );
 
         // snake was created
@@ -512,64 +512,67 @@ describe ( "window.babylonProject.GameplayStateData", () =>
         expect ( babylonProject.snake.createSnake )
             .toHaveBeenCalledWith ( babylonProject.config.dirLeft, 3 );
 
-        expect ( retVal.snakeParts )
+        expect ( stateData.snakeParts )
             .toBe ( babylonProject.snake.createSnake
                     .mock.results [ 0 ].value );
 
         //snake move timer and interval
 
-        expect ( retVal.snakeMoveInterval )
+        expect ( stateData.snakeMoveInterval )
             .toEqual ( babylonProject.config.snakeMoveInitialInterval );
 
-        expect ( retVal.snakeMoveTimer )
+        expect ( stateData.snakeMoveTimer )
             .toEqual ( babylonProject.config.snakeMoveInitialInterval );
 
         //apple position
 
-        expect ( retVal.applePos )
+        expect ( stateData.applePos )
             .toEqual ( { x : 2, y : 1 } );
 
         //current direction
 
-        expect ( retVal.currentDir )
+        expect ( stateData.currentDir )
             .toEqual ( babylonProject.config.dirLeft  );
 
         //turn input controls
+        
+        expect ( babylonProject.createButtonPlane )
+            .toHaveBeenCalledTimes ( 4 );
 
-        expect ( retVal.turnInputControls.upControl )
-            .toBeDefined ();
+        let createButtonMock = babylonProject.createButtonPlane.mock; 
 
-        expect ( retVal.turnInputControls.downControl )
-            .toBeDefined ();
+        expect ( stateData.turnInputControls.upControl )
+            .toBe ( createButtonMock.results [ 0 ].value );
 
-        expect ( retVal.turnInputControls.rightControl )
-            .toBeDefined ();
+        expect ( stateData.turnInputControls.downControl )
+            .toBe ( createButtonMock.results [ 1 ].value );
 
-        expect ( retVal.turnInputControls.leftControl )
-            .toBeDefined ();
+        expect ( stateData.turnInputControls.leftControl )
+            .toBe ( createButtonMock.results [ 2 ].value );
 
-        //turn control callback
-        // - should call turnSnake and store its return as currentDir
+        expect ( stateData.turnInputControls.rightControl )
+            .toBe ( createButtonMock.results [ 3 ].value );
 
-        expect ( retVal.turnControlCallback )
-            .toBeInstanceOf ( Function );
+        //check the callback function was passed to each button
+        //and executes snake.turnSnake when called
 
-        let prevDir = retVal.currentDir;
-        let buttonDir = jest.fn ();
-        let turnSnakeRet = jest.fn ();
+        createButtonMock.calls.forEach ( function ( call, idx )
+        {
+            expect ( call [ 2 ].buttonCall )
+                .toBeInstanceOf ( Function );
 
-        babylonProject.snake.turnSnake.mockReturnValueOnce ( turnSnakeRet );
+            babylonProject.snake.turnSnake
+                .mockReturnValueOnce ( jest.fn () );
 
-        retVal.turnControlCallback ( buttonDir );
+            call [ 2 ].buttonCall ();
 
-        expect ( babylonProject.snake.turnSnake )
-            .toHaveBeenCalledTimes ( 1 );
+            expect ( babylonProject.snake.turnSnake )
+                .toHaveBeenCalledTimes ( idx + 1 );
 
-        expect ( babylonProject.snake.turnSnake )
-            .toHaveBeenLastCalledWith ( buttonDir, prevDir );
-
-        expect ( retVal.currentDir )
-            .toBe ( turnSnakeRet );
+            expect ( stateData.currentDir )
+                .toBe ( babylonProject.snake.turnSnake
+                        .mock.results [ idx ].value );
+        });
     });
 
 });

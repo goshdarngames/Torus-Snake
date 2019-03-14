@@ -38,20 +38,10 @@
 
         this.currentDir = babylonProject.config.dirLeft;
 
-        //turn button callback
-        
-        this.turnControlCallback = function ( buttonDir )
-        {
-            this.currentDir = 
-                babylonProject.snake.turnSnake ( 
-                        buttonDir, this.currentDir );
-        };
-
         //turn input controls
 
         this.turnInputControls = 
-            new TurnInputControls ( 
-                    babylon, scene, this.turnControlCallback );
+            new TurnInputControls ( babylon, scene, this );
 
     }
 
@@ -144,7 +134,7 @@
      * Input Controls
      ***********************************************************************/
 
-    let TurnInputControls = function ( babylon, scene, turnControlCallback )
+    let TurnInputControls = function ( babylon, scene, stateData )
     {
         if ( babylon == undefined )
         {
@@ -156,9 +146,9 @@
             throw new Error ( "scene is undefined." );
         }
 
-        if ( turnControlCallback == undefined )
+        if ( stateData == undefined )
         {
-            throw new Error ( "turnControlCallback is undefined." );
+            throw new Error ( "stateData is undefined." );
         }
 
         let config = babylonProject.config; 
@@ -197,6 +187,16 @@
             }
         ];
 
+        let turnControlCallback = function ( stateData, newDir )
+        {
+            stateData.currentDir = 
+                babylonProject.snake
+                    .turnSnake ( newDir, stateData.currentDir );
+        };
+
+        //Create the data in a loop.  Note that the 'this' parameter is 
+        //passed to bind the data to this object as its constructed
+
         buttonData.forEach ( function ( data )
         {
             this [ data.controlName ] = 
@@ -211,7 +211,8 @@
                     //button options
                     {
                         buttonText : data.text,
-                        buttonCall : () => turnControlCallback ( data.dir ) 
+                        buttonCall : 
+                            () => turnControlCallback ( stateData, data.dir ) 
                     },
                     scene,
                     babylon
