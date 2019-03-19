@@ -37,11 +37,21 @@ afterEach ( () =>
  * TESTS
  ***************************************************************************/
 
-describe ( "babylonProject.apple", () =>
+describe ( "babylonProject.appleEaten", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( babylonProject.apple )
+        expect ( babylonProject.appleEaten )
             .toBeDefined ();
     });
 });
+
+describe ( "babylonProject.randomApplePosition", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.randomApplePosition )
+            .toBeDefined ();
+    });
+});
+
