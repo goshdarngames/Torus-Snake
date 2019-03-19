@@ -102,6 +102,13 @@
 
     babylonProject.moveCoordinate = function ( coord, dir, width, height )
     {
+        let summedCoord = 
+        { 
+            x : coord.x + dir.x,
+            y : coord.y + dir.y
+        };
+
+        babylonProject.wrapCoordinate ( summedCoord, width, height );
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));

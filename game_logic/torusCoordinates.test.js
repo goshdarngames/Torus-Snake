@@ -8,6 +8,27 @@ const test_module = require ("./torusCoordinates");
  ***************************************************************************/
 
 /****************************************************************************
+ * SETUP / TEARDOWN
+ ***************************************************************************/
+
+beforeEach ( () =>
+{
+});
+
+//Tests can assign a function here to have it called after they exit
+let oneTimeCleanUp = () => {};
+
+afterEach ( () =>
+{
+    //execute the one time cleanup and then set it as an empty function
+    //again
+ 
+    oneTimeCleanUp ();
+
+    oneTimeCleanUp  = () => {};
+});
+
+/****************************************************************************
  * MOCK DATA
  ***************************************************************************/
 
@@ -358,6 +379,41 @@ describe ( "babylonProject.moveCoordinate", () =>
     {
         expect ( babylonProject.moveCoordinate )
             .toBeDefined ();
+    });
+
+    test ( "sums the values of coord and dir and returns the wrapped result", 
+         () =>
+    {
+        let coord = { x : 1, y : 3 };
+        let dir   = { x : 5, y : 8 };
+
+        let sum   = { x : 6, y : 11 };
+
+        let width  = jest.fn ();
+        let height = jest.fn (); 
+
+        //mock the wrap coordinate function and set it to be restored in
+        //after the test
+
+        let oldFunc = babylonProject.wrapCoordinate;
+        
+        babylonProject.wrapCoordinate = jest.fn ();
+
+        oneTimeCleanup = () => { babylonProject.wrapCoordinate = oldFunc };
+
+        let retVal =
+            babylonProject.moveCoordinate ( coord, dir, width, height );
+
+        expect ( babylonProject.wrapCoordinate )
+            .toHaveBeenCalledTimes ( 1 );
+
+        expect ( babylonProject.wrapCoordinate.mock.calls [ 0 ] )
+            .toEqual ( [ sum, width, height ] );
+
+
+        //note:  need to make the mock function return a value
+        expect ( retVal )
+            .toBe ( babylonProject.wrapCoordinate.mock.results [ 0 ].value );
     });
 
 });
