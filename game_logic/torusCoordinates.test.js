@@ -204,11 +204,11 @@ let wrapCoordinateData = [
  * TESTS
  ***************************************************************************/
 
-describe ( "window.babylonProject.listIdxToCoord", () =>
+describe ( "babylonProject.listIdxToCoord", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.listIdxToCoord )
+        expect ( babylonProject.listIdxToCoord )
             .toBeDefined ();
     });
 
@@ -221,7 +221,7 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
             let width = testData.width;
 
             let ret = 
-                window.babylonProject.listIdxToCoord ( 
+                babylonProject.listIdxToCoord ( 
                         idx, width, testData.list.length );
 
             expect ( ret.x ).toEqual ( testData.coord.x );
@@ -232,33 +232,33 @@ describe ( "window.babylonProject.listIdxToCoord", () =>
     test ( "test function with out of bounds data", () =>
     {
         expect ( () =>
-                window.babylonProject.listIdxToCoord ( -1, 2, undefined ) )
+                babylonProject.listIdxToCoord ( -1, 2, undefined ) )
             .toThrow ( "idx must be >= 0" );
 
         expect ( () =>
-                window.babylonProject.listIdxToCoord ( 1, undefined ) )
+                babylonProject.listIdxToCoord ( 1, undefined ) )
             .toThrow ( "width must be >= 0" );
 
         expect ( () =>
-                window.babylonProject.listIdxToCoord  ( 1, 4, 5 ) )
+                babylonProject.listIdxToCoord  ( 1, 4, 5 ) )
             .toThrow ( "width should divide length with no remainder." );
 
         expect ( () =>
-                window.babylonProject.listIdxToCoord  ( 1, 4, undefined ) )
+                babylonProject.listIdxToCoord  ( 1, 4, undefined ) )
             .toThrow ( "width should divide length with no remainder." );
 
         expect ( () =>
-                window.babylonProject.listIdxToCoord  ( 5, 2, 4 ) )
+                babylonProject.listIdxToCoord  ( 5, 2, 4 ) )
             .toThrow ( "idx out of bounds of the list" );
 
     });
 });
 
-describe ( "window.babylonProject.coordToListIdx", () =>
+describe ( "babylonProject.coordToListIdx", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.coordToListIdx )
+        expect ( babylonProject.coordToListIdx )
             .toBeDefined ();
     });
 
@@ -270,7 +270,7 @@ describe ( "window.babylonProject.coordToListIdx", () =>
             let width = testData.width;
 
             let ret = 
-                window.babylonProject.coordToListIdx ( 
+                babylonProject.coordToListIdx ( 
                         coord, width, testData.list.length );
 
             expect ( ret ).toEqual ( testData.idx );
@@ -286,11 +286,11 @@ describe ( "window.babylonProject.coordToListIdx", () =>
             let width = testData.width;
 
             let ret = 
-                window.babylonProject.coordToListIdx ( 
+                babylonProject.coordToListIdx ( 
                         coord, width, testData.list.length );
 
             let retCoord = 
-                window.babylonProject.listIdxToCoord ( 
+                babylonProject.listIdxToCoord ( 
                         ret, width, testData.list.length );
 
             expect ( retCoord ).toEqual ( coord );
@@ -301,15 +301,15 @@ describe ( "window.babylonProject.coordToListIdx", () =>
     test ( "test function with out of bounds data", () =>
     {
         expect ( () =>
-                window.babylonProject.coordToListIdx  ( undefined, 0, 1 ) )
+                babylonProject.coordToListIdx  ( undefined, 0, 1 ) )
             .toThrow ( "width must be > 0" );
 
         expect ( () =>
-                window.babylonProject.coordToListIdx  ( undefined, 1, 0 ) )
+                babylonProject.coordToListIdx  ( undefined, 1, 0 ) )
             .toThrow ( "list length must be > 0" );
 
         expect ( () =>
-                window.babylonProject.coordToListIdx  ( 0, 3, 7 ) )
+                babylonProject.coordToListIdx  ( 0, 3, 7 ) )
             .toThrow ( "width should divide length with no remainder." );
 
     });
@@ -332,11 +332,11 @@ describe ( "window.babylonProject.coordToListIdx", () =>
     });
 });
 
-describe ( "window.babylonProject.wrapCoordinate", () =>
+describe ( "babylonProject.wrapCoordinate", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.wrapCoordinate )
+        expect ( babylonProject.wrapCoordinate )
             .toBeDefined ();
     });
 
@@ -344,10 +344,20 @@ describe ( "window.babylonProject.wrapCoordinate", () =>
     {
         wrapCoordinateData.forEach ( function ( testData )
         {
-            expect ( window.babylonProject.wrapCoordinate (
+            expect ( babylonProject.wrapCoordinate (
                 testData.coordIn, testData.width, testData.height ) )
                 .toEqual ( testData.coordOut );
         });
+    });
+
+});
+
+describe ( "babylonProject.moveCoordinate", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.moveCoordinate )
+            .toBeDefined ();
     });
 
 });

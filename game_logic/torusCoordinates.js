@@ -98,6 +98,10 @@
        };
 
        return wrappedCoord;
-    }
+    };
+
+    babylonProject.moveCoordinate = function ( coord, dir, width, height )
+    {
+    };
 
 } ( window.babylonProject = window.babylonProject || {} ));
