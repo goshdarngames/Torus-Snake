@@ -399,6 +399,11 @@ describe ( "babylonProject.moveCoordinate", () =>
         
         babylonProject.wrapCoordinate = jest.fn ();
 
+        let wrappedCoordinate = jest.fn ();
+
+        babylonProject.wrapCoordinate
+            .mockReturnValueOnce ( wrappedCoordinate );
+
         oneTimeCleanup = () => { babylonProject.wrapCoordinate = oldFunc };
 
         let retVal =
@@ -410,8 +415,9 @@ describe ( "babylonProject.moveCoordinate", () =>
         expect ( babylonProject.wrapCoordinate.mock.calls [ 0 ] )
             .toEqual ( [ sum, width, height ] );
 
+        //check the retVal is the return value from the wrapCoordinate
+        //function
 
-        //note:  need to make the mock function return a value
         expect ( retVal )
             .toBe ( babylonProject.wrapCoordinate.mock.results [ 0 ].value );
     });

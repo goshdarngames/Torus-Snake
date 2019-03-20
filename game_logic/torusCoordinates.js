@@ -108,7 +108,7 @@
             y : coord.y + dir.y
         };
 
-        babylonProject.wrapCoordinate ( summedCoord, width, height );
+        return babylonProject.wrapCoordinate ( summedCoord, width, height );
     };
 
 } ( window.babylonProject = window.babylonProject || {} ));
