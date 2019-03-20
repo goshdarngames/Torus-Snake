@@ -165,6 +165,9 @@ beforeEach ( () =>
     window.babylonProject.coordToListIdx = jest.fn ();
 
     window.babylonProject.wrapCoordinate = jest.fn ();
+
+    window.babylonProject.moveCoordinate = jest.fn ();
+
 })
 
 /****************************************************************************
@@ -640,6 +643,27 @@ describe ( "window.babylonProject.startState", () =>
         
         expect ( window.babylonProject.wrapCoordinate )
             .toHaveBeenCalledWith ( testCoord, 9, 9 ); 
+
+        //wrap coordinates function
+
+        expect ( gameData.moveTorusCoord )
+            .toBeDefined ();
+
+        expect ( gameData.moveTorusCoord )
+            .toBeInstanceOf ( Function );
+
+        //call the stored function
+
+        let testDir = jest.fn ();
+
+        gameData.moveTorusCoord ( testCoord, testDir );
+
+        expect ( window.babylonProject.moveCoordinate )
+            .toHaveBeenCalledTimes ( 1 );
+        
+        expect ( window.babylonProject.moveCoordinate )
+            .toHaveBeenCalledWith ( testCoord, testDir, 9, 9 ); 
+
     });
 
 });

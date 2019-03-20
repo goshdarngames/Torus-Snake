@@ -255,5 +255,11 @@
                             coord, width, width
                          );
 
+        gameData.moveTorusCoord  = 
+            ( coord, dir ) => window.babylonProject.moveCoordinate  
+                         ( 
+                            coord, dir, width, width
+                         );
+
     }
 } ( window.babylonProject = window.babylonProject || {} ));
