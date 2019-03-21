@@ -101,7 +101,7 @@
                 window.babylonProject.snake.moveSnake (
                         stateData.currentDir, 
                         stateData.snakeParts, 
-                        gameData.wrapTorusCoord );
+                        gameData.moveTorusCoord );
 
             stateData.applePos = 
             {

@@ -1,5 +1,4 @@
 const test_module = require ("./snake");
-!!
 
 /****************************************************************************
  * snake.test.js
@@ -175,12 +174,12 @@ describe ( "babylonProject.snake.moveSnake", () =>
 
         let dir = babylonProject.config.dirUp;
 
-        let wrapFunc = jest.fn ();
+        let moveFunc = jest.fn ();
 
-        wrapFunc.mockReturnValue ( {} );
+        moveFunc.mockReturnValue ( {} );
 
         let newSnake = babylonProject.snake
-            .moveSnake ( dir, snakeParts, wrapFunc );
+            .moveSnake ( dir, snakeParts, moveFunc );
 
         expect ( newSnake )
             .toBeInstanceOf ( Array );
@@ -191,7 +190,7 @@ describe ( "babylonProject.snake.moveSnake", () =>
         expect ( newSnake.length )
             .toEqual ( snakeParts.length );
 
-        expect ( wrapFunc )
+        expect ( moveFunc )
             .toHaveBeenCalledTimes ( snakeParts.length - 1 );
 
         newSnake.forEach ( function ( val, idx )
@@ -205,16 +204,14 @@ describe ( "babylonProject.snake.moveSnake", () =>
             }
             else
             {
-                //wrapFunc should have been called with the sum of dir
-                //and the previous snakePart
+                //moveFunc called on tail pieces
 
-                expect ( wrapFunc.mock.calls [ idx - 1 ] [ 0 ] )
-                    .toEqual ( { x : dir.x + snakeParts [ idx - 1 ].x,
-                                 y : dir.y + snakeParts [ idx - 1 ].y } );
+                expect ( moveFunc.mock.calls [ idx - 1 ] [ 0 ] )
+                    .toEqual ( snakeParts [ idx ], dir );
 
-                //value in array should be result of wrapFunc
+                //value in array should be result of moveFunc
                 expect ( newSnake [ idx ] )
-                    .toEqual ( wrapFunc.mock.results [ idx - 1 ].value );
+                    .toEqual ( moveFunc.mock.results [ idx - 1 ].value );
 
             }
         });

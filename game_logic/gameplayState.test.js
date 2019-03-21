@@ -177,6 +177,9 @@ let MockGameData = jest.fn ( function ()
     this.wrapTorusCoord = jest.fn ();
     this.wrapTorusCoord.mockReturnValue ( jest.fn () );
 
+    this.moveTorusCoord = jest.fn ();
+    this.moveTorusCoord.mockReturnValue ( jest.fn () );
+
     this.appleMat = jest.fn ();
 
     this.snakeMat = jest.fn ();
@@ -415,7 +418,7 @@ describe ( "window.babylonProject.gameplayState", () =>
                 .toHaveBeenCalledWith ( 
                         stateData.currentDir,
                         previousSnakeParts,
-                        gameData.wrapTorusCoord );
+                        gameData.moveTorusCoord );
             
             //check the apple was moved
 
