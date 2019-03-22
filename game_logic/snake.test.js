@@ -204,10 +204,11 @@ describe ( "babylonProject.snake.moveSnake", () =>
             }
             else
             {
-                //moveFunc called on tail pieces
+                //The tail should be all the snake pieces except the
+                //very last moved according to the direction
 
                 expect ( moveFunc.mock.calls [ idx - 1 ] [ 0 ] )
-                    .toEqual ( snakeParts [ idx ], dir );
+                    .toEqual ( snakeParts [ idx - 1 ], dir );
 
                 //value in array should be result of moveFunc
                 expect ( newSnake [ idx ] )

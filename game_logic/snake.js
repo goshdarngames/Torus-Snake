@@ -56,19 +56,31 @@
         
     };
 
+    /**
+     * babylonProject.snake.moveSnake ( dir, snakeParts, moveFunc )
+     *
+     * Returns a new list holding the positions of all the snake parts 
+     * after moving in the specified direction.
+     */
     babylonProject.snake.moveSnake = function ( dir, snakeParts, moveFunc )
     {
         if ( !babylonProject.config.isValidDirection ( dir ) )
         {
             throw ( "dir is not valid direction" );
         }
-        
-        let head = [ { x : 0, y : 0 } ];
 
-        let tail = snakeParts.slice( 1 ).map ( function ( val )
+        //the snake move operation works as follows:
+        // - Remove the last element of the snake
+        // - Apply the move to all other elements of the snake
+        // - Add a new head to the snake { x : 0, y : 0 }
+
+        let tail = snakeParts.slice( 0, snakeParts.length - 1  )
+            .map ( function ( val )
         {
             return moveFunc ( val, dir );
         });
+
+        let head = [ { x : 0, y : 0 } ];
 
         return head.concat ( tail );
     }
