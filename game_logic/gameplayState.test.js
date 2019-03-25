@@ -10,9 +10,9 @@ const startState = require ( "./gameplayState" );
 
 beforeEach ( () =>
 {
-    window.babylonProject.updateTorusMeshes = jest.fn ();
+    babylonProject.updateTorusMeshes = jest.fn ();
 
-    window.babylonProject.config =
+    babylonProject.config =
     {
         dirUp    : { x : -1, y :  0 },
         dirDown  : { x :  1, y :  0 },
@@ -33,25 +33,25 @@ beforeEach ( () =>
         snakeMoveInitialInterval : 4
     };
 
-    window.babylonProject.config.isValidDirection
+    babylonProject.config.isValidDirection
        .mockReturnValue ( true ); 
 
-    window.babylonProject.createButtonPlane = jest.fn ( function ()
+    babylonProject.createButtonPlane = jest.fn ( function ()
     {
         return new MockControl ();
     });
 
-    window.babylonProject.snake = {};
+    babylonProject.snake = {};
 
-    window.babylonProject.snake.turnAllowed = jest.fn ();
+    babylonProject.snake.turnAllowed = jest.fn ();
 
-    window.babylonProject.snake.turnSnake = jest.fn ();
+    babylonProject.snake.turnSnake = jest.fn ();
 
-    window.babylonProject.snake.moveSnake = jest.fn ();
+    babylonProject.snake.moveSnake = jest.fn ();
 
-    window.babylonProject.snake.growSnake = jest.fn ();
+    babylonProject.snake.growSnake = jest.fn ();
     
-    window.babylonProject.snake.createSnake = jest.fn ();
+    babylonProject.snake.createSnake = jest.fn ();
 });
 
 //Tests can assign a function here to have it called after they exit
@@ -165,11 +165,11 @@ let MockEngine = jest.fn ( function ()
  * TESTS
  ***************************************************************************/
 
-describe ( "window.babylonProject.gameplayState", () =>
+describe ( "babylonProject.gameplayState", () =>
 {
     test ( "is defined", () =>
     {
-        expect ( window.babylonProject.gameplayState )
+        expect ( babylonProject.gameplayState )
             .toBeDefined ();
     });
 
@@ -179,15 +179,15 @@ describe ( "window.babylonProject.gameplayState", () =>
         gameData = new MockGameData ();
 
         expect ( () => 
-                window.babylonProject.gameplayState ( ))
+                babylonProject.gameplayState ( ))
             .toThrow ( "babylon is undefined" );
         
         expect ( () => 
-                window.babylonProject.gameplayState ( babylon ))
+                babylonProject.gameplayState ( babylon ))
             .toThrow ( "gameData is undefined" );
 
         expect ( () => 
-                window.babylonProject.gameplayState ( babylon, gameData  ))
+                babylonProject.gameplayState ( babylon, gameData  ))
             .toThrow ( "stateData is undefined" );
 
     });
@@ -200,7 +200,7 @@ describe ( "window.babylonProject.gameplayState", () =>
 
         let stateData = new MockStateData ();
 
-        let config = window.babylonProject.config;
+        let config = babylonProject.config;
 
         let u = config.dirUp;
         let d = config.dirDown;
@@ -225,7 +225,7 @@ describe ( "window.babylonProject.gameplayState", () =>
         ];
 
         let updateFunc = 
-            window.babylonProject.gameplayState ( 
+            babylonProject.gameplayState ( 
                     babylon, gameData, stateData );
 
         let testButtonEnabled = ( dirName, callCount, enabled ) =>
@@ -479,7 +479,7 @@ describe ( "window.babylonProject.gameplayState", () =>
 
 });
 
-describe ( "window.babylonProject.GameplayStateData", () =>
+describe ( "babylonProject.GameplayStateData", () =>
 {
     test ( "is defined", () =>
     {

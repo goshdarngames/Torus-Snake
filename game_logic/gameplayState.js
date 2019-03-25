@@ -64,7 +64,7 @@
             throw new Error ( "stateData is undefined." );
         }
 
-        let config = window.babylonProject.config;
+        let config = babylonProject.config;
 
         //enable arrow buttons that are perpindicular to currentDir
 
@@ -98,7 +98,7 @@
             stateData.snakeMoveTimer = stateData.snakeMoveInterval;
 
             stateData.snakeParts = 
-                window.babylonProject.snake.moveSnake (
+                babylonProject.snake.moveSnake (
                         stateData.currentDir, 
                         stateData.snakeParts, 
                         gameData.moveTorusCoord );
@@ -107,7 +107,7 @@
                 gameData.moveTorusCoord ( 
                         stateData.applePos, stateData.currentDir );
 
-            window.babylonProject.updateTorusMeshes ( 
+            babylonProject.updateTorusMeshes ( 
                       stateData.snakeParts,
                       stateData.applePos,
                       gameData.torusMeshes,
@@ -222,4 +222,4 @@
     };
 
 
-} ( window.babylonProject = window.babylonProject || {} ));
+} ( babylonProject = window.babylonProject || {} ));
