@@ -423,3 +423,33 @@ describe ( "babylonProject.moveCoordinate", () =>
     });
 
 });
+
+
+describe ( "babylonProject.coordinatesEqual", () =>
+{
+    test ( "is defined", () =>
+    {
+        expect ( babylonProject.coordinatesEqual )
+            .toBeDefined ();
+    });
+
+    test ( "returns true if coordinate values are the same", () =>
+    {
+        let c1 = { x : 1, y : 1 };
+        let c2 = { x : 1, y : 1 };
+
+        expect ( babylonProject.coordinatesEqual ( c1, c2 ) )
+            .toBeTruthy ();
+    });
+
+    test ( "returns false if coordinate values are the same", () =>
+    {
+        let c1 = { x : 1, y : 1 };
+        let c2 = { x : 4, y : 3 };
+
+        expect ( babylonProject.coordinatesEqual ( c1, c2 ) )
+            .not.toBeTruthy ();
+    });
+
+});
+

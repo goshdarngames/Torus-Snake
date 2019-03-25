@@ -81,7 +81,7 @@
         let height = length / width;
 
         return width * wrap ( coord.y, height ) + wrap ( coord.x, width );
-    };
+    }
 
     /**
      * wrapCoordinate
@@ -98,7 +98,7 @@
        };
 
        return wrappedCoord;
-    };
+    }
 
     babylonProject.moveCoordinate = function ( coord, dir, width, height )
     {
@@ -109,6 +109,11 @@
         };
 
         return babylonProject.wrapCoordinate ( summedCoord, width, height );
-    };
+    }
+
+    babylonProject.coordinatesEqual = function ( c1, c2 )
+    {
+        return c1.x == c2.x && c1.y == c2.y;
+    }
 
 } ( window.babylonProject = window.babylonProject || {} ));
