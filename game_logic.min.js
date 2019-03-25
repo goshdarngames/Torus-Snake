@@ -9,7 +9,7 @@
 
     babylonProject.appleEaten = function ( headPos, applePos )
     {
-        return false;
+        return babylonProject.coordinatesEqual ( headPos, applePos );
     };
 
     babylonProject.randomApplePosition = 
